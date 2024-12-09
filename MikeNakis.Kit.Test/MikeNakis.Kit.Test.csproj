@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>12</LangVersion>
+		<ImplicitUsings>Disable</ImplicitUsings>
+		<Nullable>Enable</Nullable>
+		<AnalysisLevel>Latest-Recommended</AnalysisLevel>
+		<RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
+		<WarningLevel>9999</WarningLevel>
+		<!-- PEARL: if TreatWarningsAsErrors is set to true, then any .editorconfig inspections that are configured to
+		            appear as warnings will appear as errors instead. -->
+		<!-- <TreatWarningsAsErrors>True</TreatWarningsAsErrors> -->
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Testing project-specific stuff -->
+		<IsTestProject>True</IsTestProject>
+		<IsTestingPlatformApplication>False</IsTestingPlatformApplication>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.6.2" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.6.2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="$(ProjectDir)..\MikeNakis.Kit\MikeNakis.Kit.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- PEARL: if any .editorconfig or .globalconfig files are not found, we get silent failure. -->
+		<PackageReference Include="MikeNakis.AnalysisRules" Version="1.1.*" />
+		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)AllCode.globalconfig" />
+		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)TestCode.globalconfig" />
+	</ItemGroup>
+
+</Project>
