@@ -1,7 +1,6 @@
 namespace MikeNakis.Kit.Codecs;
 
 using MikeNakis.Kit;
-using static MikeNakis.Kit.KitHelpers;
 using Sys = System;
 
 /// Base class for implementations of <see cref="Codec{T}" />.

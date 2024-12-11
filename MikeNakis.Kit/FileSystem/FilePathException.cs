@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit.FileSystem;
 
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysIo = System.IO;
 

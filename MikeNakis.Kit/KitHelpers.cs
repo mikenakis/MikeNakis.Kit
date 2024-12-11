@@ -1,16 +1,18 @@
 namespace MikeNakis.Kit;
 
-using Sys = System;
-using SysText = System.Text;
-using SysThreading = System.Threading;
-using LegacyCollections = System.Collections;
-using SysCompiler = System.Runtime.CompilerServices;
-using static GlobalStatics;
-using Math = System.Math;
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
+using MikeNakis.Kit.Logging;
+using static GlobalStatics;
+using LegacyCollections = System.Collections;
+using Math = System.Math;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;
 using SysReflect = System.Reflection;
-using MikeNakis.Kit.Logging;
+using SysText = System.Text;
+using SysThreading = System.Threading;
 
 public static class KitHelpers
 {
@@ -81,8 +83,6 @@ public static class KitHelpers
 		}
 		textConsumer.Invoke( first ? ifEmpty : suffix );
 	}
-
-	public delegate void TextConsumer( Sys.ReadOnlySpan<char> text );
 
 	public static readonly SysThreading.ThreadLocal<bool> FailureTesting = new( false );
 

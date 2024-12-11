@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
 using Sys = System;
 using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;

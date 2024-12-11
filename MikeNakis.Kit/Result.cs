@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit;
 
+using static MikeNakis.Kit.GlobalStatics;
 using CodeAnalysis = System.Diagnostics.CodeAnalysis;
 using Sys = System;
 using SysDiag = System.Diagnostics;

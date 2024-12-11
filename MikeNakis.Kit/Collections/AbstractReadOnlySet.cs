@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
 using SysDiag = System.Diagnostics;
 
 /// Abstract base class for implementations of <see cref="IReadOnlySet{T}"/>.

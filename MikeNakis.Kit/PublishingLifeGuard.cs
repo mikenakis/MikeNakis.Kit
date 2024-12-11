@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit;
 
 using MikeNakis.Kit.Events;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysComp = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;

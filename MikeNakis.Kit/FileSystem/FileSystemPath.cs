@@ -1,7 +1,9 @@
 namespace MikeNakis.Kit.FileSystem;
 
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysIo = System.IO;
 using SysText = System.Text;

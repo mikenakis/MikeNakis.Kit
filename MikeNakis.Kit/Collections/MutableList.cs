@@ -1,6 +1,8 @@
 namespace MikeNakis.Kit.Collections;
 
 using System.Collections;
+using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;

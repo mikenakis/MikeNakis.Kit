@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
 using System.Collections;
+using System.Linq;
 using SysDiag = System.Diagnostics;
 
 /// A debugger type proxy for enumerables. Use with <see cref="SysDiag.DebuggerTypeProxyAttribute"/>.

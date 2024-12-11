@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit.Logging;
 
+using System.Collections.Generic;
 using SysIo = System.IO;
 using SysText = System.Text;
 using SysThreading = System.Threading;

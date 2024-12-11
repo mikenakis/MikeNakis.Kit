@@ -1,7 +1,7 @@
 namespace MikeNakis.Kit.Codecs;
 
 using MikeNakis.Kit;
-using static MikeNakis.Kit.KitHelpers;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysGlob = System.Globalization;
 

@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
 using SysDiag = System.Diagnostics;
 
 /// An implementation of <see cref="IListSet{T}"/>.

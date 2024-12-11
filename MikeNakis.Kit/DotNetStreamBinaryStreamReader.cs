@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit;
 
 using System;
+using static MikeNakis.Kit.GlobalStatics;
 using SysIo = System.IO;
 
 // PEARL: The System.IO.Stream class of DotNet is so retarded that it does not support checking

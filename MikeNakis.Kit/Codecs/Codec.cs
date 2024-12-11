@@ -1,7 +1,6 @@
 namespace MikeNakis.Kit.Codecs;
 
 using MikeNakis.Kit;
-using static MikeNakis.Kit.KitHelpers;
 using Sys = System;
 
 ///Provides conversions to/from string, to/from binary, etc. for instances of a particular <see cref="Sys.Type" />.

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Collections;
-using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 using static MikeNakis.Kit.GlobalStatics;
+using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
 public sealed class T102_StringSlicerTests

@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
 using System.Collections;
+using System.Collections.Generic;
 using SysContracts = System.Diagnostics.Contracts;
 using SysDiag = System.Diagnostics;
 

@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 

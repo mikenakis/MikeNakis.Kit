@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit;
 
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysThreading = System.Threading;
 

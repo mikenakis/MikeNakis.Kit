@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Events;
 
 using MikeNakis.Kit.Collections;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 
 public sealed class MutablePublisher<T> : Publisher<T>, Sys.IDisposable

@@ -1,7 +1,6 @@
 namespace MikeNakis.Kit.Codecs;
 
 using MikeNakis.Kit;
-using static MikeNakis.Kit.KitHelpers;
 using Sys = System;
 
 /// A <see cref="Codec{T}" /> for <see cref="char" />.
@@ -19,7 +18,7 @@ public sealed class CharCodec : AbstractCodec<char>
 				textConsumer.Invoke( new Sys.ReadOnlySpan<char>( in value ) );
 				break;
 			case Codec.Mode.Script:
-				ScribeStringLiteral( '\'', new Sys.ReadOnlySpan<char>( in value ), textConsumer );
+				KitHelpers.ScribeStringLiteral( '\'', new Sys.ReadOnlySpan<char>( in value ), textConsumer );
 				break;
 			default:
 				throw new Sys.ArgumentOutOfRangeException( nameof( mode ), mode, null );

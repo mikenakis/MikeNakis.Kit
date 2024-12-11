@@ -1,6 +1,9 @@
 namespace MikeNakis.Kit.FileSystem;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysIo = System.IO;
 

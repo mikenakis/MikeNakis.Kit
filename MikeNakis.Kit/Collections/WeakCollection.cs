@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
 using LegacyCollections = System.Collections;
 using Sys = System;
 using SysDiag = System.Diagnostics;

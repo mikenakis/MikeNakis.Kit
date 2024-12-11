@@ -1,7 +1,10 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.FileSystem;
+using static MikeNakis.Kit.GlobalStatics;
 using Math = System.Math;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;

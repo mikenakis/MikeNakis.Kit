@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit.TextLines;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
 using RegEx = System.Text.RegularExpressions;
 

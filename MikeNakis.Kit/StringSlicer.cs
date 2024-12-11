@@ -1,4 +1,6 @@
 namespace MikeNakis.Kit;
+
+using static MikeNakis.Kit.GlobalStatics;
 using SysCompiler = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;
 

@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit;
 
+using System.Linq;
+using static System.MemoryExtensions;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysGlob = System.Globalization;
 using SysReflect = System.Reflection;

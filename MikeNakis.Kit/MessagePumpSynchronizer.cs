@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit;
 
+using static MikeNakis.Kit.GlobalStatics;
 using ConcurrentCollections = System.Collections.Concurrent;
 using Sys = System;
 using SysConsole = System.Console;

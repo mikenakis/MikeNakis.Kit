@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
+
 public interface BiDictionary<F, S> where F : notnull where S : notnull
 {
 	bool Contains( F first );

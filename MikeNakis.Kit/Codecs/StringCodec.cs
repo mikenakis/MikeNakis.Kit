@@ -1,7 +1,7 @@
 namespace MikeNakis.Kit.Codecs;
 
 using MikeNakis.Kit;
-using static MikeNakis.Kit.KitHelpers;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysText = System.Text;
 
@@ -109,7 +109,7 @@ public sealed class StringCodec : AbstractCodec<string>
 				textConsumer.Invoke( value );
 				break;
 			case Codec.Mode.Script:
-				ScribeStringLiteral( '"', value, textConsumer );
+				KitHelpers.ScribeStringLiteral( '"', value, textConsumer );
 				break;
 			default:
 				throw new Sys.ArgumentOutOfRangeException( nameof( mode ), mode, null );

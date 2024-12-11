@@ -1,7 +1,6 @@
 namespace MikeNakis.Kit.Codecs;
 
 using MikeNakis.Kit;
-using static MikeNakis.Kit.KitHelpers;
 using Sys = System;
 
 /// A <see cref="Codec{T}" /> for <see cref="bool" />.

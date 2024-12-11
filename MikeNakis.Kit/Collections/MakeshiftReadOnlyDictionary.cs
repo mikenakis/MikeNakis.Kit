@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using System.Linq;
+using static System.MemoryExtensions;
 using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]

@@ -1,6 +1,6 @@
 namespace MikeNakis.Kit;
-
 using MikeNakis.Kit.Codecs;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 
 public readonly record struct Instant
