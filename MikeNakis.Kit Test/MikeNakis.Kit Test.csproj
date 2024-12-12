@@ -35,4 +35,10 @@
 	  <ProjectReference Include="..\MikeNakis.Kit\MikeNakis.Kit.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<!-- PEARL: if any of these files is not found, we get silent failure. -->
+		<GlobalAnalyzerConfigFiles Include="../../MikeNakis.GlobalConfig/AllCode.globalconfig" />
+		<GlobalAnalyzerConfigFiles Include="../../MikeNakis.GlobalConfig/TestCodeOnly.globalconfig" />
+	</ItemGroup>
+
 </Project>

@@ -13,11 +13,16 @@ public sealed class T101_KitTests
 	[VSTesting.TestMethod]
 	public void T01_SafeToString_Works()
 	{
+		Assert( KitHelpers.SafeToString( (int?)5 ) == "5" );
+		Assert( KitHelpers.SafeToString( default( int? ) ) == "null" );
 		Assert( KitHelpers.SafeToString( null ) == "null" );
 		Assert( KitHelpers.SafeToString( "" ) == "\"\"" );
+		Assert( KitHelpers.SafeToString( "x" ) == "\"x\"" );
 		Assert( KitHelpers.SafeToString( 'x' ) == "\'x\'" );
-		Assert( KitHelpers.SafeToString( (int?)5 ) == "5" );
-		Assert( KitHelpers.SafeToString( (int?)null ) == "null" );
+		Assert( KitHelpers.SafeToString( "\x1a" ) == "\"\\x1a\"" );
+		Assert( KitHelpers.SafeToString( "\x0a" ) == "\"\\n\"" );
+		Assert( KitHelpers.SafeToString( '\x1a' ) == "'\\x1a'" );
+		Assert( KitHelpers.SafeToString( '\x0a' ) == "'\\n'" );
 	}
 
 	[VSTesting.TestMethod]

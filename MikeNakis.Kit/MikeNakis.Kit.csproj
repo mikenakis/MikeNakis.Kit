@@ -18,4 +18,10 @@
 		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<!-- PEARL: if any of these files is not found, we get silent failure. -->
+		<GlobalAnalyzerConfigFiles Include="../../MikeNakis.GlobalConfig/AllCode.globalconfig" />
+		<GlobalAnalyzerConfigFiles Include="../../MikeNakis.GlobalConfig/ProductionCodeOnly.globalconfig" />
+	</ItemGroup>
+
 </Project>
