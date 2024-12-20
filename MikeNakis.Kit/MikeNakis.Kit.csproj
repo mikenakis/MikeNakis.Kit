@@ -25,28 +25,37 @@
 		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
 	</PropertyGroup>
 
+	<!-- See https://github.com/clairernovotny/DeterministicBuilds -->
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>True</ContinuousIntegrationBuild>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	</PropertyGroup>
+
+	<!--<Target Name="Messages" AfterTargets="AfterBuild">
+		<Message Importance="High" Text="+++ MikeNakisConfigFiles: $(MikeNakisConfigFiles) +++++++++++++++++++++++++++++++++++++++++++++++++++++++++ " />
+	</Target>-->
+
 	<ItemGroup>
 		<!-- PEARL: if any .editorconfig or .globalconfig files are not found, we get silent failure. -->
-		<EditorConfigFiles Include="$(ProjectDir)../editorconfig/.editorconfig" Link=".editorconfig"/>
-		<GlobalAnalyzerConfigFiles Include="$(ProjectDir)../../MikeNakis.GlobalConfig/AllCode.globalconfig" Link=".AllCode.globalconfig" />
-		<GlobalAnalyzerConfigFiles Include="$(ProjectDir)../../MikeNakis.GlobalConfig/ProductionCode.globalconfig" Link=".ProductionCode.globalconfig" />
+		<EditorConfigFiles Include="$(ProjectDir)../editorconfig/.editorconfig" Link=".editorconfig" />
+		<PackageReference Include="MikeNakis.GlobalConfig" Version="1.0.*" />
+		<GlobalAnalyzerConfigFiles Include="$(MikeNakisConfigFiles)AllCode.globalconfig" />
+		<GlobalAnalyzerConfigFiles Include="$(MikeNakisConfigFiles)ProductionCode.globalconfig" />
 	</ItemGroup>
 
 	<!-- NuGet stuff -->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<!-- for the version, versionprefix, and versionsuffix mechanism, see https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-pack -->
-		<!-- PEARL: the version prefix must be 3 numbers, there is no way around that. If you omit one of the three numbers, a zero will be automagically and autotrollingly supplied for you. -->
-		<Version>$(VERSION)</Version>
-		<!-- We cannot generate package on build because we need to pass the version suffix on the command-line in github actions -->
+		<Version>$(RELEASE_VERSION)</Version>
+		<!-- Do not generate package on build because we want to have it as a separate github action step. -->
 		<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
 		<Title>MikeNakis.Kit</Title>
 		<Authors>MikeNakis</Authors>
 		<Description>My library of indispensable utility classes and functions</Description>
-		<Copyright>Copyright (C) Mike Nakis</Copyright>
+		<Copyright>Copyright &#169; Mike Nakis. All rights reserved.</Copyright>
 		<PackageIcon>MikeNakis.Kit-Logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Kit</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Kit.git</RepositoryUrl>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageTags>dotnet; dotnet-core; class-libraries; utilities</PackageTags>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
@@ -57,22 +66,10 @@
 
 	<!-- NuGet stuff -->
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-	  <None Include="..\LICENSE.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-		<None Include="..\MikeNakis.Kit-Logo.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="..\MikeNakis.Kit-Logo.svg">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="README-for-nuget.md">
-	    <Pack>True</Pack>
-	    <PackagePath>/README.md</PackagePath>
-	  </None>
+		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" />
+		<None Include="..\MikeNakis.Kit-Logo.png" Pack="True" PackagePath="/" />
+		<None Include="..\MikeNakis.Kit-Logo.svg" Pack="True" PackagePath="/" />
+		<None Include="README-for-nuget.md" Pack="True" PackagePath="/README.md" />
 	</ItemGroup>
 
 </Project>
