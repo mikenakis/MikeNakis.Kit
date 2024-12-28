@@ -6,3 +6,5 @@
 packages
 *wpftmp.csproj
 .*.testana.json
+# no need to commit editorconfig, because it gets re-created on build.
+.editorconfig
