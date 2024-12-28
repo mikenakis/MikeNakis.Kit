@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 env:
-# PEARL: The VersionPrefix, VersionSuffix mechanism is retarded, because:
+# PEARL: The VersionPrefix, VersionSuffix mechanism is retarded!
 #        - The version prefix must be exactly three numbers separated by periods. 
 #          If you omit the last number, a zero will be automagically supplied for you.
 #        - Apparently, the entire version number may contain at most one dash, which is automagically supplied when the
@@ -39,7 +39,10 @@ jobs:
       run: dotnet restore
 
     - name: "build: Debug"
-      run: dotnet build --configuration Debug --no-restore --verbosity detailed
+# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely different from what it looks when building locally.
+#        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High". 
+#        The "-ConsoleLoggerParameters:off" magical incantation is necessary to correct this.
+      run: dotnet build --configuration Debug --no-restore -ConsoleLoggerParameters:off
 
     - name: "test"
       run: dotnet test --configuration Debug --no-build --verbosity normal
