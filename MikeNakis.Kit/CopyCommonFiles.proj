@@ -1,0 +1,39 @@
+<Project>
+
+	<!--
+	<PropertyGroup>
+		<CurrentDirectory1>$([System.IO.Path]::GetFullPath( '.' ))</CurrentDirectory1>
+		<ProjectDirectory1>$(MSBuildProjectDirectory)</ProjectDirectory1>
+	</PropertyGroup>
+
+	<Target Name="CurrentDirectoryMessage" BeforeTargets="BeforeBuild">
+		<PropertyGroup>
+			<CurrentDirectory2>$([System.IO.Path]::GetFullPath( '.' ))</CurrentDirectory2>
+			<ProjectDirectory2>$(MSBuildProjectDirectory)</ProjectDirectory2>
+		</PropertyGroup>
+		<Message Importance="High" Text="++++++++++++++++++++ CurrentDirectory1: '$(CurrentDirectory1)'  ProjectDirectory1: '$(ProjectDirectory1)'" />
+		<Message Importance="High" Text="++++++++++++++++++++ CurrentDirectory2: '$(CurrentDirectory2)'  ProjectDirectory2: '$(ProjectDirectory2)'" />
+		<Message Importance="High" Text="++++++++++++++++++++ MSBuildToolsPath: '$(MSBuildToolsPath)';  RoslynTargetsPath: '$(RoslynTargetsPath)'" />
+	</Target>
+	-->
+
+	<PropertyGroup>
+		<CommonFilesDirectory>$([System.IO.Path]::GetFullPath( '$(MSBuildProjectDirectory)\..\..\MikeNakis.CommonFiles' ))</CommonFilesDirectory>
+	</PropertyGroup>
+
+	<Target Name="CopyCommonFiles" BeforeTargets="BeforeBuild" Condition="Exists($(CommonFilesDirectory))">
+		<Message Importance="High" Text="++++++++++++++++++++ $(MSBuildProjectFile) Copying common files from directory: $(CommonFilesDirectory)" />
+		<!-- See https://stackoverflow.com/a/79309367/773113 -->
+		<ItemGroup>
+			<FilesToCopy Include="$(CommonFilesDirectory)\.editorconfig" />
+			<FilesToCopy Include="$(CommonFilesDirectory)\*.globalconfig" />
+		</ItemGroup>
+		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(MSBuildProjectDirectory)" SkipUnchangedFiles="True"
+			OverwriteReadOnlyFiles="True" UseSymboliclinksIfPossible="True" />
+	</Target>
+
+	<Target Name="ImportCommonFiles" BeforeTargets="BeforeBuild" Condition="!Exists($(CommonFilesDirectory))">
+		<Message Importance="High" Text="++++++++++++++++++++ $(MSBuildProjectFile) Importing common files from MikeNakis.CommonFiles" />
+	</Target>
+
+</Project>

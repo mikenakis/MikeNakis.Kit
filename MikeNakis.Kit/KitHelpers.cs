@@ -139,7 +139,7 @@ public static class KitHelpers
 
 		static void emitOtherCharacter( TextConsumer textConsumer, char c )
 		{
-			if( isPrintable( c ) )
+			if( IsPrintable( c ) )
 				textConsumer.Write( new Sys.ReadOnlySpan<char>( in c ) );
 			else if( c < 256 ) // no need to check for >= 0 because char is unsigned.
 			{
@@ -163,23 +163,54 @@ public static class KitHelpers
 			}
 			return;
 
-			static bool isPrintable( char c )
-			{
-				// see https://www.johndcook.com/blog/2013/04/11/which-unicode-characters-can-you-depend-on/
-				if( c < 32 )
-					return false;
-				if( c <= 0x7e )
-					return true;
-				// see https://en.wikipedia.org/wiki/Windows-1252
-				return "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".Contains2( c );
-			}
-
 			static char digitFromNibble( int nibble )
 			{
 				Assert( nibble is >= 0 and < 16 );
 				return (char)((nibble >= 10 ? 'a' - 10 : '0') + nibble);
 			}
 		}
+	}
+
+	public static bool IsPrintable( char c )
+	{
+		// see https://www.johndcook.com/blog/2013/04/11/which-unicode-characters-can-you-depend-on/
+		// see https://en.wikipedia.org/wiki/Windows-1252
+		return (int)c switch
+		{
+			< 32 => false,
+			< 127 => true,
+			< 160 => false,
+			173 => false,
+			< 256 => true,
+			338 => true, // Œ
+			339 => true, // œ
+			352 => true, // Š
+			353 => true, // š
+			376 => true, // Ÿ
+			381 => true, // Ž
+			382 => true, // ž
+			402 => true, // ƒ
+			710 => true, // ˆ
+			732 => true, // ˜
+			8211 => true, // –
+			8212 => true, // —
+			8216 => true, // ‘
+			8217 => true, // ’
+			8218 => true, // ‚
+			8220 => true, // “
+			8221 => true, // ”
+			8222 => true, // „
+			8224 => true, // †
+			8225 => true, // ‡
+			8226 => true, // •
+			8230 => true, // …
+			8240 => true, // ‰
+			8249 => true, // ‹
+			8250 => true, // ›
+			8364 => true, // €
+			8482 => true, // ™
+			_ => false
+		};
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -2,11 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
+		<!--<OutputType>Library</OutputType> this is the default -->
 		<LangVersion>12</LangVersion>
 		<ImplicitUsings>Disable</ImplicitUsings>
 		<Nullable>Enable</Nullable>
 		<EnableNETAnalyzers>True</EnableNETAnalyzers>
-		<AnalysisLevel>Latest-Recommended</AnalysisLevel>
+		<AnalysisLevel>Latest-All</AnalysisLevel>
 		<RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
 		<RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
@@ -28,29 +29,26 @@
 	<!-- See https://github.com/clairernovotny/DeterministicBuilds -->
 	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
 		<ContinuousIntegrationBuild>True</ContinuousIntegrationBuild>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<EmbedUntrackedSources>True</EmbedUntrackedSources>
 	</PropertyGroup>
 
+	<Import Project="CopyCommonFiles.proj" />
 	<ItemGroup>
-		<!-- TODO: research ContinueOnError and OnError -->
-		<!-- PEARL: if any .globalconfig files are not found, we get silent failure. -->
-		<PackageReference Include="MikeNakis.AnalysisRules" Version="1.1.*" />
-		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)AllCode.globalconfig" />
-		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)ProductionCode.globalconfig" />
-		<!--<EditorConfigFiles Include="$(MikeNakisAnalysisRules).editorconfig" Link=".editorconfig" Visible="False" />-->
-		<!--<EditorConfigFiles Include="$(MikeNakisAnalysisRules).editorconfig" />-->
-		<!--<None Include="$(MikeNakisAnalysisRules).editorconfig" Link=".editorconfig" Visible="False" />-->
+		<None Include="CopyCommonFiles.proj" />
 	</ItemGroup>
 
-	<!-- For use when troubleshooting: -->
-	<!--<Target Name="Messages" BeforeTargets="BeforeBuild">
-		<Message Importance="High" Text="+++ MikeNakisAnalysisRules: $(MikeNakisAnalysisRules) +++++++++++++++++++++++++++++++++++++++++++++++++++++++++ " />
-	</Target>-->
+	<ItemGroup>
+		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" />
+		<!-- PEARL: if any .globalconfig files are not found, we get silent failure. -->
+		<GlobalAnalyzerConfigFiles Include="$(MikeNakisCommonFiles)AllCode.globalconfig" />
+		<GlobalAnalyzerConfigFiles Include="$(MikeNakisCommonFiles)ProductionCode.globalconfig" />
+	</ItemGroup>
 
-	<!-- TODO -->
-	<!--<ItemGroup>
-		<Using Include="My.Awesome.Namespace" Alias="Awesome" />
-	</ItemGroup>-->
+	<Target Name="CopyEditorConfig" BeforeTargets="BeforeBuild">
+		<!-- PEARL: msbuild will not create a symbolic link here, for reasons only msbuild knows. -->
+		<!--<Copy SourceFiles="$(MikeNakisCommonFiles).editorconfig" DestinationFolder="$(MSBuildProjectDirectory)"
+			  SkipUnchangedFiles="True" OverwriteReadOnlyFiles="True" UseSymboliclinksIfPossible="True" />-->
+	</Target>
 
 	<!-- NuGet stuff -->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -82,4 +80,3 @@
 	</ItemGroup>
 
 </Project>
-

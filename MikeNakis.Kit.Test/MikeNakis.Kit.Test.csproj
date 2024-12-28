@@ -34,11 +34,15 @@
 	  <ProjectReference Include="$(ProjectDir)..\MikeNakis.Kit\MikeNakis.Kit.csproj" />
 	</ItemGroup>
 
+	<Import Project="CopyCommonFiles.proj" />
+	<ItemGroup>
+		<None Include="CopyCommonFiles.proj" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<!-- PEARL: if any .editorconfig or .globalconfig files are not found, we get silent failure. -->
-		<PackageReference Include="MikeNakis.AnalysisRules" Version="1.1.*" />
-		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)AllCode.globalconfig" />
-		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)TestCode.globalconfig" />
+		<GlobalAnalyzerConfigFiles Include="AllCode.globalconfig" />
+		<GlobalAnalyzerConfigFiles Include="TestCode.globalconfig" />
 	</ItemGroup>
 
 </Project>

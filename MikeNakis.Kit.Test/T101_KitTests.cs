@@ -6,6 +6,7 @@ using MikeNakis.Kit.Collections;
 using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
+using SysText = System.Text;
 
 [VSTesting.TestClass]
 public sealed class T101_KitTests
@@ -82,5 +83,37 @@ public sealed class T101_KitTests
 		object array = new[] { 1 };
 		Sys.Exception? caughtException = TryCatch( () => mutableList.Equals( array ) );
 		NotNullCast( caughtException, out AssertionFailureException _ );
+	}
+
+	[VSTesting.TestMethod]
+	public void T06_IsPrintable_Works()
+	{
+		bool[] shouldBePrintable = new bool[65536];
+		foreach( char c in getAllCharactersOfWindows1252Encoding() )
+			shouldBePrintable[c] = true;
+		for( int i = 0; i < shouldBePrintable.Length; i++ )
+			Assert( shouldBePrintable[i] == KitHelpers.IsPrintable( (char)i ) );
+
+		static string getAllCharactersOfWindows1252Encoding()
+		{
+			byte[] windows1252bytes = getAllBytesOfWindows1252Encoding();
+			SysText.Encoding.RegisterProvider( SysText.CodePagesEncodingProvider.Instance );
+			SysText.Encoding windows1252encoding = SysText.Encoding.GetEncoding( 1252 );
+			return windows1252encoding.GetString( windows1252bytes );
+
+			static byte[] getAllBytesOfWindows1252Encoding()
+			{
+				byte[] windows1252bytes = new byte[217];
+				int n = 0;
+				for( int i = 32; i < 256; i++ )
+				{
+					if( i is 0x7f or 0x81 or 0x8D or 0x8F or 0x90 or 0x9D or 0xAD )
+						continue;
+					windows1252bytes[n++] = (byte)i;
+				}
+				Assert( n == windows1252bytes.Length );
+				return windows1252bytes;
+			}
+		}
 	}
 }
