@@ -6,7 +6,8 @@ dotnet
 enum
 enumerables
 foreach
-Linq
+infos
+linq
 memberwise
 nakis
 params
@@ -14,6 +15,6 @@ recurse
 stateful
 uint
 ulong
-unix
-Usings
 unicode
+unix
+usings
