@@ -26,6 +26,9 @@ public abstract class FileSystemPath
 
 	protected static string SysIoGetExtension( string path ) => wrap( path, () => SysIo.Path.GetExtension( path ) );
 	protected static bool SysIoIsPathRooted( string path ) => wrap( path, () => SysIo.Path.IsPathRooted( path ) );
+
+	protected static bool SysIoIsPathFullyQualified( string path ) => wrap( path, () => SysIo.Path.IsPathFullyQualified( path ) );
+
 	protected static string SysIoGetFullPath( string path ) => wrap( path, () => SysIo.Path.GetFullPath( path ) );
 	protected static string SysIoGetFileName( string path ) => wrap( path, () => SysIo.Path.GetFileName( path ) );
 	protected static SysIo.DirectoryInfo? SysIoGetParent( string path ) => wrap( path, () => SysIo.Directory.GetParent( path ) );

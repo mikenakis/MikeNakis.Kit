@@ -10,6 +10,11 @@ using SysThreading = System.Threading;
 
 public sealed class FilePath : FileSystemPath
 {
+	public static bool IsFullyQualified( string path )
+	{
+		return SysIoIsPathFullyQualified( path );
+	}
+
 	public static FilePath FromAbsolutePath( string path )
 	{
 		Assert( SysIoIsPathRooted( path ) );
