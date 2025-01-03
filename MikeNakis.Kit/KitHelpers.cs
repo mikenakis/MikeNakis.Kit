@@ -661,8 +661,8 @@ public static class KitHelpers
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// nullable
 
-	public static T OrThrow<T>( this T? self ) where T : class => self ?? throw new AssertionFailureException();
+	public static T OrThrow<T>( this T? self ) where T : class => self ?? throw Failure();
 	public static T OrThrow<T>( this T? self, Sys.Func<Sys.Exception> exceptionFactory ) where T : class => self ?? throw exceptionFactory.Invoke();
-	public static T OrThrow<T>( this T? self ) where T : struct => self ?? throw new AssertionFailureException();
+	public static T OrThrow<T>( this T? self ) where T : struct => self ?? throw Failure();
 	public static T OrThrow<T>( this T? self, Sys.Func<Sys.Exception> exceptionFactory ) where T : struct => self ?? throw exceptionFactory.Invoke();
 }

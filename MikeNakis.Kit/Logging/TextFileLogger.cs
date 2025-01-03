@@ -100,7 +100,7 @@ public class TextFileLogger : Logger
 				string message = KitHelpers.BuildMediumExceptionMessage( "Log file creation failed with ", exception ).MakeString( "; " );
 				Log.Warn( message );
 				if( attempt > 10 )
-					throw new Sys.Exception();
+					throw Failure();
 				filePath = FilePath.Of( filePath.GetDirectoryPath(), filePath.GetFileNameWithoutExtension() + "-" + attempt + filePath.Extension );
 			}
 	}

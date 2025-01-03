@@ -20,7 +20,7 @@ public sealed class AssertionFailureException : SaneException
 	}
 
 	/// Constructor
-	public AssertionFailureException( string message, Exception cause )
+	public AssertionFailureException( string message, Exception? cause )
 			: base( cause )
 	{
 		Message = message;
