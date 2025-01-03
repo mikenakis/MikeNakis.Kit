@@ -20,12 +20,13 @@ env:
 #          The result of all this is that the whole prefix-suffix mechanism serves a very narrowly scoped purpose and
 #          is entirely useless for any other scenario.
 #        Therefore, we have to specify the entire version here.
-  RELEASE_VERSION: 1.1.${{github.run_number}}.${{github.run_attempt}}
+  RELEASE_VERSION: 1.1.${{github.run_number}}${{github.run_attempt}}
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    # runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -48,7 +49,10 @@ jobs:
       run: dotnet test --configuration Debug --no-build --verbosity normal
 
     - name: "build: Release"
-      run: dotnet build --configuration Release --no-restore
+# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely different from what it looks when building locally.
+#        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High". 
+#        The "-ConsoleLoggerParameters:off" magical incantation is necessary to correct this.
+      run: dotnet build --configuration Release --no-restore -ConsoleLoggerParameters:off
 
     - name: "pack"
       run: dotnet pack --configuration Release --no-restore --no-build
@@ -57,4 +61,4 @@ jobs:
       run: echo ${{ github.event.repository.name }} - ${GITHUB_REPOSITORY#*/} - ${{ github.run_number }} - ${{ github.run_attempt }}
 
     - name: "push"
-      run: dotnet nuget push "MikeNakis.Kit/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "MikeNakis.Kit/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}

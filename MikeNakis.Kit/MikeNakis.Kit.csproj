@@ -2,23 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<!--<OutputType>Library</OutputType> this is the default -->
-		<LangVersion>12</LangVersion>
-		<ImplicitUsings>Disable</ImplicitUsings>
-		<Nullable>Enable</Nullable>
-		<EnableNETAnalyzers>True</EnableNETAnalyzers>
-		<AnalysisLevel>Latest-All</AnalysisLevel>
-		<RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
-		<RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
-		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-		<WarningLevel>9999</WarningLevel>
-		<!-- PEARL: if TreatWarningsAsErrors is set to true, then any analysis rules that have been configured to
-		            appear as warnings will appear as errors instead. -->
-		<!-- <TreatWarningsAsErrors>True</TreatWarningsAsErrors> -->
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
 	</PropertyGroup>
 
 	<!-- See https://github.com/clairernovotny/DeterministicBuilds -->
@@ -29,6 +12,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" />
+		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'"/>
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<!-- NuGet Packaging ******************************************************************************************* -->

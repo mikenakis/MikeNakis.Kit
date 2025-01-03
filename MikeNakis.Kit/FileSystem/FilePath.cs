@@ -217,7 +217,7 @@ public sealed class FilePath : FileSystemPath
 		return DirectoryPath.FromAbsolutePath( Path[..^relativePath.Length] );
 	}
 
-	public SysIo.Stream OpenBinary( SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null )
+	public SysIo.Stream OpenBinary( SysIo.FileMode fileMode = SysIo.FileMode.Open, SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None )
 	{
 		share ??= access switch
 		{
@@ -226,7 +226,7 @@ public sealed class FilePath : FileSystemPath
 			SysIo.FileAccess.ReadWrite => SysIo.FileShare.None,
 			_ => throw new Sys.ArgumentOutOfRangeException( nameof( access ), access, null )
 		};
-		return SysIoNewFileStream( Path, SysIo.FileMode.Open, access, share.Value );
+		return SysIoNewFileStream( Path, fileMode, access, share.Value, bufferSize, fileOptions );
 	}
 
 	public SysIo.Stream CreateBinary( SysIo.FileAccess access = SysIo.FileAccess.Write, SysIo.FileShare share = SysIo.FileShare.None )

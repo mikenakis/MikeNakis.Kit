@@ -15,7 +15,6 @@ public sealed class MutableList<T> : IEnumerable<T>
 	const int defaultCapacity = 4;
 
 	T[] array;
-	int size;
 	int version;
 	public bool IsFrozen { get; private set; }
 	public int Capacity => array.Length;
@@ -23,8 +22,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 	public IReadOnlyList<T> AsReadOnlyList => lazyAsReadOnlyList ??= new ReadOnlyList( this );
 	public IEnumerable<T> AsEnumerable => AsReadOnlyList;
 
-	// ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
-	public int Count => size;
+	public int Count { get; private set; }
 
 	public MutableList()
 	{
@@ -50,7 +48,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 				int index = 0;
 				foreach( T item in readOnlyCollection )
 					array[index++] = item;
-				size = count;
+				Count = count;
 			}
 		}
 		else if( enumerable is ICollection<T> collection )
@@ -62,7 +60,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 			{
 				array = new T[count];
 				collection.CopyTo( array, 0 );
-				size = count;
+				Count = count;
 			}
 		}
 		else
@@ -88,8 +86,8 @@ public sealed class MutableList<T> : IEnumerable<T>
 
 	public bool Equals( MutableList<T> other )
 	{
-		int size = this.size;
-		if( size != other.size )
+		int size = Count;
+		if( size != other.Count )
 			return false;
 		EqualityComparer<T> equalityComparer = EqualityComparer<T>.Default;
 		for( int i = 0; i < size; i++ )
@@ -100,7 +98,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 
 	public bool Equals( Series<T> other )
 	{
-		int size = this.size;
+		int size = Count;
 		if( size != other.Count )
 			return false;
 		EqualityComparer<T> equalityComparer = EqualityComparer<T>.Default;
@@ -114,7 +112,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 	{
 		// ReSharper disable once SuspiciousTypeConversion.Global
 		Assert( other is not Sys.Array );
-		int size = this.size;
+		int size = Count;
 		if( size != other.Count )
 			return false;
 		EqualityComparer<T> equalityComparer = EqualityComparer<T>.Default;
@@ -182,7 +180,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 			IEnumerator<T> otherEnumerator = other.GetEnumerator();
 			try
 			{
-				for( int i = 0; i < size; i++ )
+				for( int i = 0; i < Count; i++ )
 				{
 					if( !otherEnumerator.MoveNext() )
 						return false;
@@ -212,7 +210,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 
 	public void SetCapacity( int capacity )
 	{
-		Assert( capacity >= size );
+		Assert( capacity >= Count );
 		if( capacity == array.Length )
 			return;
 		if( capacity <= 0 )
@@ -223,8 +221,8 @@ public sealed class MutableList<T> : IEnumerable<T>
 		else
 		{
 			T[] newItems = new T[capacity];
-			if( size > 0 )
-				Sys.Array.Copy( array, newItems, size );
+			if( Count > 0 )
+				Sys.Array.Copy( array, newItems, Count );
 			array = newItems;
 		}
 	}
@@ -233,13 +231,13 @@ public sealed class MutableList<T> : IEnumerable<T>
 	{
 		get
 		{
-			Assert( (uint)index < (uint)size );
+			Assert( (uint)index < (uint)Count );
 			return array[index];
 		}
 		set
 		{
 			Assert( !IsFrozen );
-			Assert( (uint)index < (uint)size );
+			Assert( (uint)index < (uint)Count );
 			array[index] = value;
 			version++;
 		}
@@ -251,10 +249,10 @@ public sealed class MutableList<T> : IEnumerable<T>
 		Assert( !IsFrozen );
 		version++;
 		T[] array = this.array;
-		int size = this.size;
+		int size = Count;
 		if( (uint)size < (uint)array.Length )
 		{
-			this.size = size + 1;
+			Count = size + 1;
 			array[size] = item;
 		}
 		else
@@ -265,10 +263,10 @@ public sealed class MutableList<T> : IEnumerable<T>
 	[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.NoInlining )]
 	void addWithResize( T item )
 	{
-		SysDiag.Debug.Assert( this.size == array.Length );
-		int size = this.size;
+		SysDiag.Debug.Assert( Count == array.Length );
+		int size = Count;
 		grow( size + 1 );
-		this.size = size + 1;
+		Count = size + 1;
 		array[size] = item;
 	}
 
@@ -279,10 +277,10 @@ public sealed class MutableList<T> : IEnumerable<T>
 			int count = readOnlyCollection.Count;
 			if( count > 0 )
 			{
-				if( array.Length - size < count )
-					grow( checked(size + count) );
-				readOnlyCollection.CopyTo( array, size );
-				size += count;
+				if( array.Length - Count < count )
+					grow( checked(Count + count) );
+				readOnlyCollection.CopyTo( array, Count );
+				Count += count;
 				version++;
 			}
 		}
@@ -291,10 +289,10 @@ public sealed class MutableList<T> : IEnumerable<T>
 			int count = collection.Count;
 			if( count > 0 )
 			{
-				if( array.Length - size < count )
-					grow( checked(size + count) );
-				collection.CopyTo( array, size );
-				size += count;
+				if( array.Length - Count < count )
+					grow( checked(Count + count) );
+				collection.CopyTo( array, Count );
+				Count += count;
 				version++;
 			}
 		}
@@ -321,16 +319,16 @@ public sealed class MutableList<T> : IEnumerable<T>
 		version++;
 		if( SysCompiler.RuntimeHelpers.IsReferenceOrContainsReferences<T>() )
 		{
-			int size = this.size;
-			this.size = 0;
+			int size = Count;
+			Count = 0;
 			if( size > 0 )
 				Sys.Array.Clear( array, 0, size ); // Clear the elements so that the gc can reclaim the references.
 		}
 		else
-			size = 0;
+			Count = 0;
 	}
 
-	public bool Contains( T item ) => size != 0 && IndexOf( item ) >= 0;
+	public bool Contains( T item ) => Count != 0 && IndexOf( item ) >= 0;
 
 	// public void CopyTo( T[] array ) => CopyTo( array, 0 );
 
@@ -342,7 +340,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 
 	public void CopyTo( T[] array, int arrayIndex )
 	{
-		Sys.Array.Copy( this.array, 0, array, arrayIndex, size );
+		Sys.Array.Copy( this.array, 0, array, arrayIndex, Count );
 	}
 
 	public int EnsureCapacity( int capacity )
@@ -383,13 +381,13 @@ public sealed class MutableList<T> : IEnumerable<T>
 	// 	return default;
 	// }
 
-	public int FindIndex( Sys.Predicate<T> match ) => FindIndex( 0, size, match );
-	public int FindIndex( int startIndex, Sys.Predicate<T> match ) => FindIndex( startIndex, size - startIndex, match );
+	public int FindIndex( Sys.Predicate<T> match ) => FindIndex( 0, Count, match );
+	public int FindIndex( int startIndex, Sys.Predicate<T> match ) => FindIndex( startIndex, Count - startIndex, match );
 
 	public int FindIndex( int startIndex, int count, Sys.Predicate<T> match )
 	{
-		Assert( (uint)startIndex <= (uint)size );
-		Assert( count >= 0 && startIndex <= size - count );
+		Assert( (uint)startIndex <= (uint)Count );
+		Assert( count >= 0 && startIndex <= Count - count );
 		int endIndex = startIndex + count;
 		for( int i = startIndex; i < endIndex; i++ )
 		{
@@ -440,7 +438,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	public int IndexOf( T item ) => Sys.Array.IndexOf( array, item, 0, size );
+	public int IndexOf( T item ) => Sys.Array.IndexOf( array, item, 0, Count );
 
 	// public int IndexOf( T item, int index )
 	// {
@@ -458,13 +456,13 @@ public sealed class MutableList<T> : IEnumerable<T>
 	public void Insert( int index, T item )
 	{
 		Assert( !IsFrozen );
-		Assert( (uint)index <= (uint)size ); // Note that insertions at the end are legal.
-		if( size == array.Length )
-			grow( size + 1 );
-		if( index < size )
-			Sys.Array.Copy( array, index, array, index + 1, size - index );
+		Assert( (uint)index <= (uint)Count ); // Note that insertions at the end are legal.
+		if( Count == array.Length )
+			grow( Count + 1 );
+		if( index < Count )
+			Sys.Array.Copy( array, index, array, index + 1, Count - index );
 		array[index] = item;
-		size++;
+		Count++;
 		version++;
 	}
 
@@ -590,12 +588,12 @@ public sealed class MutableList<T> : IEnumerable<T>
 	public void RemoveAt( int index )
 	{
 		Assert( !IsFrozen );
-		Assert( (uint)index < (uint)size );
-		size--;
-		if( index < size )
-			Sys.Array.Copy( array, index + 1, array, index, size - index );
+		Assert( (uint)index < (uint)Count );
+		Count--;
+		if( index < Count )
+			Sys.Array.Copy( array, index + 1, array, index, Count - index );
 		if( SysCompiler.RuntimeHelpers.IsReferenceOrContainsReferences<T>() )
-			array[size] = default!;
+			array[Count] = default!;
 		version++;
 	}
 
@@ -604,41 +602,41 @@ public sealed class MutableList<T> : IEnumerable<T>
 		Assert( !IsFrozen );
 		Assert( index >= 0 );
 		Assert( count >= 0 );
-		Assert( size - index >= count );
+		Assert( Count - index >= count );
 		if( count > 0 )
 		{
-			size -= count;
-			if( index < size )
-				Sys.Array.Copy( array, index + count, array, index, size - index );
+			Count -= count;
+			if( index < Count )
+				Sys.Array.Copy( array, index + count, array, index, Count - index );
 			version++;
 			if( SysCompiler.RuntimeHelpers.IsReferenceOrContainsReferences<T>() )
-				Sys.Array.Clear( array, size, count );
+				Sys.Array.Clear( array, Count, count );
 		}
 	}
 
-	public void Reverse() => Reverse( 0, size );
+	public void Reverse() => Reverse( 0, Count );
 
 	public void Reverse( int index, int count )
 	{
 		Assert( !IsFrozen );
 		Assert( index >= 0 );
 		Assert( count >= 0 );
-		Assert( size - index >= count );
+		Assert( Count - index >= count );
 		if( count > 1 )
 			Sys.Array.Reverse( array, index, count );
 		version++;
 	}
 
-	public void Sort() => Sort( 0, size, null );
+	public void Sort() => Sort( 0, Count, null );
 
-	public void Sort( IComparer<T>? comparer ) => Sort( 0, size, comparer );
+	public void Sort( IComparer<T>? comparer ) => Sort( 0, Count, comparer );
 
 	public void Sort( int index, int count, IComparer<T>? comparer )
 	{
 		Assert( !IsFrozen );
 		Assert( index >= 0 );
 		Assert( count >= 0 );
-		Assert( size - index >= count );
+		Assert( Count - index >= count );
 		if( count > 1 )
 			Sys.Array.Sort( array, index, count, comparer );
 		version++;
@@ -678,15 +676,15 @@ public sealed class MutableList<T> : IEnumerable<T>
 	{
 		Assert( !IsFrozen );
 		IsFrozen = true;
-		return new Series<T>( array, 0, size );
+		return new Series<T>( array, 0, Count );
 	}
 
 	public void TrimExcess()
 	{
 		Assert( !IsFrozen );
 		int threshold = (int)(array.Length * 0.9);
-		if( size < threshold )
-			SetCapacity( size );
+		if( Count < threshold )
+			SetCapacity( Count );
 	}
 
 	public struct Enumerator : IEnumerator<T>, IEnumerator
@@ -711,7 +709,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 		public bool MoveNext()
 		{
 			Assert( originalVersion == list.version );
-			if( (uint)index < (uint)list.size )
+			if( (uint)index < (uint)list.Count )
 			{
 				current = list.array[index];
 				index++;
@@ -723,7 +721,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 		[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.NoInlining )]
 		bool moveNextRare()
 		{
-			index = list.size + 1;
+			index = list.Count + 1;
 			current = default;
 			return false;
 		}
@@ -732,7 +730,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 		{
 			get
 			{
-				Assert( index != 0 && index != list.size + 1 );
+				Assert( index != 0 && index != list.Count + 1 );
 				return current!;
 			}
 		}

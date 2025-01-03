@@ -59,7 +59,7 @@ public abstract class FileSystemPath
 	protected static SysIo.StreamWriter SysIoCreateText( string path ) => wrap( path, () => SysIo.File.CreateText( path ) );
 	protected static void SysIoFileMove( string path, string targetPath ) => wrap( path, () => SysIo.File.Move( path, targetPath ) );
 	protected static void SysIoSetCurrentDirectory( string path ) => wrap( path, () => SysIo.Directory.SetCurrentDirectory( path ) );
-	protected static SysIo.FileStream SysIoNewFileStream( string path, SysIo.FileMode mode, SysIo.FileAccess access, SysIo.FileShare share ) => wrap( path, () => new SysIo.FileStream( path, mode, access, share ) );
+	protected static SysIo.FileStream SysIoNewFileStream( string path, SysIo.FileMode mode, SysIo.FileAccess access, SysIo.FileShare share, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None ) => wrap( path, () => new SysIo.FileStream( path, mode, access, share, bufferSize, fileOptions ) );
 #pragma warning restore RS0030 // Do not use banned APIs
 
 	static void wrap( string path, Sys.Action action, [CallerMemberName] string? operationName = null )

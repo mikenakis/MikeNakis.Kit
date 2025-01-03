@@ -49,8 +49,8 @@ sealed class ProductionLifeGuard : LifeGuard
 	public override void Dispose()
 	{ } //nothing to do
 
-	public override bool IsAliveAssertion() => throw new AssertionFailureException(); //never invoke on a release build
-	public override string ToStringFor( Sys.IDisposable owner ) => throw new AssertionFailureException(); //never invoke on a release build
+	public override bool IsAliveAssertion() => throw Failure(); //never invoke on a release build
+	public override string ToStringFor( Sys.IDisposable owner ) => throw Failure(); //never invoke on a release build
 }
 
 abstract class DebugLifeGuard : LifeGuard

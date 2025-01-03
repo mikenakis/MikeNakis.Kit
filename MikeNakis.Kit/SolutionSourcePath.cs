@@ -1,7 +1,10 @@
 namespace MikeNakis.Kit;
 
+using Sys = System;
 using MikeNakis.Kit.Extensions;
 using SysComp = System.Runtime.CompilerServices;
+
+#pragma warning disable CA2201 // Do not raise reserved exception types
 
 public static class SolutionSourcePath
 {
@@ -15,14 +18,14 @@ public static class SolutionSourcePath
 	{
 		string sourceFileName = getSourceFileName();
 		if( !sourceFileName.EndsWith2( myRelativePath ) )
-			throw new AssertionFailureException( sourceFileName );
+			throw new Sys.Exception( sourceFileName );
 		return sourceFileName[..^myRelativePath.Length];
 	}
 
 	static string getSourceFileName( [SysComp.CallerFilePath] string? sourceFileName = null )
 	{
 		if( sourceFileName == null )
-			throw new AssertionFailureException();
+			throw new Sys.Exception();
 		return sourceFileName;
 	}
 }

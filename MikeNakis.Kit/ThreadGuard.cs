@@ -1,7 +1,6 @@
 namespace MikeNakis.Kit;
 
 using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
 using SysThreading = System.Threading;
 
 public abstract class ThreadGuard
@@ -24,9 +23,9 @@ public abstract class ThreadGuard
 		ProductionThreadGuard()
 		{ }
 
-		public override bool InThreadAssertion() => throw new Sys.Exception(); //never invoke on a release build
+		public override bool InThreadAssertion() => throw Failure(); //never invoke on a release build
 
-		public override bool OutOfThreadAssertion() => throw new Sys.Exception(); //never invoke on a release build
+		public override bool OutOfThreadAssertion() => throw Failure(); //never invoke on a release build
 	}
 
 	sealed class DebugThreadGuard : ThreadGuard

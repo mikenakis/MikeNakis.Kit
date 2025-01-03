@@ -36,12 +36,6 @@ public static class DotNetHelpers
 		return currentProcess.PrivateMemorySize64;
 	}
 
-	public static Sys.Exception Exit( int exitCode )
-	{
-		Sys.Environment.Exit( exitCode );
-		return new Sys.Exception();
-	}
-
 	[SysDiag.Conditional( "DEBUG" )]
 	public static void PerformGarbageCollectionAsync()
 	{
@@ -611,7 +605,7 @@ public static class DotNetHelpers
 	{
 		int exitCode = ExecuteAndWaitForExitCode( workingDirectory, executable, arguments );
 		if( exitCode != 0 )
-			throw new Sys.Exception( $"The command \"{executable}\" in '{workingDirectory.Path}' returned exit code {exitCode}" );
+			throw Failure( $"The command \"{executable}\" in '{workingDirectory.Path}' returned exit code {exitCode}" );
 	}
 
 	public static int ExecuteAndWaitForExitCode( DirectoryPath workingDirectory, FilePath executable, IEnumerable<string> arguments )
@@ -641,7 +635,7 @@ public static class DotNetHelpers
 		}
 		catch( Sys.Exception exception )
 		{
-			throw new Sys.Exception( $"Failed to execute command '{executable}' in '{workingDirectory}'", exception );
+			throw Failure( $"Failed to execute command '{executable}' in '{workingDirectory}'", exception );
 		}
 		return process;
 	}
@@ -666,7 +660,7 @@ public static class DotNetHelpers
 		}
 		catch( Sys.Exception exception )
 		{
-			throw new Sys.Exception( $"Failed to launch '{document}' in '{workingDirectory}'", exception );
+			throw Failure( $"Failed to launch '{document}' in '{workingDirectory}'", exception );
 		}
 		return process;
 	}
@@ -890,7 +884,7 @@ public static class DotNetHelpers
 		}
 
 		SysIo.Stream? stream = locatorAssembly.GetManifestResourceStream( fullResourceName );
-		Assert( stream != null, () => new Sys.Exception( locatorAssembly.GetManifestResourceNames().MakeString( "'", "', '", "'", "none" ) ) );
+		Assert( stream != null, () => throw Failure( locatorAssembly.GetManifestResourceNames().MakeString( "'", "', '", "'", "none" ) ) );
 		using( stream )
 			return ReadAll( stream );
 	}
@@ -923,7 +917,7 @@ public static class DotNetHelpers
 			}
 			catch( Sys.Exception exception )
 			{
-				throw new Sys.Exception( $"Failed to execute command '{command}' in '{workingDirectory}'", exception );
+				throw Failure( $"Failed to execute command '{command}' in '{workingDirectory}'", exception );
 			}
 			SysThreading.Thread thread = new( () =>
 			{

@@ -44,7 +44,7 @@ public sealed class DistributingLogger : Logger
 	{
 		IReadOnlyList<Logger> loggers = getLoggers();
 		if( loggers.Count == 0 )
-			throw new AssertionFailureException();
+			throw Failure();
 		foreach( Logger logger in loggers )
 			try
 			{
