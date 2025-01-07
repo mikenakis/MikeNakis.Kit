@@ -4,6 +4,27 @@
 		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 
+	<!-- PEARL: Visual Studio suffers from a monstrous, insidious bug where the spell checker goes haywire if you happen
+		to have	two files with the same name in the solution.
+		To work around this bug, every single file in the entire solution must have a unique filename. -->
+	<!-- PEARL: GitHub requires the README file to be named README, so we cannot give it a unique filename.
+		To work around this capriciousness of GitHub, we prefix the name of our README file with the name of the
+		project, (incidentally, this also makes it easier to locate it among editor tabs,) and we create a symbolic
+		link called README.md which points to the actual README file. -->
+	<PropertyGroup>
+		<!-- NOTE: when creating a symbolic link, the 'SourceFiles' should always be a relative path! -->
+		<SourceReadMe>..\$(MSBuildProjectName).README.md</SourceReadMe>
+		<DestinationReadMe>..\README.md</DestinationReadMe>
+	</PropertyGroup>
+	<Target Name="CreateSymbolicLinkForReadme" BeforeTargets="BeforeBuild"
+			Condition="!Exists('$(DestinationReadMe)') OR $([System.IO.File]::GetLastWriteTime('$(SourceReadMe)').Ticks) &gt; $([System.IO.File]::GetLastWriteTime('$(DestinationReadMe)').Ticks)">
+		<Warning Text="Creating (or re-creating) symbolic link '$(DestinationReadMe)' targeting '$(SourceReadMe)'" />
+		<Error Condition="!Exists('$(SourceReadMe)')" Text="Source does not exist: '$(SourceReadMe)'" />
+		<Copy SourceFiles="$(SourceReadMe)" DestinationFiles="$(DestinationReadMe)" SkipUnchangedFiles="True"
+			  UseSymboliclinksIfPossible="True" ErrorIfLinkFails="True" />
+		<Error Condition="!Exists('$(DestinationReadMe)')" Text="Destination does not exist: '$(DestinationReadMe)'" />
+	</Target>
+
 	<!-- See https://github.com/clairernovotny/DeterministicBuilds -->
 	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
 		<ContinuousIntegrationBuild>True</ContinuousIntegrationBuild>
@@ -30,7 +51,7 @@
 		<Version>$(RELEASE_VERSION)</Version>
 		<!-- Get version prefix from environment variable, because it is computed by the build server script. -->
 		<!--<VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>-->
-		<Title>MikeNakis.Kit</Title>
+		<Title>$(MSBuildProjectName)</Title>
 		<Authors>MikeNakis</Authors>
 		<Description>My library of indispensable utility classes and functions</Description>
 		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>

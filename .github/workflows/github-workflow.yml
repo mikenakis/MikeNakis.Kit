@@ -53,18 +53,18 @@ jobs:
       run: dotnet test --configuration Debug --no-build --verbosity normal
 
     - name: "Debug: pack"
-      run: dotnet pack --configuration Debug --no-restore --no-build --version-suffix Debug
+      run: dotnet pack --configuration Debug --no-build --version-suffix Debug
 
     - name: "Debug: push"
-      # run: dotnet nuget push "MikeNakis.Kit/bin/Debug/${{ github.event.repository.name }}-Debug.${{ env.RELEASE_VERSION }}-Debug.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
-      run: dotnet nuget push "MikeNakis.Kit/bin/Debug/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      # run: dotnet nuget push "${{ github.event.repository.name }}/bin/Debug/${{ github.event.repository.name }}-Debug.${{ env.RELEASE_VERSION }}-Debug.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "${{ github.event.repository.name }}/bin/Debug/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
 
     - name: "Release: build"
       run: dotnet build --configuration Release --no-restore -ConsoleLoggerParameters:off
 
     - name: "Release: pack"
-      run: dotnet pack --configuration Release --no-restore --no-build
+      run: dotnet pack --configuration Release --no-build
 
     - name: "Release: push"
-      # run: dotnet nuget push "MikeNakis.Kit/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
-      run: dotnet nuget push "MikeNakis.Kit/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      # run: dotnet nuget push "${{ github.event.repository.name }}/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "${{ github.event.repository.name }}/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
