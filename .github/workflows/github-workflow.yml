@@ -40,7 +40,8 @@ jobs:
       run: dotnet restore
 
     - name: "build: Debug"
-# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely different from what it looks when building locally.
+# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely 
+#        different from what it looks when building locally.
 #        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High". 
 #        The "-ConsoleLoggerParameters:off" magical incantation is necessary to correct this.
       run: dotnet build --configuration Debug --no-restore -ConsoleLoggerParameters:off
@@ -49,7 +50,8 @@ jobs:
       run: dotnet test --configuration Debug --no-build --verbosity normal
 
     - name: "build: Release"
-# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely different from what it looks when building locally.
+# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely 
+#        different from what it looks when building locally.
 #        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High". 
 #        The "-ConsoleLoggerParameters:off" magical incantation is necessary to correct this.
       run: dotnet build --configuration Release --no-restore -ConsoleLoggerParameters:off

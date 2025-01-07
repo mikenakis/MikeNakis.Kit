@@ -12,4 +12,4 @@ call vsclean
 rd /S/Q %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource
 mkdir %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource
 dotnet pack
-dotnet nuget push bin/Release/MikeNakis.Kit.%RELEASE_VERSION%.nupkg --source %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource
+dotnet nuget push MikeNakis.Kit/bin/Release/MikeNakis.Kit.%RELEASE_VERSION%.nupkg --source %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource

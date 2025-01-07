@@ -1,28 +1,21 @@
 namespace MikeNakis.Kit;
 
-using System;
+using Sys = System;
 
 /// An exception to throw in the event of an assertion failure.
-public sealed class AssertionFailureException : SaneException
+public sealed class AssertionFailureException : Sys.Exception
 {
-	public override string Message { get; }
-
 	/// Constructor
 	public AssertionFailureException()
-	{
-		Message = "";
-	}
+	{ }
 
 	/// Constructor
 	public AssertionFailureException( string message )
-	{
-		Message = message;
-	}
+			: base( message )
+	{ }
 
 	/// Constructor
-	public AssertionFailureException( string message, Exception? cause )
-			: base( cause )
-	{
-		Message = message;
-	}
+	public AssertionFailureException( string message, Sys.Exception? cause )
+			: base( message, cause )
+	{ }
 }
