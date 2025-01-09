@@ -1,77 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-	</PropertyGroup>
-
-	<!-- PEARL: Visual Studio suffers from a monstrous, insidious bug where the spell checker goes haywire if you happen
-		to have	two files with the same name in the solution.
-		To work around this bug, every single file in the entire solution must have a unique filename. -->
-	<!-- PEARL: GitHub requires the README file to be named README, so we cannot give it a unique filename.
-		To work around this capriciousness of GitHub, we prefix the name of our README file with the name of the
-		project, (incidentally, this also makes it easier to locate it among editor tabs,) and we create a symbolic
-		link called README.md which points to the actual README file. -->
-	<PropertyGroup>
-		<!-- NOTE: when creating a symbolic link, the 'SourceFiles' should always be a relative path! -->
-		<SourceReadMe>..\$(MSBuildProjectName).README.md</SourceReadMe>
-		<DestinationReadMe>..\README.md</DestinationReadMe>
-	</PropertyGroup>
-	<Target Name="CreateSymbolicLinkForReadme" BeforeTargets="BeforeBuild"
-			Condition="!Exists('$(DestinationReadMe)') OR $([System.IO.File]::GetLastWriteTime('$(SourceReadMe)').Ticks) &gt; $([System.IO.File]::GetLastWriteTime('$(DestinationReadMe)').Ticks)">
-		<Warning Text="Creating (or re-creating) symbolic link '$(DestinationReadMe)' targeting '$(SourceReadMe)'" />
-		<Error Condition="!Exists('$(SourceReadMe)')" Text="Source does not exist: '$(SourceReadMe)'" />
-		<Copy SourceFiles="$(SourceReadMe)" DestinationFiles="$(DestinationReadMe)" SkipUnchangedFiles="True"
-			  UseSymboliclinksIfPossible="True" ErrorIfLinkFails="True" />
-		<Error Condition="!Exists('$(DestinationReadMe)')" Text="Destination does not exist: '$(DestinationReadMe)'" />
-	</Target>
-
-	<!-- See https://github.com/clairernovotny/DeterministicBuilds -->
-	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-		<ContinuousIntegrationBuild>True</ContinuousIntegrationBuild>
-		<EmbedUntrackedSources>True</EmbedUntrackedSources>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" />
-		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'" />
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<!-- NuGet Packaging ******************************************************************************************* -->
-
-	<PropertyGroup>
-		<!-- Do not generate package on build because we want to have it as a separate github action step. -->
-		<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
-		<!-- Create a different package for debug -->
-		<PackageId Condition="'$(Configuration)' == 'Debug'">$(MSBuildProjectName)-Debug</PackageId>
-		<!-- Get version from environment variable, because it is computed by the build server script. -->
-		<Version>$(RELEASE_VERSION)</Version>
-		<!-- Get version prefix from environment variable, because it is computed by the build server script. -->
-		<!--<VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>-->
-		<Title>$(MSBuildProjectName)</Title>
-		<Authors>MikeNakis</Authors>
-		<Description>My library of indispensable utility classes and functions</Description>
-		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
-		<PackageIcon>MikeNakis.Kit-Logo.png</PackageIcon>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Kit.git</RepositoryUrl>
-		<PublishRepositoryUrl>True</PublishRepositoryUrl>
-		<PackageTags>dotnet; dotnet-core; class-libraries; utilities</PackageTags>
-		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageReleaseNotes>initial release</PackageReleaseNotes>
-		<IncludeSymbols>True</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" />
-		<None Include="..\MikeNakis.Kit-Logo.png" Pack="True" PackagePath="/" />
-		<None Include="..\MikeNakis.Kit-Logo.svg" Pack="True" PackagePath="/" />
-		<None Include="README-for-nuget.md" Pack="True" PackagePath="/README.md" />
-	</ItemGroup>
+	<!-- PEARL: when it comes to editing .csproj files, Visual studio offers an abysmally poor developer experience:
+		- It keeps modifying .csproj files, sometimes messing them up.
+		- It keeps bugging us with warnings saying we better reload the project "or else."
+		- It keeps closing the project file when we reload the project.
+		- It makes it difficult to open the project file if it has been unable to load it.
+		- It keeps reloading project files by itself each time we save them.
+		- With each reload of the project file it loses undo information and it scrolls to the top.
+		To somewhat mitigate all this madness, we put nothing in .csproj files but a single statement which imports
+		another	project file with an extension that is not .csproj, so that:
+		- Visual Studio will leave the other project file alone.
+		- When Visual Studio modifies this file, it is easy to take notice (This file should contain nothing but the
+		  following import task. -->
+	<Import Project="$(MSBuildProjectName).proj.xml" />
 
 </Project>

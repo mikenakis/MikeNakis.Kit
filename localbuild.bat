@@ -9,7 +9,12 @@ if "%SUFFIX%"=="" (
 )
 set RELEASE_VERSION=1.0.%SUFFIX%
 call vsclean
-rd /S/Q %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource
-mkdir %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource
-dotnet pack
-dotnet nuget push MikeNakis.Kit/bin/Release/MikeNakis.Kit.%RELEASE_VERSION%.nupkg --source %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource
+del %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource\MikeNakis.Kit*.nupkg
+
+@echo on
+
+dotnet pack --configuration Debug
+dotnet nuget push MikeNakis.Kit\bin\Debug\MikeNakis.Kit-Debug.%RELEASE_VERSION%.nupkg --source %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource
+
+dotnet pack --configuration Release
+dotnet nuget push MikeNakis.Kit\bin\Release\MikeNakis.Kit-Release.%RELEASE_VERSION%.nupkg --source %USERPROFILE%\Personal\Dev\Dotnet\Main\LocalNugetSource

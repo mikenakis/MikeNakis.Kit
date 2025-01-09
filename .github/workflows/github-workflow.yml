@@ -25,6 +25,7 @@ env:
 #          The result of all this is that the whole prefix-suffix mechanism serves a very narrowly scoped purpose and
 #          is entirely useless for any other scenario.
   RELEASE_VERSION: 1.1.${{github.run_number}}${{github.run_attempt}}
+  BUILD_SERVER_BUILD: True
 
 jobs:
   build:
@@ -53,7 +54,7 @@ jobs:
       run: dotnet test --configuration Debug --no-build --verbosity normal
 
     - name: "Debug: pack"
-      run: dotnet pack --configuration Debug --no-build --version-suffix Debug
+      run: dotnet pack --configuration Debug --no-build 
 
     - name: "Debug: push"
       # run: dotnet nuget push "${{ github.event.repository.name }}/bin/Debug/${{ github.event.repository.name }}-Debug.${{ env.RELEASE_VERSION }}-Debug.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
