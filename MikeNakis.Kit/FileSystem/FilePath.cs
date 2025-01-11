@@ -217,7 +217,7 @@ public sealed class FilePath : FileSystemPath
 		return DirectoryPath.FromAbsolutePath( Path[..^relativePath.Length] );
 	}
 
-	public SysIo.Stream OpenBinary( SysIo.FileMode fileMode = SysIo.FileMode.Open, SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None )
+	public SysIo.FileStream OpenBinary( SysIo.FileMode fileMode = SysIo.FileMode.Open, SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None )
 	{
 		share ??= access switch
 		{
@@ -229,15 +229,15 @@ public sealed class FilePath : FileSystemPath
 		return SysIoNewFileStream( Path, fileMode, access, share.Value, bufferSize, fileOptions );
 	}
 
-	public SysIo.Stream CreateBinary( SysIo.FileAccess access = SysIo.FileAccess.Write, SysIo.FileShare share = SysIo.FileShare.None )
+	public SysIo.FileStream CreateBinary( SysIo.FileAccess access = SysIo.FileAccess.Write, SysIo.FileShare share = SysIo.FileShare.None )
 	{
 		Assert( access is SysIo.FileAccess.Write or SysIo.FileAccess.ReadWrite );
 		return SysIoNewFileStream( Path, SysIo.FileMode.Create, access, share );
 	}
 
-	public SysIo.TextReader OpenText( SysText.Encoding? encoding = null )
+	public SysIo.TextReader OpenText( SysIo.FileMode fileMode = SysIo.FileMode.Open, SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None, SysText.Encoding? encoding = null )
 	{
-		SysIo.Stream fileStream = OpenBinary();
+		SysIo.Stream fileStream = OpenBinary( fileMode, access, share, bufferSize, fileOptions );
 		return new SysIo.StreamReader( fileStream, encoding ?? SysText.Encoding.UTF8 );
 	}
 
