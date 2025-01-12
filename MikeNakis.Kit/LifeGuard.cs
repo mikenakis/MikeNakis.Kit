@@ -126,7 +126,7 @@ abstract class DebugLifeGuard : LifeGuard
 sealed class TerseDebugLifeGuard : DebugLifeGuard
 {
 	public TerseDebugLifeGuard( string callerFilePath, int callerLineNumber )
-			: base( callerFilePath, callerLineNumber, $"To enable stack trace collection for this class, pass 'true' to the {nameof( LifeGuard )}.{nameof( Create )}() method call." )
+			: base( callerFilePath, callerLineNumber, $"To enable stack trace collection for this class, pass 'true' to the {typeof( LifeGuard ).Name}.{nameof( Create )}() method call." )
 	{ }
 }
 

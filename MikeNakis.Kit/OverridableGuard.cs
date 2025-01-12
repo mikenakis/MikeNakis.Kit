@@ -78,6 +78,6 @@ public class OverridableGuard
 			}
 		}
 
-		public override string ToString() => $"{nameof( Invocation )} for {methodName}";
+		public override string ToString() => $"{typeof( Invocation ).Name} for {methodName}";
 	}
 }

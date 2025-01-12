@@ -8,7 +8,6 @@ using SysComp = System.Runtime.CompilerServices;
 
 public static class SolutionSourcePath
 {
-	const string myRelativePath = "MikeNakis.Kit\\" + nameof( SolutionSourcePath ) + ".cs";
 	static string? lazyValue;
 	public static string Value => lazyValue ??= calculateSolutionSourcePath();
 
@@ -16,6 +15,7 @@ public static class SolutionSourcePath
 	//       otherwise there will be a StackOverflowException.
 	static string calculateSolutionSourcePath()
 	{
+		string myRelativePath = "MikeNakis.Kit\\" + typeof( SolutionSourcePath ).Name + ".cs";
 		string sourceFileName = getSourceFileName();
 		if( !sourceFileName.EndsWith2( myRelativePath ) )
 			throw new Sys.Exception( sourceFileName );
