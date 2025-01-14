@@ -2,7 +2,6 @@ namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
 using System.Linq;
-using static System.MemoryExtensions;
 using Sys = System;
 
 /// Abstract base class for implementations of <see cref="IDictionary{K,V}"/>.

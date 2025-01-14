@@ -1,4 +1,4 @@
-namespace MikeNakis.Kit.IO;
+namespace MikeNakis.Kit;
 
 using Sys = System;
 

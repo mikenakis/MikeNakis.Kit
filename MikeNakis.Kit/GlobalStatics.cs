@@ -126,7 +126,7 @@ public static class GlobalStatics
 		Sys.Exception exception = exceptionFactory.Invoke();
 		if( !KitHelpers.FailureTesting.Value )
 		{
-			Log.Error( "Assertion failed", exception );
+			SysDiag.Debug.WriteLine( $"Assertion failed: {exception.GetType().FullName}: {exception.Message}" );
 			if( Breakpoint() )
 				return;
 		}

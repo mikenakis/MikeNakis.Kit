@@ -88,6 +88,7 @@ public static class ReflectionHelpers
 	{
 		Sys.Type type = typeof( T );
 		Assert( obj.GetType() == type );
+#if NETCOREAPP
 		Sys.HashCode hashCodeBuilder = new();
 		foreach( SysReflect.FieldInfo fieldInfo in type.GetFields( SysReflect.BindingFlags.Instance | SysReflect.BindingFlags.Public | SysReflect.BindingFlags.NonPublic ) )
 		{
@@ -96,6 +97,17 @@ public static class ReflectionHelpers
 			hashCodeBuilder.Add( fieldValue );
 		}
 		return hashCodeBuilder.ToHashCode();
+#else
+		uint accumulatedHashCode = 1;
+		foreach( SysReflect.FieldInfo fieldInfo in type.GetFields( SysReflect.BindingFlags.Instance | SysReflect.BindingFlags.Public | SysReflect.BindingFlags.NonPublic ) )
+		{
+			Assert( fieldInfo.IsInitOnly );
+			object? fieldValue = fieldInfo.GetValue( obj );
+			accumulatedHashCode *= 31;
+			accumulatedHashCode += (uint)(fieldValue?.GetHashCode() ?? 0);
+		}
+		return (int)accumulatedHashCode;
+#endif
 	}
 
 	public static bool OverridesEqualsMethod( Sys.Type type )
