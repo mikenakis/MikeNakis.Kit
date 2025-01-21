@@ -5,8 +5,9 @@
 		<IsTestProject>True</IsTestProject>
 	</PropertyGroup>
 
+	<Import Project="AllProjects.proj.xml" />
+
 	<ItemGroup>
-		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'"/>
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
 			<PrivateAssets>all</PrivateAssets>
