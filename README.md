@@ -1,1 +1,1 @@
-../MikeNakis.Kit.README.md
+MikeNakis.Kit.README.md

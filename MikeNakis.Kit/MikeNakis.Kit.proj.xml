@@ -7,15 +7,8 @@
 		<AssemblyName>$(MSBuildProjectName)-$(Configuration)</AssemblyName>
 	</PropertyGroup>
 
-	<Import Project="AllProjects.proj.xml" />
-
-	<ItemGroup>
-		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'" />
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
+	<Import Project="..\AllProjects.proj.xml" />
+	<Import Project="..\SymbolBanning.proj.xml" />
 
 	<!-- NuGet Packaging ******************************************************************************************* -->
 

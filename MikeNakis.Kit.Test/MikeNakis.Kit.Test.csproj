@@ -5,17 +5,10 @@
 		<IsTestProject>True</IsTestProject>
 	</PropertyGroup>
 
-	<Import Project="AllProjects.proj.xml" />
+	<Import Project="..\AllProjects.proj.xml" />
+	<Import Project="..\SymbolBanning.proj.xml" />
 
 	<ItemGroup>
-		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'"/>
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" Condition="'$(IsTestProject)' == 'True'" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.6.2" Condition="'$(IsTestProject)' == 'True'" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.6.2" Condition="'$(IsTestProject)' == 'True'" />
 		<ProjectReference Include="..\MikeNakis.Kit\MikeNakis.Kit.csproj" />
 	</ItemGroup>
 
