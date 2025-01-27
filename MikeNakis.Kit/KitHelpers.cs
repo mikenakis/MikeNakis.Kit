@@ -90,6 +90,14 @@ public static class KitHelpers
 		ScribeStringLiteral( quote, content, textConsumer );
 	}
 
+	public static string UnescapeForCSharp( string content )
+	{
+		Result<string, Expectation> result = ParseStringLiteral( '\"', content );
+		if( !result.IsSuccess )
+			throw new Sys.FormatException( result.AsFailure.Message );
+		return result.AsSuccess;
+	}
+
 	public static Sys.Exception NewFormatException( string typeName, string content )
 	{
 		const int maxLength = 20;
@@ -102,6 +110,7 @@ public static class KitHelpers
 
 	public static void ScribeStringLiteral( char quoteCharacter, Sys.ReadOnlySpan<char> instance, TextConsumer textConsumer )
 	{
+		//TODO: cover all escapes, see https://stackoverflow.com/a/323664/773113
 		textConsumer.Write( new Sys.ReadOnlySpan<char>( in quoteCharacter ) );
 		foreach( char c in instance )
 			if( c == quoteCharacter )
@@ -168,6 +177,93 @@ public static class KitHelpers
 				return (char)((nibble >= 10 ? 'a' - 10 : '0') + nibble);
 			}
 		}
+	}
+
+	public static Result<string, Expectation> ParseStringLiteral( char quoteCharacter, Sys.ReadOnlySpan<char> charSpan )
+	{
+		int i = 0;
+		if( i >= charSpan.Length || charSpan[i] != quoteCharacter )
+			return Result<string, Expectation>.Failure( new CustomExpectation( $"expected an opening '{quoteCharacter}', found '{charSpan[i]}'" ) );
+		i++;
+		SysText.StringBuilder builder = new();
+		while( true )
+		{
+			if( i >= charSpan.Length )
+				return Result<string, Expectation>.Failure( new CustomExpectation( $"expected a closing '{quoteCharacter}'" ) );
+			char c = charSpan[i++];
+			if( c == '"' )
+				break;
+			if( c < 32 )
+				return Result<string, Expectation>.Failure( new CustomExpectation( $"escape character in string literal ({c:x2})" ) );
+			if( c == '\\' )
+			{
+				c = charSpan[i++];
+				switch( c )
+				{
+					case '\r':
+					case '\n':
+						continue;
+					case 't':
+						c = '\t';
+						break;
+					case 'n':
+						c = '\n';
+						break;
+					case 'r':
+						c = '\r';
+						break;
+					case '\\':
+					case '\'':
+					case '\"':
+						break;
+					case 'x':
+					{
+						Result<int, Expectation> result1 = readNibble( charSpan[i++] );
+						if( !result1.IsSuccess )
+							return Result<string, Expectation>.Failure( result1.AsFailure );
+						Result<int, Expectation> result2 = readNibble( charSpan[i++] );
+						if( !result2.IsSuccess )
+							return Result<string, Expectation>.Failure( result2.AsFailure );
+						c = (char)(result1.AsSuccess << 4 | result2.AsSuccess);
+						break;
+					}
+					case 'u':
+					{
+						Result<int, Expectation> result1 = readNibble( charSpan[i++] );
+						if( !result1.IsSuccess )
+							return Result<string, Expectation>.Failure( result1.AsFailure );
+						Result<int, Expectation> result2 = readNibble( charSpan[i++] );
+						if( !result2.IsSuccess )
+							return Result<string, Expectation>.Failure( result2.AsFailure );
+						Result<int, Expectation> result3 = readNibble( charSpan[i++] );
+						if( !result3.IsSuccess )
+							return Result<string, Expectation>.Failure( result3.AsFailure );
+						Result<int, Expectation> result4 = readNibble( charSpan[i++] );
+						if( !result4.IsSuccess )
+							return Result<string, Expectation>.Failure( result4.AsFailure );
+						c = (char)(result1.AsSuccess << 12 | result2.AsSuccess << 8 | result3.AsSuccess << 4 | result4.AsSuccess);
+						break;
+					}
+					default:
+						return Result<string, Expectation>.Failure( new CustomExpectation( $"expected a valid escape sequence, found '{c}'" ) );
+				}
+
+				static Result<int, Expectation> readNibble( char c )
+				{
+					return c switch
+					{
+						>= '0' and <= '9' => Result<int, Expectation>.Success( c - '0' ),
+						>= 'a' and <= 'f' => Result<int, Expectation>.Success( c - 'a' + 10 ),
+						>= 'A' and <= 'F' => Result<int, Expectation>.Success( c - 'A' + 10 ),
+						_ => Result<int, Expectation>.Failure( new CustomExpectation( $"expected a hex digit, found '{c}'" ) )
+					};
+				}
+			}
+			builder.Append( c );
+		}
+		if( i != charSpan.Length )
+			return Result<string, Expectation>.Failure( new CustomExpectation( $"expected nothing, found '{charSpan[i..]}'" ) );
+		return Result<string, Expectation>.Success( builder.ToString() );
 	}
 
 	public static bool IsPrintable( char c )

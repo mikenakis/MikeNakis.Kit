@@ -70,53 +70,7 @@ public static class Log
 		return message;
 	}
 
-	static string buildLongExceptionMessage( string prefix, Sys.Exception exception )
-	{
-		MutableList<string> lines = new();
-		recurse( $"{prefix} : ", lines, exception );
-		return lines.AsReadOnlyList.Select( fixMessage ).MakeString( "\r\n" );
-
-		static void recurse( string prefix, MutableList<string> lines, Sys.Exception exception )
-		{
-			for( ; true; exception = exception.InnerException )
-			{
-				lines.Add( $"{prefix}{exception.GetType()} : {exception.Message}" );
-				SysDiag.StackFrame[] stackFrames = new SysDiag.StackTrace( exception, true ).GetFrames();
-				lines.AddRange( stackFrames.Select( stringFromStackFrame ) );
-				if( exception is Sys.AggregateException aggregateException )
-				{
-					Assert( ReferenceEquals( exception.InnerException, aggregateException.InnerExceptions[0] ) );
-					foreach( Sys.Exception innerException in aggregateException.InnerExceptions )
-						recurse( "Aggregates ", lines, innerException );
-					break;
-				}
-				if( exception.InnerException == null )
-					break;
-				prefix = "Caused by ";
-			}
-		}
-	}
-
-	static string stringFromStackFrame( SysDiag.StackFrame stackFrame )
-	{
-		SysText.StringBuilder stringBuilder = new();
-		stringBuilder.Append( "    " );
-		string? sourceFileName = stackFrame.GetFileName();
-		stringBuilder.Append( string.IsNullOrEmpty( sourceFileName ) ? "<unknown-source>: " : $"{fixSourceFileName( sourceFileName )}({stackFrame.GetFileLineNumber()}): " );
-		SysReflect.MethodBase? method = stackFrame.GetMethod();
-		if( method != null )
-		{
-			stringBuilder.Append( "method " );
-			Sys.Type? declaringType = method.DeclaringType;
-			if( declaringType != null )
-				stringBuilder.Append( KitHelpers.GetCSharpTypeName( declaringType ).Replace( '+', '.' ) ).Append( '.' );
-			stringBuilder.Append( method.Name );
-			if( method is SysReflect.MethodInfo && method.IsGenericMethod )
-				stringBuilder.Append( '<' ).Append( method.GetGenericArguments().Select( a => a.Name ).MakeString( "," ) ).Append( '>' );
-			stringBuilder.Append( '(' ).Append( method.GetParameters().Select( p => p.ParameterType.Name + " " + p.Name ).MakeString( ", " ) ).Append( ')' );
-		}
-		return stringBuilder.ToString();
-	}
+	static string buildLongExceptionMessage( string prefix, Sys.Exception exception ) => KitHelpers.BuildLongExceptionMessage( prefix, exception ).MakeString( "\r\n" );
 
 	static string fixSourceFileName( string sourceFileName )
 	{

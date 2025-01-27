@@ -35,7 +35,7 @@ public abstract class LifeGuard : Sys.IDisposable
 	public abstract void Dispose();
 
 	public abstract bool IsAliveAssertion();
-	public abstract string ToStringFor( Sys.IDisposable owner );
+	public abstract string Status { get; }
 }
 
 sealed class ProductionLifeGuard : LifeGuard
@@ -49,7 +49,7 @@ sealed class ProductionLifeGuard : LifeGuard
 	{ } //nothing to do
 
 	public override bool IsAliveAssertion() => throw Failure(); //never invoke on a release build
-	public override string ToStringFor( Sys.IDisposable owner ) => throw Failure(); //never invoke on a release build
+	public override string Status => throw Failure(); //never invoke on a release build
 }
 
 abstract class DebugLifeGuard : LifeGuard
@@ -87,9 +87,8 @@ abstract class DebugLifeGuard : LifeGuard
 		report( message, callerFilePath, callerLineNumber );
 	}
 
-	public override string ToString() => $"{Id( this )} {statusMessage}";
-	string statusMessage => alive ? "Alive" : "ENDED";
-	public override string ToStringFor( Sys.IDisposable owner ) => $"{Id( owner )} {statusMessage}";
+	public override string ToString() => $"{Id( this )} {Status}";
+	public override string Status => alive ? "Alive" : "DISPOSED";
 
 	readonly struct SourceLocation : Sys.IEquatable<SourceLocation>
 	{
