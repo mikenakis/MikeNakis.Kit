@@ -7,7 +7,7 @@ using Sys = System;
 public sealed class MakeshiftDisposable : Sys.IDisposable
 {
 	readonly LifeGuard lifeGuard = LifeGuard.Create();
-	public override string ToString() => lifeGuard.ToStringFor( this );
+	public override string ToString() => $"{Id( this )} {lifeGuard.Status}";
 	readonly Sys.Action procedure;
 
 	public MakeshiftDisposable( Sys.Action procedure )
