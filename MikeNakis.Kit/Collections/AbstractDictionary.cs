@@ -45,7 +45,7 @@ public abstract class AbstractDictionary<K, V> : AbstractReadOnlyDictionary<K, V
 	public abstract override bool ContainsKey( K key );
 	public abstract bool Remove( K key );
 	public abstract override bool TryGetValue( K key, out V value );
-	protected abstract void Replace( K key, V value );
+	protected abstract bool Replace( K key, V value );
 	public new V this[K key] { get => GetValue( key ); set => AddOrReplace( key, value ); }
 	public abstract override IEnumerable<K> Keys { get; } //TODO: this should be an ICollection
 	public abstract override IEnumerable<V> Values { get; } //TODO: this should be an IReadOnlyCollection
@@ -57,7 +57,10 @@ public abstract class AbstractDictionary<K, V> : AbstractReadOnlyDictionary<K, V
 	public void AddOrReplace( K key, V value )
 	{
 		if( ContainsKey( key ) )
-			Replace( key, value );
+		{
+			bool ok = Replace( key, value );
+			Assert( ok );
+		}
 		else
 			Add( key, value );
 	}

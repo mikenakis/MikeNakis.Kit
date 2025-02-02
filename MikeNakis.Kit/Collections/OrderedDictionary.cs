@@ -80,12 +80,14 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 		return true;
 	}
 
-	protected override void Replace( K key, V value )
+	protected override bool Replace( K key, V value )
 	{
 		LinkedListNode<(K key, V value)> node = map[key];
-		Assert( Equals( node.Value.key, key ) );
+		if( !Equals( node.Value.key, key ) )
+			return false;
 		node.Value = (key, value);
 		Assert( !validate || isValidAssertion() );
+		return true;
 	}
 
 	public void MoveFirst( K key )

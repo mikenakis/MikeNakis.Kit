@@ -68,10 +68,12 @@ public class ListDictionary<K, V> : AbstractDictionary<K, V>, IListDictionary<K,
 	public sealed override IReadOnlyList<K> Keys => keys.AsReadOnlyList;
 	public sealed override IReadOnlyList<V> Values => Keys.Select( key => map[key] );
 
-	protected override void Replace( K key, V value )
+	protected override bool Replace( K key, V value )
 	{
-		Assert( map.ContainsKey( key ) );
+		if( !map.ContainsKey( key ) )
+			return false;
 		map[key] = value;
+		return true;
 	}
 
 	public void ReplaceKey( K oldKey, K newKey )

@@ -18,4 +18,9 @@ public sealed class AssertionFailureException : Sys.Exception
 	public AssertionFailureException( string message, Sys.Exception? cause )
 			: base( message, cause )
 	{ }
+
+	/// Constructor
+	public AssertionFailureException( Sys.Exception? cause )
+			: base( null, cause )
+	{ }
 }
