@@ -57,10 +57,7 @@ public abstract class AbstractDictionary<K, V> : AbstractReadOnlyDictionary<K, V
 	public void AddOrReplace( K key, V value )
 	{
 		if( ContainsKey( key ) )
-		{
-			bool ok = Replace( key, value );
-			Assert( ok );
-		}
+			Replace( key, value );
 		else
 			Add( key, value );
 	}
