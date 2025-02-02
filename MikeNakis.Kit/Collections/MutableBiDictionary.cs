@@ -72,28 +72,28 @@ public class MutableBiDictionary<F, S> where F : notnull where S : notnull
 
 	class ReverseDictionary : AbstractDictionary<S, F>
 	{
-		readonly MutableBiDictionary<F, S> biDictionary;
+		readonly MutableBiDictionary<F, S> mutableBiDictionary;
 		internal readonly Dictionary<S, F> Dictionary;
 
-		public ReverseDictionary( MutableBiDictionary<F, S> biDictionary, IEqualityComparer<S>? reverseEqualityComparer = null )
+		public ReverseDictionary( MutableBiDictionary<F, S> mutableBiDictionary, IEqualityComparer<S>? reverseEqualityComparer = null )
 		{
-			this.biDictionary = biDictionary;
+			this.mutableBiDictionary = mutableBiDictionary;
 			Dictionary = new Dictionary<S, F>( reverseEqualityComparer );
 		}
 
-		public override int Count => biDictionary.Count;
+		public override int Count => mutableBiDictionary.Count;
 		public override IEnumerable<S> Keys => Dictionary.Keys;
 		public override IEnumerable<F> Values => Dictionary.Values;
 		public override bool ContainsKey( S key ) => Dictionary.ContainsKey( key );
 		public override bool TryGetValue( S key, out F value ) => Dictionary.TryGetValue( key, out value! );
-		public override void Clear() => biDictionary.Clear();
-		public override void Add( S key, F value ) => biDictionary.add( value, key );
+		public override void Clear() => mutableBiDictionary.Clear();
+		public override void Add( S key, F value ) => mutableBiDictionary.add( value, key );
 
 		public override bool Remove( S second )
 		{
 			if( !Dictionary.TryGetValue( second, out F? other ) )
 				return false;
-			biDictionary.remove( other, second );
+			mutableBiDictionary.remove( other, second );
 			return true;
 		}
 
@@ -103,10 +103,10 @@ public class MutableBiDictionary<F, S> where F : notnull where S : notnull
 				return false;
 			if( Equals( value, existingOther ) )
 				return false;
-			if( biDictionary.forwardDictionary.Dictionary.TryGetValue( value, out S? _ ) )
+			if( mutableBiDictionary.forwardDictionary.Dictionary.TryGetValue( value, out S? _ ) )
 				return false;
-			biDictionary.remove( existingOther, key );
-			biDictionary.add( value, key );
+			mutableBiDictionary.remove( existingOther, key );
+			mutableBiDictionary.add( value, key );
 			return true;
 		}
 	}
