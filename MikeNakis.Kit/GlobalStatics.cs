@@ -2,6 +2,7 @@ namespace MikeNakis.Kit;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using Math = System.Math;
@@ -220,5 +221,10 @@ public static class GlobalStatics
 		{
 			KitHelpers.FailureTesting.Value = false;
 		}
+	}
+
+	public static string S( Sys.FormattableString formattable )
+	{
+		return formattable.ToString( SysGlob.CultureInfo.InvariantCulture );
 	}
 }
