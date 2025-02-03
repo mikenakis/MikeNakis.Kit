@@ -16,6 +16,7 @@ using SysNet = System.Net;
 using SysTasks = System.Threading.Tasks;
 using SysText = System.Text;
 using SysThreading = System.Threading;
+using SysInterop = System.Runtime.InteropServices;
 
 public static class DotNetHelpers
 {
@@ -991,6 +992,13 @@ public static class DotNetHelpers
 #pragma warning disable RS0030 // Do not use banned APIs
 	public static Sys.DateTime GetWallClockTime() => Sys.DateTime.UtcNow;
 #pragma warning restore RS0030 // Do not use banned APIs
+
+	/// CAUTION: returns 1 for char.
+	/// from Stack Overflow: "Size of generic structure" https://stackoverflow.com/a/18167584/773113
+	public static int SizeOf<T>() where T : struct
+	{
+		return SysInterop.Marshal.SizeOf( default( T ) );
+	}
 }
 
 public class ProcessExecutionException : SaneException
