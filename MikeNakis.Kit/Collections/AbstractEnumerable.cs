@@ -1,6 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections;
+using LegacyCollections = System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +11,7 @@ public abstract class AbstractEnumerable<T> : IEnumerable<T>
 	{ }
 
 	public abstract IEnumerator<T> GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	LegacyCollections.IEnumerator LegacyCollections.IEnumerable.GetEnumerator() => GetEnumerator();
 	public override bool Equals( object? other ) => other is IEnumerable<T> kin && Equals( kin );
 	public virtual bool Equals( IEnumerable<T> other ) => this.SequenceEqual( other );
 
