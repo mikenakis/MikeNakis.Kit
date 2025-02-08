@@ -25,11 +25,13 @@ public abstract class LifeGuard : Sys.IDisposable
 	public static LifeGuard Create( int framesToSkip, bool collectStackTrace, string callerFilePath, int callerLineNumber )
 	{
 		Assert( callerFilePath != null );
-		if( !DebugMode )
-			return ProductionLifeGuard.Instance;
+#if DEBUG
 		if( collectStackTrace )
 			return new VerboseDebugLifeGuard( callerFilePath, callerLineNumber, framesToSkip + 1 );
-		return new TerseDebugLifeGuard( callerFilePath, callerLineNumber );
+		if( Identity( true ) )
+			return new TerseDebugLifeGuard( callerFilePath, callerLineNumber );
+#endif
+		return ProductionLifeGuard.Instance;
 	}
 
 	public abstract void Dispose();
@@ -52,9 +54,10 @@ sealed class ProductionLifeGuard : LifeGuard
 	public override string Status => throw Failure(); //never invoke on a release build
 }
 
-abstract class DebugLifeGuard : LifeGuard
+#if DEBUG
+public abstract class DebugLifeGuard : LifeGuard
 {
-	bool alive = true;
+	public bool IsAlive { get; private set; } = true;
 	readonly string callerFilePath;
 	readonly int callerLineNumber;
 	readonly string message;
@@ -68,15 +71,15 @@ abstract class DebugLifeGuard : LifeGuard
 
 	public sealed override void Dispose()
 	{
-		Assert( alive );
-		alive = false;
+		Assert( IsAlive );
+		IsAlive = false;
 		Sys.GC.SuppressFinalize( this );
 	}
 
 	[SysDiag.DebuggerHidden]
 	public sealed override bool IsAliveAssertion()
 	{
-		Assert( alive );
+		Assert( IsAlive );
 		return true;
 	}
 
@@ -88,7 +91,7 @@ abstract class DebugLifeGuard : LifeGuard
 	}
 
 	public override string ToString() => $"{Id( this )} {Status}";
-	public override string Status => alive ? "Alive" : "DISPOSED";
+	public override string Status => IsAlive ? "Alive" : "DISPOSED";
 
 	readonly struct SourceLocation : Sys.IEquatable<SourceLocation>
 	{
@@ -161,3 +164,4 @@ sealed class VerboseDebugLifeGuard : DebugLifeGuard
 		return $"    {sourceInfo}: {method?.DeclaringType}.{method?.Name}()";
 	}
 }
+#endif

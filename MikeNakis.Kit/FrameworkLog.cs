@@ -1,15 +1,9 @@
 namespace MikeNakis.Kit;
 
-using System.Linq;
-using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.Logging;
-using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-using SysReflect = System.Reflection;
-using SysText = System.Text;
 
 public static class Log
 {

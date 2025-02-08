@@ -16,6 +16,8 @@ using SysThreading = System.Threading;
 
 public static class KitHelpers
 {
+	public static readonly SysText.Encoding Latin1Encoding = SysText.Encoding.GetEncoding( "iso-8859-1" );
+
 	static X defaultExtractor<X>( X a ) => a;
 	//static int defaultComparator<T>( T a, T b ) where T : Sys.IComparable<T> => a.CompareTo( b );
 
