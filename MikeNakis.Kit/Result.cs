@@ -49,6 +49,13 @@ public readonly record struct Result<S, F>
 
 	[CodeAnalysis.ExcludeFromCodeCoverage] public override string ToString() => IsSuccess ? $"Success: {success}" : $"Failure: {failure}";
 
+	public S OrThrow()
+	{
+		if( !IsSuccess )
+			throw new AssertionFailureException();
+		return AsSuccess;
+	}
+
 	public S OrThrow( Sys.Func<F, Sys.Exception> exceptionFactory )
 	{
 		if( !IsSuccess )

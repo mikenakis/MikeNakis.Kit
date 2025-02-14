@@ -310,6 +310,19 @@ public static class KitHelpers
 		};
 	}
 
+	public static int RoundUpPowerOf2( int v )
+	{
+		//from http://graphics.stanford.edu/%7Eseander/bithacks.html#RoundUpPowerOf2, also in "Hacker's Delight"
+		v--;
+		v |= v >> 1;
+		v |= v >> 2;
+		v |= v >> 4;
+		v |= v >> 8;
+		v |= v >> 16;
+		v++;
+		return v;
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Legacy IEnumerable
 
