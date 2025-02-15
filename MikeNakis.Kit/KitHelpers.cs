@@ -323,6 +323,25 @@ public static class KitHelpers
 		return v;
 	}
 
+#if false
+using SysInterop = System.Runtime.InteropServices;
+	public static T EnumFromByte<T>( byte byteValue ) where T : struct, Sys.Enum
+	{
+		Sys.Span<byte> byteArray = stackalloc byte[] { byteValue };
+		return SysInterop.MemoryMarshal.Cast<byte, T>( byteArray )[0];
+	}
+
+	public static byte ByteFromEnum<T>( T enumValue ) where T : unmanaged, Sys.Enum
+	{
+		Sys.Span<T> enumArray = stackalloc T[] { enumValue };
+		return SysInterop.MemoryMarshal.Cast<T, byte>( enumArray )[0];
+	}
+#endif
+
+	public static T EnumFromByte<T>( byte byteValue ) where T : struct, Sys.Enum => SysCompiler.Unsafe.BitCast<byte, T>( byteValue );
+
+	public static byte ByteFromEnum<T>( T enumValue ) where T : struct, Sys.Enum => SysCompiler.Unsafe.BitCast<T, byte>( enumValue );
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Legacy IEnumerable
 
