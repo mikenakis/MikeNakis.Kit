@@ -7,7 +7,7 @@ using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]
-public class MutableBiDictionary<F, S> where F : notnull where S : notnull
+public sealed class MutableBiDictionary<F, S> where F : notnull where S : notnull
 {
 	readonly ForwardDictionary forwardDictionary;
 	readonly ReverseDictionary reverseDictionary;
@@ -22,14 +22,14 @@ public class MutableBiDictionary<F, S> where F : notnull where S : notnull
 	public IDictionary<F, S> Forward => forwardDictionary;
 	public IDictionary<S, F> Reverse => reverseDictionary;
 
-	class ReadOnlyBiDictionaryOnMutableBiDictionary( MutableBiDictionary<F, S> mutableBiDictionary ) : BiDictionary<F, S>
+	sealed class ReadOnlyBiDictionaryOnMutableBiDictionary( MutableBiDictionary<F, S> mutableBiDictionary ) : BiDictionary<F, S>
 	{
 		public IReadOnlyDictionary<F, S> Forward => mutableBiDictionary.forwardDictionary;
 		public IReadOnlyDictionary<S, F> Reverse => mutableBiDictionary.reverseDictionary;
 		public int Count => mutableBiDictionary.Count;
 	}
 
-	class ForwardDictionary : AbstractDictionary<F, S>
+	sealed class ForwardDictionary : AbstractDictionary<F, S>
 	{
 		readonly MutableBiDictionary<F, S> mutableBiDictionary;
 		internal readonly Dictionary<F, S> Dictionary;
@@ -70,7 +70,7 @@ public class MutableBiDictionary<F, S> where F : notnull where S : notnull
 		}
 	}
 
-	class ReverseDictionary : AbstractDictionary<S, F>
+	sealed class ReverseDictionary : AbstractDictionary<S, F>
 	{
 		readonly MutableBiDictionary<F, S> mutableBiDictionary;
 		internal readonly Dictionary<S, F> Dictionary;

@@ -15,7 +15,7 @@ public static class MiscellaneousExtensions
 	public static IReadOnlyCollection<T> AsReadOnly<T>( this ICollection<T> self ) => new ReadOnlyCollectionOnCollection<T>( self );
 
 	[SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
-	class ReadOnlyCollectionOnCollection<T> : AbstractReadOnlyCollection<T>
+	sealed class ReadOnlyCollectionOnCollection<T> : AbstractReadOnlyCollection<T>
 	{
 		readonly ICollection<T> collection;
 		public ReadOnlyCollectionOnCollection( ICollection<T> collection ) => this.collection = collection;

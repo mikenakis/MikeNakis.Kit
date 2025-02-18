@@ -12,7 +12,7 @@ public static class DictionaryExtensions
 	public static IReadOnlyDictionary<K, V> AsReadOnly<K, V>( this IDictionary<K, V> self ) where K : notnull => new ReadOnlyDictionaryOnDictionary<K, V>( self );
 
 	[SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
-	class ReadOnlyDictionaryOnDictionary<K, V> : AbstractReadOnlyDictionary<K, V> where K : notnull
+	sealed class ReadOnlyDictionaryOnDictionary<K, V> : AbstractReadOnlyDictionary<K, V> where K : notnull
 	{
 		readonly IDictionary<K, V> dictionary;
 		public ReadOnlyDictionaryOnDictionary( IDictionary<K, V> dictionary ) => this.dictionary = dictionary;

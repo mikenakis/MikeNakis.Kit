@@ -39,7 +39,7 @@ public sealed class DirectoryPath : FileSystemPath
 		return result;
 	}
 
-	public DirectoryPath( string path )
+	DirectoryPath( string path )
 			: base( path )
 	{ }
 
@@ -116,7 +116,7 @@ public sealed class DirectoryPath : FileSystemPath
 		Assert( !SysIoIsPathRooted( pattern ) );
 		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
 		foreach( string s in SysIoGetFiles( Path, pattern ) )
-			yield return new FilePath( s );
+			yield return FilePath.FromAbsolutePath( s );
 	}
 
 	public IEnumerable<DirectoryPath> EnumerateDirectories()
@@ -174,7 +174,7 @@ public sealed class DirectoryPath : FileSystemPath
 		IReadOnlyCollection<SysIo.FileInfo> matchingEntries = getMatchingFiles( pattern ).Collect();
 		if( matchingEntries.IsEmpty() )
 			throw new SysIo.IOException( $"Path not found: {Path}/{pattern}" );
-		return new FilePath( matchingEntries.Single().FullName );
+		return FilePath.FromAbsolutePath( matchingEntries.Single().FullName );
 	}
 
 	public DirectoryPath GetSingleMatchingSubdirectory( string pattern )
@@ -271,7 +271,7 @@ public sealed class DirectoryPath : FileSystemPath
 						break;
 					}
 					case SysIo.FileInfo fileInfo:
-						yield return new FilePath( fileInfo.FullName );
+						yield return FilePath.FromAbsolutePath( fileInfo.FullName );
 						break;
 					default:
 						throw new Sys.ArgumentOutOfRangeException( nameof( fileSystemInfo ) );
@@ -301,7 +301,7 @@ public sealed class DirectoryPath : FileSystemPath
 		enumerationOptions.MatchType = SysIo.MatchType.Simple;
 		SysIo.DirectoryInfo currentDirectoryInfo = new( Path );
 		foreach( SysIo.FileInfo fileInfo in currentDirectoryInfo.EnumerateFiles( pattern, enumerationOptions ) )
-			yield return new FilePath( fileInfo.FullName );
+			yield return FilePath.FromAbsolutePath( fileInfo.FullName );
 	}
 
 	public bool ContainsDirectory( string directoryName )

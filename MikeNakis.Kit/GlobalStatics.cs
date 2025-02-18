@@ -2,7 +2,6 @@ namespace MikeNakis.Kit;
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using Math = System.Math;

@@ -76,17 +76,17 @@ public sealed class FilePath : FileSystemPath
 		return new FilePath( fullPath );
 	}
 
-	public FilePath( string path )
+	FilePath( string path )
 			: base( path )
 	{
 		Assert( !SysIoEndsInDirectorySeparator( path ) );
 	}
 
 	public string Extension => SysIoGetExtension( Path );
-	public DirectoryPath GetDirectoryPath() => new( SysIoGetDirectoryName( Path )! );
+	public DirectoryPath GetDirectoryPath() => DirectoryPath.FromAbsolutePath( SysIoGetDirectoryName( Path )! );
 	public string GetFileNameAndExtension() => NotNull( SysIoGetFileName( Path ) );
 	public string GetFileNameWithoutExtension() => NotNull( SysIoGetFileNameWithoutExtension( Path ) );
-	public DirectoryPath Directory => new( NotNull( SysIoGetParent( Path )! ).FullName );
+	public DirectoryPath Directory => DirectoryPath.FromAbsolutePath( NotNull( SysIoGetParent( Path )! ).FullName );
 	public SysIo.FileInfo FileInfo => new( Path );
 	public bool StartsWith( DirectoryPath other ) => Path.StartsWithIgnoreCase( other.Path );
 	public bool EndsWith( string suffix ) => Path.EndsWithIgnoreCase( suffix );
