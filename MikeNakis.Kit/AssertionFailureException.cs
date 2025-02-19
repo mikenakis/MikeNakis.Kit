@@ -7,6 +7,7 @@ public sealed class AssertionFailureException : Sys.Exception
 {
 	/// Constructor
 	public AssertionFailureException()
+			: base( "" )
 	{ }
 
 	/// Constructor
@@ -21,6 +22,6 @@ public sealed class AssertionFailureException : Sys.Exception
 
 	/// Constructor
 	public AssertionFailureException( Sys.Exception? cause )
-			: base( null, cause )
+			: base( "", cause )
 	{ }
 }

@@ -530,54 +530,6 @@ using SysInterop = System.Runtime.InteropServices;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// IDictionary
-
-	public static V Extract<K, V>( IDictionary<K, V> self, K key )
-	{
-		V value = self[key];
-		self.DoRemove( key );
-		return value;
-	}
-
-	public static V? TryExtract<K, V>( IDictionary<K, V> self, K key ) where K : notnull where V : class
-	{
-		if( self.TryGetValue( key, out V? value ) )
-			self.DoRemove( key );
-		return value;
-	}
-
-	//PEARL: the remove-item-from-dictionary method of DotNet is not really a "remove" method, it is actually a "try-remove" method, because it returns a
-	//boolean to indicate success or failure. So, if we want a real "remove" function which will actually fail on failure, (duh!) we have to introduce it
-	//ourselves.  Unfortunately, since the name `Remove` is taken, we have to give the new function a different name, (I chose `DoRemove`,) so we still
-	//have to remember to invoke `DoRemove()` instead of `Remove()`.
-	public static void DoRemove<K, V>( IDictionary<K, V> self, K key )
-	{
-		bool ok = self.Remove( key );
-		Assert( ok );
-	}
-
-	public static V ComputeIfAbsent<K, V>( IDictionary<K, V> self, K key, Sys.Func<K, V> factory )
-	{
-		if( self.TryGetValue( key, out V? existingValue ) )
-			return existingValue;
-		V newValue = factory.Invoke( key );
-		self.Add( key, newValue );
-		return newValue;
-	}
-
-	public static V? TryGet<V, K>( IReadOnlyDictionary<K, V> self, K key ) where K : notnull where V : notnull
-	{
-		return self.GetValueOrDefault( key );
-	}
-
-	public static V? TryGet<V, K>( IDictionary<K, V> self, K key ) where K : notnull where V : notnull
-	{
-		if( self.TryGetValue( key, out V? value ) )
-			return value;
-		return default;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Exception
 
 	public static IEnumerable<string> BuildMediumExceptionMessage( string prefix, Sys.Exception exception )

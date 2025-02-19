@@ -2,7 +2,6 @@ namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
 using System.Linq;
-using MikeNakis.Kit;
 using static MikeNakis.Kit.GlobalStatics;
 using SysDiag = System.Diagnostics;
 
@@ -18,9 +17,11 @@ public static class OrderedDictionary
 }
 
 /// An implementation of <see cref="IOrderedDictionary{K,V}"/>.
-/// Based on https://stackoverflow.com/a/3719378/773113
+/// Original inspiration from https://stackoverflow.com/a/3719378/773113
+#if DEBUG
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]
-[SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]
+[SysDiag.DebuggerTypeProxy( typeof( OrderedDictionaryDebugView<,> ) )]
+#endif
 public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDictionary<K, V> where K : notnull
 {
 	readonly Dictionary<K, LinkedListNode<(K, V)>> map;
@@ -42,13 +43,13 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 	{
 		map = new( capacity );
 		foreach( KeyValuePair<K, V> keyValuePair in keyValuePairs )
-			add( keyValuePair.Key, keyValuePair.Value );
+			addLast( keyValuePair.Key, keyValuePair.Value );
 	}
 
-	static bool validate => False;
+	const bool validate = false;
 	public override int Count => list.Count;
 	public override bool ContainsKey( K key ) => map.ContainsKey( key );
-	public override void Add( K key, V value ) => add( key, value );
+	public override void Add( K key, V value ) => addLast( key, value );
 	public override IReadOnlyOrderedSet<K> Keys => new KeyCollection( this );
 	public override IReadOnlyCollection<V> Values => new MakeshiftReadOnlyCollection<V>( list.Select( node => node.value ), () => list.Count );
 	public K? FirstKey => keyOrDefault( list.First );
@@ -56,6 +57,46 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 	public K? LastKey => keyOrDefault( list.Last );
 	public K? PreviousKey( K key ) => keyOrDefault( map[key].Previous );
 	static K? keyOrDefault( LinkedListNode<(K key, V value)>? node ) => node == null ? default : node.Value.key;
+
+	public void AddBefore( K referenceKey, K key, V value )
+	{
+		LinkedListNode<(K, V)> newNode = new( (key, value) );
+		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
+		map.Add( key, newNode );
+		list.AddBefore( referenceNode, newNode );
+		Assert( !validate || isValidAssertion() );
+	}
+
+	public void AddAfter( K referenceKey, K key, V value )
+	{
+		LinkedListNode<(K, V)> newNode = new( (key, value) );
+		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
+		map.Add( key, newNode );
+		list.AddAfter( referenceNode, newNode );
+		Assert( !validate || isValidAssertion() );
+	}
+
+	public void MoveBefore( K referenceKey, K key )
+	{
+		if( referenceKey.Equals( key ) )
+			return;
+		LinkedListNode<(K, V)> node = map[key];
+		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
+		list.Remove( node );
+		list.AddBefore( referenceNode, node );
+		Assert( !validate || isValidAssertion() );
+	}
+
+	public void MoveAfter( K referenceKey, K key )
+	{
+		if( referenceKey.Equals( key ) )
+			return;
+		LinkedListNode<(K, V)> node = map[key];
+		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
+		list.Remove( node );
+		list.AddAfter( referenceNode, node );
+		Assert( !validate || isValidAssertion() );
+	}
 
 	public override bool Remove( K key )
 	{
@@ -117,11 +158,11 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 		map.Add( newKey, node );
 	}
 
-	void add( K key, V value )
+	void addLast( K key, V value )
 	{
-		LinkedListNode<(K, V)> node = new( (key, value) );
-		map.Add( key, node );
-		list.AddLast( node );
+		LinkedListNode<(K, V)> newNode = new( (key, value) );
+		map.Add( key, newNode );
+		list.AddLast( newNode );
 		Assert( !validate || isValidAssertion() );
 	}
 
@@ -155,3 +196,53 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 		public K? Previous( K key ) => keyOrDefault( orderedDictionary.map[key].Previous );
 	}
 }
+
+#if DEBUG
+sealed class OrderedDictionaryDebugView<K, V> where K : notnull
+{
+	[SysDiag.DebuggerBrowsable( SysDiag.DebuggerBrowsableState.RootHidden )]
+#pragma warning disable CA1819 // Properties should not return arrays
+	//This property will be invoked by the debugger.
+	public object[] Items => getDetails();
+#pragma warning restore CA1819 // Properties should not return arrays
+
+	object[] getDetails()
+	{
+		return orderedDictionary.Select( ( pair, index ) => new OrderedDictionaryDebugViewDetail( index, pair.Key, pair.Value ) ).ToArraySeriously();
+	}
+
+	readonly OrderedDictionary<K, V> orderedDictionary;
+
+	public OrderedDictionaryDebugView( OrderedDictionary<K, V> orderedDictionary )
+	{
+		this.orderedDictionary = orderedDictionary;
+	}
+}
+
+[SysDiag.DebuggerDisplay( value: "{ToString(),nq}", Name = "{GetKey(),nq}", Type = "{GetTypeString(),nq}" )]
+sealed class OrderedDictionaryDebugViewDetail
+{
+	[SysDiag.DebuggerBrowsable( SysDiag.DebuggerBrowsableState.Never )] readonly int index;
+	public object Key { get; }
+	public object? Value { get; }
+
+	public OrderedDictionaryDebugViewDetail( int index, object key, object? value )
+	{
+		this.index = index;
+		Key = key;
+		Value = value;
+	}
+
+	public string GetKey()
+	{
+		return $"#{index} [{Key}]";
+	}
+
+	public string GetTypeString() => Value?.GetType().FullName ?? "";
+
+	public override string ToString()
+	{
+		return Value == null ? "null" : Value.ToString() ?? "<null returned by ToString()>";
+	}
+}
+#endif

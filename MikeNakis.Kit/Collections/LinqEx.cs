@@ -3,6 +3,7 @@ namespace MikeNakis.Kit.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MikeNakis.Kit;
+using MikeNakis.Kit.Extensions;
 using static System.MemoryExtensions;
 using static MikeNakis.Kit.GlobalStatics;
 using LegacyCollections = System.Collections;
@@ -139,27 +140,28 @@ public static class LinqEx
 	public static IEnumerable<T> Concat<T>( this IEnumerable<T> self, params T[] other ) => KitHelpers.Concat( self, other );
 	public static IEnumerable<T> LegacyAsEnumerable<T>( this LegacyCollections.IEnumerable self ) => KitHelpers.LegacyAsEnumerable<T>( self );
 	public static T ExtractAt<T>( this IList<T> self, int index ) => KitHelpers.ExtractAt( self, index );
-	public static V Extract<K, V>( this IDictionary<K, V> self, K key ) => KitHelpers.Extract( self, key );
-	public static V? TryExtract<K, V>( this IDictionary<K, V> self, K key ) where K : notnull where V : class => KitHelpers.TryExtract( self, key );
+	//public static V Extract<K, V>( this IDictionary<K, V> self, K key ) => KitHelpers.Extract( self, key );
+	//public static V? TryExtract<K, V>( this IDictionary<K, V> self, K key ) where K : notnull where V : class => KitHelpers.TryExtract( self, key );
 	public static void DoAdd<T>( this ISet<T> self, T element ) => KitHelpers.DoAdd( self, element );
 	public static void DoRemove<T>( this ICollection<T> self, T element ) => KitHelpers.DoRemove( self, element );
-	public static void DoRemove<K, V>( this IDictionary<K, V> self, K key ) => KitHelpers.DoRemove( self, key );
+
+	//PEARL: the remove-item-from-dictionary method of DotNet is not really a "remove" method, it is actually a
+	//"try-remove" method, because it does not throw if the key is not found; instead, it returns a boolean to indicate
+	//success or failure. So, if we want a real "remove" function which will actually fail on failure, (duh!) we have to
+	//introduce it ourselves.  Unfortunately, the name `Remove` is taken, so we have to give the new function a
+	//different name.
+	public static void DoRemove<K, V>( this IDictionary<K, V> self, K key )
+	{
+		bool ok = self.Remove( key );
+		Assert( ok );
+	}
+
 	public static void Move<T>( this IList<T> self, int oldIndex, int newIndex ) => KitHelpers.Move( self, oldIndex, newIndex );
-	public static V? TryGet<K, V>( this IDictionary<K, V> self, K key ) where K : notnull where V : notnull => KitHelpers.TryGet( self, key );
+	//public static V? TryGet<K, V>( this IDictionary<K, V> self, K key ) where K : notnull where V : notnull => KitHelpers.TryGet( self, key );
 	public static bool ContainsAll<T>( this ICollection<T> self, IEnumerable<T> items ) => items.All( self.Contains );
 	public static bool ContainsAny<T>( this ICollection<T> self, IEnumerable<T> items ) => items.Any( self.Contains );
 	public static bool IsEmpty<T>( this IReadOnlyCollection<T> self ) => self.Count == 0;
 	public static bool IsEmpty<T>( this IEnumerable<T> self ) => !self.Any();
-
-	public static bool AddOrReplace<K, V>( this IDictionary<K, V> self, K key, V value )
-	{
-		if( !self.TryAdd( key, value ) )
-		{
-			self[key] = value;
-			return false;
-		}
-		return true;
-	}
 
 	public static IEnumerable<R> SelectWhereNonNull<T, R>( this IEnumerable<T> source, Sys.Func<T, R?> selector ) where R : notnull
 	{

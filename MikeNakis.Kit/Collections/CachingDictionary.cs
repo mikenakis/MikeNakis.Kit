@@ -25,17 +25,40 @@ public class CachingDictionary<K, V> : OrderedDictionary<K, V> where K : notnull
 	public override void Add( K key, V val )
 	{
 		base.Add( key, val );
-		while( Count >= capacity )
-			removeOldest();
+		evictExcessKeys();
 	}
 
-	void removeOldest()
+	public new void AddBefore( K referenceKey, K key, V value )
 	{
-		Assert( Count > 0 );
-		K? key = FirstKey;
-		if( key is null )
-			return;
-		bool ok = Remove( key );
-		Assert( ok );
+		base.AddBefore( referenceKey, key, value );
+		evictExcessKeys();
+	}
+
+	public new void AddAfter( K referenceKey, K key, V value )
+	{
+		base.AddAfter( referenceKey, key, value );
+		evictExcessKeys();
+	}
+
+	public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+	{
+		//We have to override `GetEnumerator()` to avoid shuffling our own keys while trying
+		//to enumerate, otherwise we get concurrent modification exception.
+		foreach( K key in Keys )
+		{
+			bool ok = base.TryGetValue( key, out V value );
+			Assert( ok );
+			yield return new KeyValuePair<K, V>( key, value );
+		}
+	}
+
+	void evictExcessKeys()
+	{
+		while( Count > capacity )
+		{
+			K? key = FirstKey;
+			Assert( key is not null );
+			this.DoRemove( key );
+		}
 	}
 }
