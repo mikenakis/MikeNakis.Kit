@@ -63,7 +63,7 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 		LinkedListNode<(K, V)> newNode = new( (key, value) );
 		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
 		map.Add( key, newNode );
-		list.AddBefore( referenceNode, newNode );
+		referenceNode.List!.AddBefore( referenceNode, newNode );
 		Assert( !validate || isValidAssertion() );
 	}
 
@@ -72,7 +72,7 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 		LinkedListNode<(K, V)> newNode = new( (key, value) );
 		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
 		map.Add( key, newNode );
-		list.AddAfter( referenceNode, newNode );
+		referenceNode.List!.AddAfter( referenceNode, newNode );
 		Assert( !validate || isValidAssertion() );
 	}
 
@@ -82,8 +82,8 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 			return;
 		LinkedListNode<(K, V)> node = map[key];
 		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
-		list.Remove( node );
-		list.AddBefore( referenceNode, node );
+		node.List!.Remove( node );
+		referenceNode.List!.AddBefore( referenceNode, node );
 		Assert( !validate || isValidAssertion() );
 	}
 
@@ -93,8 +93,8 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 			return;
 		LinkedListNode<(K, V)> node = map[key];
 		LinkedListNode<(K, V)> referenceNode = map[referenceKey];
-		list.Remove( node );
-		list.AddAfter( referenceNode, node );
+		node.List!.Remove( node );
+		referenceNode.List!.AddAfter( referenceNode, node );
 		Assert( !validate || isValidAssertion() );
 	}
 
@@ -104,7 +104,7 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 			return false;
 		Assert( Equals( node.Value.key, key ) );
 		map.DoRemove( key );
-		list.Remove( node );
+		node.List!.Remove( node );
 		Assert( !validate || isValidAssertion() );
 		return true;
 	}
@@ -135,7 +135,7 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 	{
 		LinkedListNode<(K key, V value)> node = map[key];
 		Assert( Equals( node.Value.key, key ) );
-		list.Remove( node );
+		node.List!.Remove( node );
 		list.AddFirst( node );
 		Assert( !validate || isValidAssertion() );
 	}
@@ -144,7 +144,7 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 	{
 		LinkedListNode<(K key, V value)> node = map[key];
 		Assert( Equals( node.Value.key, key ) );
-		list.Remove( node );
+		node.List!.Remove( node );
 		list.AddLast( node );
 		Assert( !validate || isValidAssertion() );
 	}
@@ -189,11 +189,11 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 
 		public override IEnumerator<K> GetEnumerator() => orderedDictionary.list.Select( node => node.key ).GetEnumerator();
 		public override bool Contains( K item ) => orderedDictionary.ContainsKey( item );
-		public override int Count => orderedDictionary.list.Count;
-		public K? First => keyOrDefault( orderedDictionary.list.First );
-		public K? Next( K key ) => keyOrDefault( orderedDictionary.map[key].Next );
-		public K? Last => keyOrDefault( orderedDictionary.list.Last );
-		public K? Previous( K key ) => keyOrDefault( orderedDictionary.map[key].Previous );
+		public override int Count => orderedDictionary.Count;
+		public K? First => orderedDictionary.FirstKey;
+		public K? Next( K key ) => orderedDictionary.NextKey( key );
+		public K? Last => orderedDictionary.LastKey;
+		public K? Previous( K key ) => orderedDictionary.PreviousKey( key );
 	}
 }
 
@@ -208,7 +208,8 @@ sealed class OrderedDictionaryDebugView<K, V> where K : notnull
 
 	object[] getDetails()
 	{
-		return orderedDictionary.Select( ( pair, index ) => new OrderedDictionaryDebugViewDetail( index, pair.Key, pair.Value ) ).ToArraySeriously();
+		int index = 0;
+		return orderedDictionary.Select( pair => new OrderedDictionaryDebugViewDetail( index++, pair.Key, pair.Value ) ).ToArraySeriously();
 	}
 
 	readonly OrderedDictionary<K, V> orderedDictionary;
@@ -233,16 +234,10 @@ sealed class OrderedDictionaryDebugViewDetail
 		Value = value;
 	}
 
-	public string GetKey()
-	{
-		return $"#{index} [{Key}]";
-	}
+	public string GetKey() => $"#{index} [{Key}]";
 
 	public string GetTypeString() => Value?.GetType().FullName ?? "";
 
-	public override string ToString()
-	{
-		return Value == null ? "null" : Value.ToString() ?? "<null returned by ToString()>";
-	}
+	public override string ToString() => Value == null ? "null" : Value.ToString() ?? "";
 }
 #endif
