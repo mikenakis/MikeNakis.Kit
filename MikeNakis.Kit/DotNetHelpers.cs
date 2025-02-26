@@ -13,7 +13,6 @@ using SysDiag = System.Diagnostics;
 using SysGlob = System.Globalization;
 using SysIo = System.IO;
 using SysNet = System.Net;
-using SysTasks = System.Threading.Tasks;
 using SysText = System.Text;
 using SysThreading = System.Threading;
 using SysInterop = System.Runtime.InteropServices;
@@ -35,12 +34,6 @@ public static class DotNetHelpers
 	{
 		SysDiag.Process currentProcess = SysDiag.Process.GetCurrentProcess();
 		return currentProcess.PrivateMemorySize64;
-	}
-
-	[SysDiag.Conditional( "DEBUG" )]
-	public static void PerformGarbageCollectionAsync()
-	{
-		SysTasks.Task.Run( () => PerformGarbageCollectionAndWait() );
 	}
 
 	static object garbageCollectedObject = new();
@@ -68,15 +61,14 @@ public static class DotNetHelpers
 				numberOfVainCollectionsInARow = 0;
 			SysThreading.Thread.Yield();
 		}
-		Log.Debug( $"Garbage collection: a total of {message( currentMemory - startMemory )}." );
+		Log.Debug( $"Garbage collection: {message( currentMemory - startMemory )}." );
 		return;
 
 		static string message( long memoryDifference ) //
 			=> memoryDifference switch
 			{
-				> 0 => $"{memoryDifference:N0} bytes lost",
-				< 0 => $"{-memoryDifference:N0} bytes reclaimed",
-				_ => "no change"
+				<= 0 => $"{-memoryDifference:N0} bytes reclaimed",
+				_ => $"{memoryDifference:N0} bytes lost"
 			};
 
 		static void performGarbageCollection()
@@ -87,7 +79,7 @@ public static class DotNetHelpers
 				Sys.GC.Collect( Sys.GC.MaxGeneration, Sys.GCCollectionMode.Aggressive, blocking: true, compacting: true );
 				Sys.GC.WaitForPendingFinalizers();
 				//Sys.GC.Collect( Sys.GC.MaxGeneration, Sys.GCCollectionMode.Aggressive, blocking: true );
-				Assert( !reference.IsAlive );
+				Assert( !reference.IsAlive ); //this has been observed to fail on a rare occasion
 			} while( reference.IsAlive );
 		}
 
