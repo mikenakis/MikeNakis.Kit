@@ -116,4 +116,29 @@ public sealed class T101_KitTests
 			}
 		}
 	}
+
+	[VSTesting.TestMethod]
+	public void T07_IsPrime_Works()
+	{
+		bool[] primeFlags = new bool[10000];
+		sieveOfEratosthenes( primeFlags );
+		for( int i = 0; i < primeFlags.Length; i++ )
+		{
+			bool isPrime = KitHelpers.IsPrime( i );
+			Assert( isPrime == primeFlags[i] );
+		}
+
+		//from https://stackoverflow.com/a/1043247/773113
+		static void sieveOfEratosthenes( bool[] primeFlags )
+		{
+			primeFlags[0] = false;
+			primeFlags[1] = false;
+			for( int i = 2; i < primeFlags.Length; i++ )
+				primeFlags[i] = true;
+			for( int i = 0; i * i < primeFlags.Length; i++ )
+				if( primeFlags[i] )
+					for( int j = i * i; j < primeFlags.Length; j += i )
+						primeFlags[j] = false;
+		}
+	}
 }

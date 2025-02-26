@@ -746,4 +746,23 @@ using SysInterop = System.Runtime.InteropServices;
 	public static T OrThrow<T>( this T? self, Sys.Func<Sys.Exception> exceptionFactory ) where T : class => self ?? throw exceptionFactory.Invoke();
 	public static T OrThrow<T>( this T? self ) where T : struct => self ?? throw Failure();
 	public static T OrThrow<T>( this T? self, Sys.Func<Sys.Exception> exceptionFactory ) where T : struct => self ?? throw exceptionFactory.Invoke();
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Math
+
+	// From https://stackoverflow.com/a/44203452/773113, with a few improvements
+	public static bool IsPrime( long number )
+	{
+		if( number <= 1 )
+			return false;
+		if( number is 2 or 3 or 5 )
+			return true;
+		if( number % 2 == 0 || number % 3 == 0 || number % 5 == 0 )
+			return false;
+		long boundary = (long)Sys.Math.Sqrt( number );
+		for( long i = 6; i <= boundary; i += 6 )
+			if( number % (i + 1) == 0 || number % (i + 5) == 0 )
+				return false;
+		return true;
+	}
 }
