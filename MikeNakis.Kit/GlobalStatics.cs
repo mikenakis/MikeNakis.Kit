@@ -197,11 +197,11 @@ public static class GlobalStatics
 	public static IReadOnlyCollection<T> ReadOnlyCollectionOf<T>( T element1, T element2 ) => ReadOnlyListOf( element1, element2 );
 	public static IReadOnlyCollection<T> ReadOnlyCollectionOf<T>( T element1, T element2, T element3 ) => ReadOnlyListOf( element1, element2, element3 );
 	public static IReadOnlyCollection<T> ReadOnlyCollectionOf<T>( params T[] elements ) => ReadOnlyListOf( elements );
-	public static IReadOnlyList<T> ReadOnlyListOf<T>() => Series.Of<T>().AsReadOnlyList();
-	public static IReadOnlyList<T> ReadOnlyListOf<T>( T element ) => Series.Of( element ).AsReadOnlyList();
-	public static IReadOnlyList<T> ReadOnlyListOf<T>( T element1, T element2 ) => Series.Of( element1, element2 ).AsReadOnlyList();
-	public static IReadOnlyList<T> ReadOnlyListOf<T>( T element1, T element2, T element3 ) => Series.Of( element1, element2, element3 ).AsReadOnlyList();
-	public static IReadOnlyList<T> ReadOnlyListOf<T>( params T[] elements ) => Series.Of( elements ).AsReadOnlyList();
+	public static IReadOnlyList<T> ReadOnlyListOf<T>() => ArrayWrapper.Of<T>();
+	public static IReadOnlyList<T> ReadOnlyListOf<T>( T element ) => ArrayWrapper.Of( element );
+	public static IReadOnlyList<T> ReadOnlyListOf<T>( T element1, T element2 ) => ArrayWrapper.Of( element1, element2 );
+	public static IReadOnlyList<T> ReadOnlyListOf<T>( T element1, T element2, T element3 ) => ArrayWrapper.Of( element1, element2, element3 );
+	public static IReadOnlyList<T> ReadOnlyListOf<T>( params T[] elements ) => ArrayWrapper.Of( elements );
 
 	public static Sys.Exception? TryCatch( Sys.Action procedure )
 	{

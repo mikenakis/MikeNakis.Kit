@@ -126,7 +126,7 @@ public static class LinqEx
 		int comparison( E a, E b ) => comparator.Invoke( extractor.Invoke( a ), extractor.Invoke( b ) ) * multiplier;
 	}
 
-	public static IReadOnlyList<T> Collect<T>( this IReadOnlyList<T> self ) => new Series<T>( self ).AsReadOnlyList();
+	public static IReadOnlyList<T> Collect<T>( this IReadOnlyList<T> self ) => new ArrayWrapper<T>( self );
 
 #pragma warning disable RS0030 // RS0030: "Do not use banned APIs"
 	public static IReadOnlyList<T> Collect<T>( this IEnumerable<T> self ) => ReadOnlyListOf( self.ToArray() );

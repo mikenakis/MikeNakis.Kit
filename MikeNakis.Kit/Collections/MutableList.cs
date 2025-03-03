@@ -77,7 +77,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 		return other switch
 		{
 			MutableList<T> mutableList => Equals( mutableList ),
-			Series<T> series => Equals( series ),
+			ArrayWrapper<T> arrayWrapper => Equals( arrayWrapper ),
 			IReadOnlyList<T> readOnlyList => Equals( readOnlyList ),
 			IEnumerable<T> enumerable => Equals( enumerable ),
 			_ => false
@@ -96,7 +96,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 		return true;
 	}
 
-	public bool Equals( Series<T> other )
+	public bool Equals( ArrayWrapper<T> other )
 	{
 		int size = Count;
 		if( size != other.Count )
@@ -492,7 +492,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 	// 			}
 	// 			break;
 	// 		}
-	// 		case Series<T> series:
+	// 		case ArrayWrapper<T> series:
 	// 		{
 	// 			int count = series.Count;
 	// 			if( count > 0 )
@@ -672,11 +672,11 @@ public sealed class MutableList<T> : IEnumerable<T>
 		public override T this[int index] => list[index];
 	}
 
-	public Series<T> Freeze()
+	public ArrayWrapper<T> Freeze()
 	{
 		Assert( !IsFrozen );
 		IsFrozen = true;
-		return new Series<T>( array, 0, Count );
+		return new ArrayWrapper<T>( array, 0, Count );
 	}
 
 	public void TrimExcess()
