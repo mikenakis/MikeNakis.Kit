@@ -8,39 +8,39 @@ using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;
 
-public static class Series
+public static class ArrayWrapper
 {
-	public static Series<T> Of<T>() => new();
-	public static Series<T> Of<T>( T item ) => new( new[] { item } );
-	public static Series<T> Of<T>( T item1, T item2 ) => new( new[] { item1, item2 } );
-	public static Series<T> Of<T>( T item1, T item2, T item3 ) => new( new[] { item1, item2, item3 } );
-	public static Series<T> Of<T>( params T[] items ) => new( items );
+	public static ArrayWrapper<T> Of<T>() => new();
+	public static ArrayWrapper<T> Of<T>( T item ) => new( new[] { item } );
+	public static ArrayWrapper<T> Of<T>( T item1, T item2 ) => new( new[] { item1, item2 } );
+	public static ArrayWrapper<T> Of<T>( T item1, T item2, T item3 ) => new( new[] { item1, item2, item3 } );
+	public static ArrayWrapper<T> Of<T>( params T[] items ) => new( items );
 }
 
 ///<summary>An immutable wrapper of <c>T[]</c> which properly implements <see cref="object.Equals(object?)"/> and <see cref="object.GetHashCode()"/>.</summary>
 [SysDiag.DebuggerDisplay( "Length = {" + nameof( size ) + "}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]
-public readonly struct Series<T> : IEnumerable<T>, Sys.IEquatable<Series<T>>
+public readonly struct ArrayWrapper<T> : IEnumerable<T>, Sys.IEquatable<ArrayWrapper<T>>
 {
-	public static bool operator ==( Series<T> left, Series<T> right ) => left.Equals( right );
-	public static bool operator !=( Series<T> left, Series<T> right ) => !left.Equals( right );
-	public static Series<T> Empty => new();
+	public static bool operator ==( ArrayWrapper<T> left, ArrayWrapper<T> right ) => left.Equals( right );
+	public static bool operator !=( ArrayWrapper<T> left, ArrayWrapper<T> right ) => !left.Equals( right );
+	public static ArrayWrapper<T> Empty => new();
 
 	readonly T[] array;
 	readonly int start;
 	readonly int size;
 
-	public Series( T[] array )
+	public ArrayWrapper( T[] array )
 			: this( array, 0, array.Length )
 	{ }
 
-	public Series( IReadOnlyList<T> readOnlyList )
+	public ArrayWrapper( IReadOnlyList<T> readOnlyList )
 			: this( new T[readOnlyList.Count], 0, readOnlyList.Count )
 	{
 		readOnlyList.CopyTo( array, 0 );
 	}
 
-	public Series( T[] array, int start, int size )
+	public ArrayWrapper( T[] array, int start, int size )
 	{
 		Assert( (uint)start <= (uint)array.Length && (uint)size <= (uint)(array.Length - start) );
 		this.array = array;
@@ -83,13 +83,13 @@ public readonly struct Series<T> : IEnumerable<T>, Sys.IEquatable<Series<T>>
 	{
 		return other switch
 		{
-			Series<T> series => Equals( series ),
+			ArrayWrapper<T> arrayWrapper => Equals( arrayWrapper ),
 			IEnumerable<T> enumerable => Equals( enumerable ),
 			_ => false
 		};
 	}
 
-	public bool Equals( Series<T> other )
+	public bool Equals( ArrayWrapper<T> other )
 	{
 		EqualityComparer<T> equalityComparer = EqualityComparer<T>.Default;
 		if( size != other.size )
@@ -196,13 +196,13 @@ public readonly struct Series<T> : IEnumerable<T>, Sys.IEquatable<Series<T>>
 		{
 			return other switch
 			{
-				Series<T> series => equals( series ),
+				ArrayWrapper<T> arrayWrapper => equals( arrayWrapper ),
 				IEnumerable<T> enumerable => Equals( enumerable ),
 				_ => false
 			};
 		}
 
-		bool equals( Series<T> other )
+		bool equals( ArrayWrapper<T> other )
 		{
 			EqualityComparer<T> equalityComparer = EqualityComparer<T>.Default;
 			if( size != other.size )
