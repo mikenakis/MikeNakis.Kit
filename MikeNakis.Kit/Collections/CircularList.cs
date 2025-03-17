@@ -3,6 +3,7 @@ namespace MikeNakis.Kit.Collections;
 using Sys = System;
 using System.Collections;
 using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
 
 /// <summary>
 /// A double-ended queue implements IList interface.
@@ -12,6 +13,7 @@ using SysCompiler = System.Runtime.CompilerServices;
 /// O(1) Insert/RemoveAt for index 0 and n-1
 /// Originally from https://github.com/ewgdg/circular-list/blob/main/CircularList/CircularList.cs
 /// </remarks>
+[SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public sealed class CircularList<T> : IList<T>
 {
 	T[] items;
@@ -226,6 +228,8 @@ public sealed class CircularList<T> : IList<T>
 			tailIndex = decreaseInternalIndex( tailIndex );
 		}
 	}
+
+	public override string ToString() => $"{Count} items";
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
