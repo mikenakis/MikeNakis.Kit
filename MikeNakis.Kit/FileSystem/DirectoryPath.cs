@@ -168,12 +168,14 @@ public sealed class DirectoryPath : FileSystemPath
 				yield return directoryInfo;
 	}
 
-	public FilePath GetSingleMatchingFile( string pattern )
+	public FilePath GetSingleMatchingFile( string pattern ) => TryGetSingleMatchingFile( pattern ) ?? throw new SysIo.IOException( $"No file found matching {pattern} in {Path}" );
+
+	public FilePath? TryGetSingleMatchingFile( string pattern )
 	{
 		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
 		IReadOnlyCollection<SysIo.FileInfo> matchingEntries = getMatchingFiles( pattern ).Collect();
 		if( matchingEntries.IsEmpty() )
-			throw new SysIo.IOException( $"Path not found: {Path}/{pattern}" );
+			return null;
 		return FilePath.FromAbsolutePath( matchingEntries.Single().FullName );
 	}
 
