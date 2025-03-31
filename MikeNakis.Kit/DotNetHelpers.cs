@@ -38,9 +38,14 @@ public static class DotNetHelpers
 
 	static object garbageCollectedObject = new();
 
+#pragma warning disable RS0030 // Do not use banned APIs
+	static Sys.DateTime currentTime() => Sys.DateTime.Now;
+#pragma warning restore RS0030 // Do not use banned APIs
+
 	[SysDiag.Conditional( "DEBUG" )]
 	public static void PerformGarbageCollectionAndWait()
 	{
+		Sys.DateTime startTime = currentTime();
 		int numberOfVainCollectionsInARow = 0;
 		long startMemory = GetProcessPrivateMemory();
 		long currentMemory = startMemory;
@@ -49,19 +54,19 @@ public static class DotNetHelpers
 			long previousMemory = currentMemory;
 			performGarbageCollection();
 			currentMemory = GetProcessPrivateMemory();
-			long memoryDifference = currentMemory - previousMemory;
-			bool vain = memoryDifference >= 0;
+			bool vain = currentMemory >= previousMemory;
 			if( vain )
 			{
 				numberOfVainCollectionsInARow++;
-				if( numberOfVainCollectionsInARow > 100 )
+				if( numberOfVainCollectionsInARow > 3 )
 					break;
 			}
 			else
 				numberOfVainCollectionsInARow = 0;
-			SysThreading.Thread.Yield();
+			SysThreading.Thread.Sleep( 100 );
 		}
-		Log.Debug( $"Garbage collection: {message( currentMemory - startMemory )}." );
+		Sys.TimeSpan timeSpan = currentTime() - startTime;
+		Log.Debug( $"Garbage collection: {message( currentMemory - startMemory )} in {timeSpan.TotalMilliseconds} ms." );
 		return;
 
 		static string message( long memoryDifference ) //
@@ -87,13 +92,9 @@ public static class DotNetHelpers
 		// anchors `new object()` to the executing method's stack frame even though no local variable is declared.
 		static Sys.WeakReference createWeakReference()
 		{
-			if( True )
-			{
-				object obj = garbageCollectedObject;
-				garbageCollectedObject = new object();
-				return new Sys.WeakReference( obj );
-			}
-			return new Sys.WeakReference( new object() );
+			object obj = garbageCollectedObject;
+			garbageCollectedObject = new object();
+			return new Sys.WeakReference( obj );
 		}
 	}
 
@@ -660,6 +661,7 @@ public static class DotNetHelpers
 
 	public static bool NamedPipeServerIsListening( string serverName, string pipeName )
 	{
+		//PEARL: this magical incantation will actually try to connect to the server and then immediately disconnect!
 #pragma warning disable RS0030 // Do not use banned APIs
 		return SysIo.File.Exists( $@"\\{serverName}\pipe\{pipeName}" ); //see https://stackoverflow.com/a/63739027/773113
 #pragma warning restore RS0030 // Do not use banned APIs

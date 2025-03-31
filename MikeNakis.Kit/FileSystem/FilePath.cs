@@ -217,35 +217,38 @@ public sealed class FilePath : FileSystemPath
 		return DirectoryPath.FromAbsolutePath( Path[..^relativePath.Length] );
 	}
 
-	public SysIo.FileStream OpenBinary( SysIo.FileMode fileMode = SysIo.FileMode.Open, SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None )
+	static SysIo.FileShare fileShareFromFileAccess( SysIo.FileAccess fileAccess ) => fileAccess switch
 	{
-		share ??= access switch
-		{
-			SysIo.FileAccess.Read => SysIo.FileShare.Read,
-			SysIo.FileAccess.Write => SysIo.FileShare.None,
-			SysIo.FileAccess.ReadWrite => SysIo.FileShare.None,
-			_ => throw new Sys.ArgumentOutOfRangeException( nameof( access ), access, null )
-		};
-		return SysIoNewFileStream( Path, fileMode, access, share.Value, bufferSize, fileOptions );
-	}
+		SysIo.FileAccess.Read => SysIo.FileShare.Read,
+		SysIo.FileAccess.Write => SysIo.FileShare.None,
+		SysIo.FileAccess.ReadWrite => SysIo.FileShare.None,
+		_ => throw new Sys.ArgumentOutOfRangeException( nameof( fileAccess ), fileAccess, null )
+	};
 
-	public SysIo.FileStream CreateBinary( SysIo.FileAccess access = SysIo.FileAccess.Write, SysIo.FileShare share = SysIo.FileShare.None )
-	{
-		Assert( access is SysIo.FileAccess.Write or SysIo.FileAccess.ReadWrite );
-		return SysIoNewFileStream( Path, SysIo.FileMode.Create, access, share );
-	}
-
-	public SysIo.TextReader OpenText( SysIo.FileMode fileMode = SysIo.FileMode.Open, SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None, SysText.Encoding? encoding = null )
-	{
-		SysIo.Stream fileStream = OpenBinary( fileMode, access, share, bufferSize, fileOptions );
-		return new SysIo.StreamReader( fileStream, encoding ?? SysText.Encoding.UTF8 );
-	}
-
-	public SysIo.TextWriter CreateText( bool createDirectoryIfNotExist = false )
+	public SysIo.FileStream NewStream( bool createDirectoryIfNotExist = false, SysIo.FileMode fileMode = SysIo.FileMode.Open, SysIo.FileAccess fileAccess = SysIo.FileAccess.Read, SysIo.FileShare? fileShare = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None )
 	{
 		if( createDirectoryIfNotExist )
 			Directory.CreateIfNotExist();
-		return SysIoCreateText( Path );
+		return SysIoNewFileStream( Path, fileMode, fileAccess, fileShare ?? fileShareFromFileAccess( fileAccess ), bufferSize, fileOptions );
+	}
+
+	public SysIo.TextWriter NewTextWriter( bool createDirectoryIfNotExist = false, SysIo.FileMode fileMode = SysIo.FileMode.Create, SysIo.FileShare? fileShare = null, int fileStreamBufferSize = 4096, int textWriterBufferSize = -1, bool deleteOnClose = false, bool writeThrough = false, SysText.Encoding? encoding = null )
+	{
+		if( createDirectoryIfNotExist )
+			Directory.CreateIfNotExist();
+		SysIo.FileOptions fileOptions = SysIo.FileOptions.None;
+		if( deleteOnClose )
+			fileOptions |= SysIo.FileOptions.DeleteOnClose;
+		if( writeThrough )
+			fileOptions |= SysIo.FileOptions.WriteThrough;
+		SysIo.Stream fileStream = NewStream( createDirectoryIfNotExist, fileMode, SysIo.FileAccess.Write, fileShare ?? SysIo.FileShare.ReadWrite, fileStreamBufferSize, fileOptions );
+		return new SysIo.StreamWriter( fileStream, encoding ?? SysText.Encoding.UTF8, textWriterBufferSize, leaveOpen: false );
+	}
+
+	public SysIo.TextReader NewTextReader( SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int fileStreamBufferSize = 4096, int textReaderBufferSize = -1, SysIo.FileOptions fileOptions = SysIo.FileOptions.None, SysText.Encoding? encoding = null )
+	{
+		SysIo.Stream fileStream = NewStream( createDirectoryIfNotExist: false, SysIo.FileMode.Open, access, share, fileStreamBufferSize, fileOptions );
+		return new SysIo.StreamReader( fileStream, encoding, detectEncodingFromByteOrderMarks: true, textReaderBufferSize, leaveOpen: false );
 	}
 
 	public void RenameTo( FilePath targetFilePath )

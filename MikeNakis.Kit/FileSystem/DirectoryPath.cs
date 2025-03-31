@@ -365,5 +365,5 @@ public sealed class DirectoryPath : FileSystemPath
 		return new MakeshiftDisposable( () => SysIoSetCurrentDirectory( oldCurrentDirectory.Path ) );
 	}
 
-	public static DirectoryPath CurrentDirectory() => FromAbsolutePath( SysIoGetCurrentDirectory() );
+	public static DirectoryPath CurrentDirectory => FromAbsolutePath( SysIoGetCurrentDirectory() );
 }

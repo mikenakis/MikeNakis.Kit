@@ -163,14 +163,7 @@ public readonly struct ArrayWrapper<T> : IEnumerable<T>, Sys.IEquatable<ArrayWra
 
 		public readonly T Current => current!;
 
-		readonly object? IEnumerator.Current
-		{
-			get
-			{
-				Assert( index != 0 && index != length + 1 );
-				return current;
-			}
-		}
+		readonly object? IEnumerator.Current => current!;
 
 		void IEnumerator.Reset()
 		{
