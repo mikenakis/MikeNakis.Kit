@@ -17,9 +17,9 @@ public static class SolutionSourcePath
 	{
 		string myRelativePath = "MikeNakis.Kit\\" + typeof( SolutionSourcePath ).Name + ".cs";
 		string sourceFileName = getSourceFileName();
-		if( !sourceFileName.EndsWith2( myRelativePath ) )
-			throw new Sys.Exception( sourceFileName );
-		return sourceFileName[..^myRelativePath.Length];
+		if( sourceFileName.EndsWith2( myRelativePath ) )
+			sourceFileName = sourceFileName[..^myRelativePath.Length];
+		return sourceFileName;
 	}
 
 	static string getSourceFileName( [SysComp.CallerFilePath] string? sourceFileName = null )
