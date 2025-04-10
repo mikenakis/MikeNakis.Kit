@@ -19,7 +19,7 @@ using SysInterop = System.Runtime.InteropServices;
 
 public static class DotNetHelpers
 {
-	public static readonly SysText.Encoding UtfBomlessEncoding = new SysText.UTF8Encoding( false );
+	public static readonly SysText.Encoding BomlessUtf8 = new SysText.UTF8Encoding( false );
 
 	//See https://stackoverflow.com/q/616584/773113
 	public static string GetProductName()
@@ -904,7 +904,7 @@ public static class DotNetHelpers
 			process.StartInfo.RedirectStandardError = true;
 			process.StartInfo.WindowStyle = SysDiag.ProcessWindowStyle.Normal;
 			process.StartInfo.CreateNoWindow = false;
-			process.StartInfo.StandardOutputEncoding = SysText.Encoding.UTF8;
+			process.StartInfo.StandardOutputEncoding = BomlessUtf8;
 			process.StartInfo.WorkingDirectory = workingDirectory.Path;
 			try
 			{

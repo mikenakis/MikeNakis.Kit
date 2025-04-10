@@ -101,7 +101,7 @@ public sealed class DirectoryPath : FileSystemPath
 	public void CreateDirectory()
 	{
 		if( Exists() ) //avoids a huge timeout penalty if this is a network path and the network is inaccessible.
-			throw new PathAlreadyExistsException( Path );
+			throw new PathAlreadyExistsException( Path, nameof( CreateDirectory ) );
 		// if( IsNetworkPath() )
 		// 	throw new Sys.AccessViolationException( Path );
 		Log.Info( $"Creating directory '{Path}'" );

@@ -90,7 +90,7 @@ public class TextFileLogger : Logger
 		for( int attempt = 1; ; attempt++ )
 			try
 			{
-				SysIo.StreamWriter streamWriter = new( filePath.Path, true, DotNetHelpers.UtfBomlessEncoding, bufferSize: 8192 );
+				SysIo.StreamWriter streamWriter = new( filePath.Path, true, DotNetHelpers.BomlessUtf8, bufferSize: 8192 );
 				Log.Info( $"Appending to log: {filePath}" ); //this will not appear in the file log, but it will appear in the debug log, which is supposed to always be added, and also possibly in the console log if it has already been added.
 				streamWriter.AutoFlush = true;
 				return streamWriter;

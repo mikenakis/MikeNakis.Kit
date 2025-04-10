@@ -48,7 +48,7 @@ public abstract class FileSystemPath
 	protected static void SysIoSetCreationTimeUtc( string path, Sys.DateTime utc ) => wrap( path, () => SysIo.File.SetCreationTimeUtc( path, utc ) );
 	protected static Sys.DateTime SysIoGetLastWriteTimeUtc( string path ) => wrap( path, () => SysIo.File.GetLastWriteTimeUtc( path ) );
 	protected static void SysIoSetLastWriteTimeUtc( string path, Sys.DateTime utc ) => wrap( path, () => SysIo.File.SetLastWriteTimeUtc( path, utc ) );
-	protected static string SysIoReadAllText( string path, SysText.Encoding? encoding ) => wrap( path, () => SysIo.File.ReadAllText( path, encoding ?? DotNetHelpers.UtfBomlessEncoding ) );
+	protected static string SysIoReadAllText( string path, SysText.Encoding? encoding ) => wrap( path, () => SysIo.File.ReadAllText( path, encoding ?? DotNetHelpers.BomlessUtf8 ) );
 	protected static byte[] SysIoReadAllBytes( string path ) => wrap( path, () => SysIo.File.ReadAllBytes( path ) );
 	protected static void SysIoWriteAllText( string path, string text, SysText.Encoding encoding ) => wrap( path, () => SysIo.File.WriteAllText( path, text, encoding ) );
 	protected static void SysIoCopy( string path, string otherPath, bool recursive ) => wrap( path, () => SysIo.File.Copy( path, otherPath, recursive ) );

@@ -20,6 +20,7 @@ M:System.DateTimeOffset.op_Implicit(System.DateTime) ; Do not implicitly cast Da
 T:System.IO.File ; Use `FilePath` instead.
 T:System.IO.Directory ; Use `DirectoryPath` instead.
 T:System.IO.Path ; Use `FilePath` or `DirectoryPath` instead.
+P:System.Text.Encoding.UTF8 ; Use DotNetHelpers.BomlessUtf8 instead.
 
 //TODO:
 //M:System.Linq.Enumerable.SequenceEqual`1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0}) ; Use `DotNetHelpers.Equals()` instead.
