@@ -6,7 +6,6 @@ using MikeNakis.Kit;
 using Sys = System;
 using SysText = System.Text;
 
-///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
 public static class EnumerableExtensions
 {
 	public static string MakeString( this IEnumerable<string> self ) => self.MakeString( "", "", "", "" );

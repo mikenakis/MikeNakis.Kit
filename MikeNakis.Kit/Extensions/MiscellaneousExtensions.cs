@@ -14,34 +14,6 @@ public static class MiscellaneousExtensions
 
 	public static IReadOnlyCollection<T> AsReadOnly<T>( this ICollection<T> self ) => new ReadOnlyCollectionOnCollection<T>( self );
 
-	public static bool OrThrow( this bool self )
-	{
-		if( !self )
-			throw new AssertionFailureException();
-		return true;
-	}
-
-	public static bool OrThrow( this bool self, Sys.Func<Sys.Exception> exceptionFactory )
-	{
-		if( !self )
-			throw exceptionFactory.Invoke();
-		return true;
-	}
-
-	public static T OrThrow<T>( this T? self )
-	{
-		if( self is null )
-			throw new AssertionFailureException();
-		return self;
-	}
-
-	public static T OrThrow<T>( this T? self, Sys.Func<Sys.Exception> exceptionFactory )
-	{
-		if( self is null )
-			throw exceptionFactory.Invoke();
-		return self;
-	}
-
 	[SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 	sealed class ReadOnlyCollectionOnCollection<T> : AbstractReadOnlyCollection<T>
 	{

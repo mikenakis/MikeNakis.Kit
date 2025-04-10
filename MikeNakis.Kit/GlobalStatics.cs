@@ -182,9 +182,9 @@ public static class GlobalStatics
 		return false;
 	}
 
-	public static Sys.Exception Failure() => throw new AssertionFailureException();
-	public static Sys.Exception Failure( string message ) => throw new AssertionFailureException( message );
-	public static Sys.Exception Failure( string message, Sys.Exception cause ) => throw new AssertionFailureException( message, cause );
+	[SysDiag.DebuggerHidden] public static Sys.Exception Failure() => throw new AssertionFailureException();
+	[SysDiag.DebuggerHidden] public static Sys.Exception Failure( string message ) => throw new AssertionFailureException( message );
+	[SysDiag.DebuggerHidden] public static Sys.Exception Failure( string message, Sys.Exception cause ) => throw new AssertionFailureException( message, cause );
 
 	public static IEnumerable<T> EnumerableOf<T>() => ReadOnlyListOf<T>();
 	public static IEnumerable<T> EnumerableOf<T>( T element ) => ReadOnlyListOf( element );

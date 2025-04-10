@@ -740,14 +740,6 @@ using SysInterop = System.Runtime.InteropServices;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// nullable
-
-	public static T OrThrow<T>( this T? self ) where T : class => self ?? throw Failure();
-	public static T OrThrow<T>( this T? self, Sys.Func<Sys.Exception> exceptionFactory ) where T : class => self ?? throw exceptionFactory.Invoke();
-	public static T OrThrow<T>( this T? self ) where T : struct => self ?? throw Failure();
-	public static T OrThrow<T>( this T? self, Sys.Func<Sys.Exception> exceptionFactory ) where T : struct => self ?? throw exceptionFactory.Invoke();
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Math
 
 	// From https://stackoverflow.com/a/44203452/773113, with a few improvements
