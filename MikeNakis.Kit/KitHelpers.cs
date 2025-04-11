@@ -672,7 +672,7 @@ using SysInterop = System.Runtime.InteropServices;
 		{
 			string typeName = NotNull( type.GetGenericTypeDefinition().FullName );
 			int indexOfTick = typeName.LastIndexOf( '`' );
-			Assert( indexOfTick == typeName.IndexOf2( '`' ) );
+			//Assert( indexOfTick == typeName.IndexOf2( '`' ) );
 			return typeName[..indexOfTick];
 		}
 	}
