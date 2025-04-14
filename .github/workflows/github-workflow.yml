@@ -42,7 +42,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: "print stuff"
-      run: echo gitHub.run_number = ${{ github.run_number }} gitHub.run_attempt = ${{ github.run_attempt }} RELEASE_VERSION = ${{ RELEASE_VERSION }}
+      run: echo gitHub.run_number = ${{ github.run_number }} gitHub.run_attempt = ${{ github.run_attempt }} env.RELEASE_VERSION = ${{env.RELEASE_VERSION}}
 
     - name: "restore"
       run: dotnet restore
