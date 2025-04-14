@@ -42,8 +42,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: "print stuff"
-      run: echo github.event.repository.name ${{ github.event.repository.name }} should be ${GITHUB_REPOSITORY#*/}
-      run: echo gitHub.run_number: ${{ github.run_number }} gitHub.run_attempt: ${{ github.run_attempt }} RELEASE_VERSION: ${{ RELEASE_VERSION }}
+      run: echo gitHub.run_number = ${{ github.run_number }} gitHub.run_attempt = ${{ github.run_attempt }} RELEASE_VERSION = ${{ RELEASE_VERSION }}
 
     - name: "restore"
       run: dotnet restore
