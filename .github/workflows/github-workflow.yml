@@ -42,7 +42,7 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: "print stuff"
-      run: echo gitHub.run_number = ${{ github.run_number }} gitHub.run_attempt = ${{ github.run_attempt }} env.RELEASE_VERSION = ${{env.RELEASE_VERSION}}
+      run: echo gitHub.run_number = ${{github.run_number}} gitHub.run_attempt = ${{github.run_attempt}} env.RELEASE_VERSION = ${{env.RELEASE_VERSION}}
 
     - name: "restore"
       run: dotnet restore
@@ -58,7 +58,7 @@ jobs:
 
     - name: "Debug: push"
       # run: dotnet nuget push "${{ github.event.repository.name }}/bin/Debug/${{ github.event.repository.name }}-Debug.${{ env.RELEASE_VERSION }}-Debug.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
-      run: dotnet nuget push "${{ github.event.repository.name }}/bin/Debug/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "${{github.event.repository.name}}/bin/Debug/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
 
     - name: "Release: build"
       run: dotnet build --configuration Release --no-restore -ConsoleLoggerParameters:off
@@ -68,4 +68,4 @@ jobs:
 
     - name: "Release: push"
       # run: dotnet nuget push "${{ github.event.repository.name }}/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
-      run: dotnet nuget push "${{ github.event.repository.name }}/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "${{github.event.repository.name}}/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
