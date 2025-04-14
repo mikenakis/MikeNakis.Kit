@@ -57,7 +57,7 @@ jobs:
       run: dotnet pack --configuration Debug --no-build 
 
     - name: "Debug: push"
-      # run: dotnet nuget push "${{ github.event.repository.name }}/bin/Debug/${{ github.event.repository.name }}-Debug.${{ env.RELEASE_VERSION }}-Debug.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      # run: dotnet nuget push "${{github.event.repository.name}}/bin/Debug/${{github.event.repository.name}}-Debug.${{env.RELEASE_VERSION}}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
       run: dotnet nuget push "${{github.event.repository.name}}/bin/Debug/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
 
     - name: "Release: build"
@@ -67,5 +67,5 @@ jobs:
       run: dotnet pack --configuration Release --no-build
 
     - name: "Release: push"
-      # run: dotnet nuget push "${{ github.event.repository.name }}/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      # run: dotnet nuget push "${{github.event.repository.name}}/bin/Release/${{github.event.repository.name}}-Release.${{env.RELEASE_VERSION}}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
       run: dotnet nuget push "${{github.event.repository.name}}/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
