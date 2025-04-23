@@ -27,7 +27,7 @@ public sealed class T101_KitTests
 	}
 
 	[VSTesting.TestMethod]
-	public void T02_My_Collections_Work()
+	public void T02_My_MutableList_Equals_Works()
 	{
 		Assert( createAndCompare( createMutableList ) );
 		return;
