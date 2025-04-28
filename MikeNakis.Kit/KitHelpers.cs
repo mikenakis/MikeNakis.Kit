@@ -313,6 +313,7 @@ public static class KitHelpers
 	public static int RoundUpPowerOf2( int v )
 	{
 		//from http://graphics.stanford.edu/%7Eseander/bithacks.html#RoundUpPowerOf2, also in "Hacker's Delight"
+		Assert( v < 0x40000000 ); //because the number 0x80000000 is not representable as a 32-bit signed integer.
 		unchecked
 		{
 			v--;
