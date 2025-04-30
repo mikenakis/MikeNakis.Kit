@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<IsTestProject>True</IsTestProject>
+		<Configurations>Debug</Configurations>
 	</PropertyGroup>
 
 	<Import Project="..\AllProjects.proj.xml" />
