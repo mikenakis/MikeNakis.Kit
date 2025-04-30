@@ -8,9 +8,9 @@
 		<DebugSymbols>True</DebugSymbols>
 		<Configurations>Debug;Release;Develop</Configurations>
 
-		<DebugType Condition="'$(Configuration)' == 'Debug'"  >embedded</DebugType>
-		<DebugType Condition="'$(Configuration)' == 'Develop'">embedded</DebugType>
-		<DebugType Condition="'$(Configuration)' == 'Release'">portable</DebugType>
+		<DebugType Condition="'$(Configuration)' == 'Debug'"  >Embedded</DebugType>
+		<DebugType Condition="'$(Configuration)' == 'Develop'">Embedded</DebugType>
+		<DebugType Condition="'$(Configuration)' == 'Release'">Portable</DebugType>
 		
 		<EnableNETAnalyzers Condition="'$(Configuration)' == 'Debug'"  >True</EnableNETAnalyzers>
 		<EnableNETAnalyzers Condition="'$(Configuration)' == 'Develop'">False</EnableNETAnalyzers>
@@ -19,8 +19,22 @@
 		<CheckForOverflowUnderflow Condition="'$(Configuration)' == 'Debug'"  >True</CheckForOverflowUnderflow>
 		<CheckForOverflowUnderflow Condition="'$(Configuration)' == 'Develop'">False</CheckForOverflowUnderflow>
 		<CheckForOverflowUnderflow Condition="'$(Configuration)' == 'Release'">False</CheckForOverflowUnderflow>
-		
-		<!-- The following helps with ms-buld acceleration -->
+
+		<Optimize Condition="'$(Configuration)' == 'Debug'"  >False</Optimize>
+		<Optimize Condition="'$(Configuration)' == 'Develop'">True</Optimize>
+		<Optimize Condition="'$(Configuration)' == 'Release'">True</Optimize>
+
+		<!-- The following magical incantation is necessary for the build acceleration magic to work.
+		     In Visual Studio, if you go to Options -> Projects and Solutions -> SDK Style Projects -> Up to Date Checks
+			 and make sure that:
+			 - "Don't call MSBuild if a project appears to be up to date" is checked
+			 - "Logging Level" is set to "Minimal" (or above)
+			 ...and then try to build, the following message will be emitted once for each project:
+			     "FastUpToDate: This project has enabled build acceleration, but not all referenced projects produce a
+			     reference assembly. Ensure projects producing the following outputs have the 'ProduceReferenceAssembly'
+			     MSBuild property set to 'true': [list-of-projects] See https://aka.ms/vs-build-acceleration for more
+			     information. ([name-of-project])"
+			 This magical incantation fixes this. -->
 		<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 
 		<!-- TODO: research IsTestingPlatformApplication and do something about it -->

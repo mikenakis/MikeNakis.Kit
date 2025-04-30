@@ -178,6 +178,11 @@ public class OrderedDictionary<K, V> : AbstractDictionary<K, V>, IOrderedDiction
 		return true;
 	}
 
+	public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+	{
+		return list.Select( tuple => new KeyValuePair<K, V>( tuple.key, tuple.value ) ).GetEnumerator();
+	}
+
 	sealed class KeyCollection : AbstractReadOnlySet<K>, IReadOnlyOrderedSet<K>
 	{
 		readonly OrderedDictionary<K, V> orderedDictionary;

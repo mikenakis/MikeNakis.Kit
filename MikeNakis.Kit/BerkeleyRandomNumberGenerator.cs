@@ -10,7 +10,9 @@ using SysCompiler = System.Runtime.CompilerServices;
 ///
 /// Based on https://rosettacode.org/wiki/Linear_congruential_generator#C# (BSD flavor) which is actually lame,
 /// (see LameBerkeleyRandomNumberGenerator,) so I had to modify it to store the state in a `ulong` and to return
-/// the upper 32 bits as the result. This seems to produce very good results.
+/// the upper 32 bits as the result. This seems to produce much better results.
+///
+/// The multiplier used to be 1103515245 but I changed it to a much larger prime number found in https://en.wikipedia.org/wiki/List_of_prime_numbers
 public sealed class BerkeleyRandomNumberGenerator
 {
 	public ulong State { get; set; }
@@ -23,15 +25,27 @@ public sealed class BerkeleyRandomNumberGenerator
 	[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
 	uint nextUint()
 	{
-		State = unchecked(1103515245 * State + 12345);
+		State = unchecked(3331113965338635107 * State + 12345);
 		return (uint)(State >> 32);
 	}
 
 	[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
-	double nextDouble() => nextUint() * (1.0 / uint.MaxValue);
+	double nextDouble()
+	{
+		uint randomUint = nextUint();
+		double result = randomUint / (double)uint.MaxValue; // / (double)uint.MaxValue; // ;
+		Assert( result is >= 0.0 and <= 1.0 );
+		return result;
+	}
 
 	[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
-	uint nextUint( uint maxInclusive ) => (uint)(nextDouble() * maxInclusive);
+	uint nextUint( uint maxInclusive )
+	{
+		double randomDouble = nextDouble();
+		uint result = (uint)(randomDouble * maxInclusive);
+		Assert( result >= 0 && result <= maxInclusive );
+		return result;
+	}
 
 	[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
 	public int Next() => unchecked((int)(nextUint() & int.MaxValue));

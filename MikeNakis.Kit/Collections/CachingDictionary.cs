@@ -40,18 +40,6 @@ public class CachingDictionary<K, V> : OrderedDictionary<K, V> where K : notnull
 		evictExcessKeys();
 	}
 
-	public override IEnumerator<KeyValuePair<K, V>> GetEnumerator()
-	{
-		//We have to override `GetEnumerator()` to avoid shuffling our own keys while trying
-		//to enumerate, otherwise we get concurrent modification exception.
-		foreach( K key in Keys )
-		{
-			bool ok = base.TryGetValue( key, out V value );
-			Assert( ok );
-			yield return new KeyValuePair<K, V>( key, value );
-		}
-	}
-
 	void evictExcessKeys()
 	{
 		while( Count > capacity )
