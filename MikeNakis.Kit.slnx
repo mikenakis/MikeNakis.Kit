@@ -1,0 +1,16 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Develop" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Folder Name="/_Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="exclusion.dic" />
+    <File Path="LICENSE.md" />
+    <File Path="MikeNakis.Kit-Logo.svg" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="MikeNakis.Kit.Test/MikeNakis.Kit.Test.csproj" />
+  <Project Path="MikeNakis.Kit/MikeNakis.Kit.csproj" />
+</Solution>
