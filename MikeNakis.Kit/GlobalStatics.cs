@@ -5,7 +5,6 @@ using MikeNakis.Kit.Extensions;
 
 ///<summary>Frequently used stuff that needs to be conveniently accessible without a type name qualification.</summary>
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
-///<remarks>NOTE: This can be used either with <code>global using static</code> in _GlobalUsings.cs or with <code>using static</code> in each source file.</remarks>
 public static class GlobalStatics
 {
 	///<summary>Always returns <c>true</c>.</summary>
