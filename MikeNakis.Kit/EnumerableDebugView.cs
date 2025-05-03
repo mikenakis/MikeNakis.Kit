@@ -1,9 +1,5 @@
 namespace MikeNakis.Kit;
 
-using System.Collections;
-using System.Linq;
-using SysDiag = System.Diagnostics;
-
 /// A debugger type proxy for enumerables. Use with <see cref="SysDiag.DebuggerTypeProxyAttribute"/>.
 // When troubleshooting why this is not working, try the following:
 // - Uncheck "Tools" > "Options" > "Debugging" > "General" > "Show raw structure of objects in variables windows".
@@ -11,10 +7,10 @@ using SysDiag = System.Diagnostics;
 // - Make sure this class is not nested. (Must be a public or internal class directly under its namespace.)
 public class EnumerableDebugView
 {
-	readonly IEnumerable enumerable;
+	readonly LegacyCollections.IEnumerable enumerable;
 
 	//This constructor will be invoked by the debugger.
-	public EnumerableDebugView( IEnumerable enumerable )
+	public EnumerableDebugView( LegacyCollections.IEnumerable enumerable )
 	{
 		this.enumerable = enumerable;
 	}

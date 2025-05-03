@@ -1,14 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections.Generic;
-using System.Linq;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Extensions;
-using static System.MemoryExtensions;
-using static MikeNakis.Kit.GlobalStatics;
-using LegacyCollections = System.Collections;
-using Sys = System;
-using SysDiag = System.Diagnostics;
 
 public static class LinqEx
 {

@@ -1,9 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections.Generic;
 using MikeNakis.Kit;
-using Sys = System;
-using SysDiag = System.Diagnostics;
 
 //TODO: rename all "Makeshift" to "Expedient"
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]

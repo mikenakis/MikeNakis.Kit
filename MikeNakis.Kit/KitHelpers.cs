@@ -1,18 +1,8 @@
 namespace MikeNakis.Kit;
 
-using System.Collections.Generic;
-using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.Logging;
-using static GlobalStatics;
-using LegacyCollections = System.Collections;
-using Sys = System;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-using SysReflect = System.Reflection;
-using SysText = System.Text;
-using SysThreading = System.Threading;
 
 public static class KitHelpers
 {
@@ -25,7 +15,7 @@ public static class KitHelpers
 
 	public const float FEpsilon = 1.192093E-07f;
 
-	public static readonly SysThreading.ThreadLocal<bool> FailureTesting = new( false );
+	public static readonly SysThread.ThreadLocal<bool> FailureTesting = new( false );
 
 	public static string SafeToString( object? value )
 	{
@@ -755,7 +745,7 @@ using SysInterop = System.Runtime.InteropServices;
 			return true;
 		if( number % 2 == 0 || number % 3 == 0 || number % 5 == 0 )
 			return false;
-		long boundary = (long)Sys.Math.Sqrt( number );
+		long boundary = (long)Math.Sqrt( number );
 		for( long i = 6; i <= boundary; i += 6 )
 			if( number % (i + 1) == 0 || number % (i + 5) == 0 )
 				return false;

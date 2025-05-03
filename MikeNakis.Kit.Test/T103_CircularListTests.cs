@@ -1,9 +1,6 @@
 namespace MikeNakis.Kit.Test;
 
-using Sys = System;
-using System.Linq;
 using MikeNakis.Kit.Collections;
-using static MikeNakis.Kit.GlobalStatics;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
@@ -151,7 +148,7 @@ public sealed class T103_CircularListTests
 			}
 			catch( Sys.Exception )
 			{
-				Sys.Console.WriteLine( $"Case: i={i},index={index},value={value}" );
+				SysConsole.WriteLine( $"Case: i={i},index={index},value={value}" );
 				printResult( refList, list );
 				throw;
 			}
@@ -182,7 +179,7 @@ public sealed class T103_CircularListTests
 			}
 			catch( Sys.Exception )
 			{
-				Sys.Console.WriteLine( $"Case: i={i},index={index},value={value}" );
+				SysConsole.WriteLine( $"Case: i={i},index={index},value={value}" );
 				printResult( refList, list );
 				throw;
 			}
@@ -224,7 +221,7 @@ public sealed class T103_CircularListTests
 			}
 			catch( Sys.Exception )
 			{
-				Sys.Console.WriteLine( $"Case: i={i},action={action},index={index},value={value}" );
+				SysConsole.WriteLine( $"Case: i={i},action={action},index={index},value={value}" );
 				printResult( refList, list );
 				throw;
 			}
@@ -268,17 +265,17 @@ public sealed class T103_CircularListTests
 
 	static void printResult( MutableList<int> refList, CircularList<int> list )
 	{
-		Sys.Console.WriteLine( $"Expected Count:{refList.Count}, Actual Count:{list.Count} " );
+		SysConsole.WriteLine( $"Expected Count:{refList.Count}, Actual Count:{list.Count} " );
 		int count = 0;
 		for( int i = 0; i < Sys.Math.Min( list.Count, refList.Count ); i++ )
 		{
 			if( list[i] != refList[i] )
 			{
-				Sys.Console.WriteLine( $"At index {i}, Expected Value:{refList[i]}, Actual Value:{list[i]}" );
+				SysConsole.WriteLine( $"At index {i}, Expected Value:{refList[i]}, Actual Value:{list[i]}" );
 				count++;
 				if( count >= 10 )
 				{
-					Sys.Console.WriteLine( "...." );
+					SysConsole.WriteLine( "...." );
 					break;
 				}
 			}

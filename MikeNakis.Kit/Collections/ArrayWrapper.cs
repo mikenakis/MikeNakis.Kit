@@ -1,12 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections;
-using System.Collections.Generic;
 using MikeNakis.Kit;
-using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
 
 public static class ArrayWrapper
 {
@@ -51,7 +45,7 @@ public readonly struct ArrayWrapper<T> : IEnumerable<T>, Sys.IEquatable<ArrayWra
 	public bool IsEmpty() => Count == 0;
 	public Enumerator GetEnumerator() => new( array, start, size );
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	LegacyCollections.IEnumerator LegacyCollections.IEnumerable.GetEnumerator() => GetEnumerator();
 	public Sys.ReadOnlySpan<T> AsSpan => new( array, start, size );
 
 	public int Count => size;
@@ -122,7 +116,7 @@ public readonly struct ArrayWrapper<T> : IEnumerable<T>, Sys.IEquatable<ArrayWra
 		return hashCode.ToHashCode();
 	}
 
-	public struct Enumerator : IEnumerator<T>, IEnumerator
+	public struct Enumerator : IEnumerator<T>, LegacyCollections.IEnumerator
 	{
 		readonly T[] array;
 		readonly int start;
@@ -163,9 +157,9 @@ public readonly struct ArrayWrapper<T> : IEnumerable<T>, Sys.IEquatable<ArrayWra
 
 		public readonly T Current => current!;
 
-		readonly object? IEnumerator.Current => current!;
+		readonly object? LegacyCollections.IEnumerator.Current => current!;
 
-		void IEnumerator.Reset()
+		void LegacyCollections.IEnumerator.Reset()
 		{
 			index = 0;
 			current = default!;

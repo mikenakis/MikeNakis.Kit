@@ -1,12 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections;
-using System.Collections.Generic;
 using MikeNakis.Kit;
-using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]
@@ -436,7 +430,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 
 	public Enumerator GetEnumerator() => new( this );
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	LegacyCollections.IEnumerator LegacyCollections.IEnumerable.GetEnumerator() => GetEnumerator();
 
 	public int IndexOf( T item ) => Sys.Array.IndexOf( array, item, 0, Count );
 
@@ -687,7 +681,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 			SetCapacity( Count );
 	}
 
-	public struct Enumerator : IEnumerator<T>, IEnumerator
+	public struct Enumerator : IEnumerator<T>, LegacyCollections.IEnumerator
 	{
 		readonly MutableList<T> list;
 		int index;
@@ -735,9 +729,9 @@ public sealed class MutableList<T> : IEnumerable<T>
 			}
 		}
 
-		readonly object? IEnumerator.Current => Current;
+		readonly object? LegacyCollections.IEnumerator.Current => Current;
 
-		void IEnumerator.Reset()
+		void LegacyCollections.IEnumerator.Reset()
 		{
 			Assert( originalVersion == list.version );
 			index = 0;

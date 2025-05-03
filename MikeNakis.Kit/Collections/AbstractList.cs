@@ -1,7 +1,5 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections.Generic;
-
 /// Abstract base class for implementations of <see cref="IList{T}"/>.
 public abstract class AbstractList<T> : AbstractCollection<T>, IList<T>
 {

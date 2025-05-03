@@ -1,14 +1,9 @@
 namespace MikeNakis.Kit;
 
-using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
-using SysComp = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-
 public sealed class StatefulLifeGuard : Sys.IDisposable
 {
 	public static StatefulLifeGuard Create( bool collectStackTrace = false, //
-			[SysComp.CallerFilePath] string callerFilePath = null!, [SysComp.CallerLineNumber] int callerLineNumber = 0 )
+			[SysCompiler.CallerFilePath] string callerFilePath = null!, [SysCompiler.CallerLineNumber] int callerLineNumber = 0 )
 	{
 		return new StatefulLifeGuard( collectStackTrace, 1, callerFilePath, callerLineNumber );
 	}

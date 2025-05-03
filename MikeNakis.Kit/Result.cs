@@ -1,10 +1,5 @@
 namespace MikeNakis.Kit;
 
-using static MikeNakis.Kit.GlobalStatics;
-using CodeAnalysis = System.Diagnostics.CodeAnalysis;
-using Sys = System;
-using SysDiag = System.Diagnostics;
-
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public readonly record struct Result<S, F>
 {
@@ -47,7 +42,7 @@ public readonly record struct Result<S, F>
 		this.failure = failure;
 	}
 
-	[CodeAnalysis.ExcludeFromCodeCoverage] public override string ToString() => IsSuccess ? $"Success: {success}" : $"Failure: {failure}";
+	[SysCodeAnalysis.ExcludeFromCodeCoverage] public override string ToString() => IsSuccess ? $"Success: {success}" : $"Failure: {failure}";
 
 	public S OrThrow()
 	{

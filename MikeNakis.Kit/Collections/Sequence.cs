@@ -1,10 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections;
-using System.Collections.Generic;
 using MikeNakis.Kit;
-using SysContracts = System.Diagnostics.Contracts;
-using SysDiag = System.Diagnostics;
 
 /// An add-only list implemented as an immutable linked list, using structural sharing.
 /// An instance of this class is also a node of the linked list.
@@ -59,7 +55,7 @@ public abstract class Sequence<T> : IEnumerable<T>
 	public abstract bool IsEmpty();
 	internal abstract (T item, Sequence<T> previous)? ItemAndPrevious { get; }
 	public IEnumerator<T> GetEnumerator() => Collect().GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	LegacyCollections.IEnumerator LegacyCollections.IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
 public sealed class HeadSequence<T> : Sequence<T>

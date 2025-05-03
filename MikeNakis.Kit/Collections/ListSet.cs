@@ -1,9 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections.Generic;
 using MikeNakis.Kit;
-using static MikeNakis.Kit.GlobalStatics;
-using SysDiag = System.Diagnostics;
 
 /// An implementation of <see cref="IListSet{T}"/>.
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]

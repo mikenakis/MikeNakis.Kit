@@ -1,8 +1,5 @@
 namespace MikeNakis.Kit.Extensions;
 
-using Sys = System;
-using SysDiag = System.Diagnostics;
-
 public static class NullableExtensions
 {
 	const string nullMessage = "value is null";

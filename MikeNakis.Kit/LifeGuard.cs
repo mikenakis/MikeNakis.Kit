@@ -1,23 +1,17 @@
 namespace MikeNakis.Kit;
 
-using System.Collections.Generic;
-using System.Linq;
 using MikeNakis.Kit.Logging;
-using Sys = System;
-using SysComp = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-using SysReflect = System.Reflection;
 
 // NOTE: a better name for this class would be "ObjectLifeTimeGuard", but that would be too damn long; hence, "LifeGuard".
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public abstract class LifeGuard : Sys.IDisposable
 {
-	public static LifeGuard Create( [SysComp.CallerFilePath] string callerFilePath = null!, [SysComp.CallerLineNumber] int callerLineNumber = 0 )
+	public static LifeGuard Create( [SysCompiler.CallerFilePath] string callerFilePath = null!, [SysCompiler.CallerLineNumber] int callerLineNumber = 0 )
 	{
 		return Create( framesToSkip: 1, false, callerFilePath, callerLineNumber );
 	}
 
-	public static LifeGuard Create( bool collectStackTrace, [SysComp.CallerFilePath] string callerFilePath = null!, [SysComp.CallerLineNumber] int callerLineNumber = 0 )
+	public static LifeGuard Create( bool collectStackTrace, [SysCompiler.CallerFilePath] string callerFilePath = null!, [SysCompiler.CallerLineNumber] int callerLineNumber = 0 )
 	{
 		return Create( framesToSkip: 1, collectStackTrace, callerFilePath, callerLineNumber );
 	}

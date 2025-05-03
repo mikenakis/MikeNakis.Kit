@@ -1,12 +1,6 @@
 namespace MikeNakis.Kit.FileSystem;
 
-using System.Collections.Generic;
 using MikeNakis.Kit.Extensions;
-using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
-using SysIo = System.IO;
-using SysText = System.Text;
-using SysThreading = System.Threading;
 
 public sealed class FilePath : FileSystemPath
 {
@@ -187,7 +181,7 @@ public sealed class FilePath : FileSystemPath
 				if( retry >= retryCount )
 					throw;
 				Log.Warn( $"Retry {retry + 1} of {retryCount} due to: {sharingViolationException.Message}" );
-				SysThreading.Thread.Sleep( 100 );
+				SysThread.Thread.Sleep( 100 );
 			}
 	}
 

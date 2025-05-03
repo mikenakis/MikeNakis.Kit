@@ -13,4 +13,8 @@
 		<ProjectReference Include="..\MikeNakis.Kit\MikeNakis.Kit.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Static="True" Include="MikeNakis.Kit.GlobalStatics" />
+	</ItemGroup>
+
 </Project>

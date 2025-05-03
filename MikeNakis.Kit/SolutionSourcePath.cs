@@ -1,8 +1,6 @@
 namespace MikeNakis.Kit;
 
-using Sys = System;
 using MikeNakis.Kit.Extensions;
-using SysComp = System.Runtime.CompilerServices;
 
 #pragma warning disable CA2201 // Do not raise reserved exception types
 
@@ -22,7 +20,7 @@ public static class SolutionSourcePath
 		return sourceFileName;
 	}
 
-	static string getSourceFileName( [SysComp.CallerFilePath] string? sourceFileName = null )
+	static string getSourceFileName( [SysCompiler.CallerFilePath] string? sourceFileName = null )
 	{
 		if( sourceFileName == null )
 			throw new Sys.Exception();

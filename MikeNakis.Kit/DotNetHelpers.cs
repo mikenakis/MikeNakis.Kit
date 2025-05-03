@@ -1,21 +1,8 @@
 namespace MikeNakis.Kit;
 
-using System.Collections.Generic;
-using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
-using static MikeNakis.Kit.GlobalStatics;
-using Math = System.Math;
-using Sys = System;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-using SysGlob = System.Globalization;
-using SysIo = System.IO;
-using SysNet = System.Net;
-using SysText = System.Text;
-using SysThreading = System.Threading;
-using SysInterop = System.Runtime.InteropServices;
 
 public static class DotNetHelpers
 {
@@ -63,7 +50,7 @@ public static class DotNetHelpers
 			}
 			else
 				numberOfVainCollectionsInARow = 0;
-			SysThreading.Thread.Sleep( 100 );
+			SysThread.Thread.Sleep( 100 );
 		}
 		Sys.TimeSpan timeSpan = currentTime() - startTime;
 		Log.Debug( $"Garbage collection: {message( currentMemory - startMemory )} in {timeSpan.TotalMilliseconds} ms." );
@@ -219,9 +206,9 @@ public static class DotNetHelpers
 		return EqualityComparer<T>.Default.Equals( a, b );
 	}
 
-	public static IEnumerable<object?> EnumerableFromLegacy( Sys.Collections.IEnumerable enumerable )
+	public static IEnumerable<object?> EnumerableFromLegacy( LegacyCollections.IEnumerable enumerable )
 	{
-		Sys.Collections.IEnumerator enumerator = enumerable.GetEnumerator();
+		LegacyCollections.IEnumerator enumerator = enumerable.GetEnumerator();
 		try
 		{
 			while( enumerator.MoveNext() )
@@ -261,14 +248,14 @@ public static class DotNetHelpers
 			return true;
 		if( a == null || b == null )
 			return false;
-		if( a is Sys.Collections.IEnumerable enumerableA && b is Sys.Collections.IEnumerable enumerableB )
+		if( a is LegacyCollections.IEnumerable enumerableA && b is LegacyCollections.IEnumerable enumerableB )
 			return legacyEnumerablesEqual( enumerableA, enumerableB );
 		return a.Equals( b );
 
-		static bool legacyEnumerablesEqual( Sys.Collections.IEnumerable a, Sys.Collections.IEnumerable b )
+		static bool legacyEnumerablesEqual( LegacyCollections.IEnumerable a, LegacyCollections.IEnumerable b )
 		{
-			Sys.Collections.IEnumerator enumerator1 = a.GetEnumerator();
-			Sys.Collections.IEnumerator enumerator2 = b.GetEnumerator();
+			LegacyCollections.IEnumerator enumerator1 = a.GetEnumerator();
+			LegacyCollections.IEnumerator enumerator2 = b.GetEnumerator();
 			try
 			{
 				while( enumerator1.MoveNext() )
@@ -865,11 +852,11 @@ public static class DotNetHelpers
 
 	public static byte[] GetResource( string resourceName, Sys.Type? locatorType )
 	{
-		Sys.Reflection.Assembly locatorAssembly;
+		SysReflect.Assembly locatorAssembly;
 		string fullResourceName;
 		if( locatorType == null )
 		{
-			locatorAssembly = NotNull( Sys.Reflection.Assembly.GetEntryAssembly() );
+			locatorAssembly = NotNull( SysReflect.Assembly.GetEntryAssembly() );
 			fullResourceName = resourceName;
 		}
 		else
@@ -914,7 +901,7 @@ public static class DotNetHelpers
 			{
 				throw Failure( $"Failed to execute command '{command}' in '{workingDirectory}'", exception );
 			}
-			SysThreading.Thread thread = new( () =>
+			SysThread.Thread thread = new( () =>
 			{
 				foreach( string line in input )
 					process.StandardInput.WriteLine( line );

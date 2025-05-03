@@ -1,13 +1,6 @@
 namespace MikeNakis.Kit.FileSystem;
 
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using MikeNakis.Kit.Extensions;
-using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
-using SysIo = System.IO;
-using SysText = System.Text;
 
 public abstract class FileSystemPath
 {
@@ -62,7 +55,7 @@ public abstract class FileSystemPath
 	protected static SysIo.FileStream SysIoNewFileStream( string path, SysIo.FileMode mode, SysIo.FileAccess access, SysIo.FileShare share, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None ) => wrap( path, () => new SysIo.FileStream( path, mode, access, share, bufferSize, fileOptions ) );
 #pragma warning restore RS0030 // Do not use banned APIs
 
-	static void wrap( string path, Sys.Action action, [CallerMemberName] string? operationName = null )
+	static void wrap( string path, Sys.Action action, [SysCompiler.CallerMemberName] string? operationName = null )
 	{
 		_ = wrap( path, () =>
 		{
@@ -71,7 +64,7 @@ public abstract class FileSystemPath
 		}, operationName );
 	}
 
-	static T wrap<T>( string path, Sys.Func<T> function, [CallerMemberName] string? operationName = null )
+	static T wrap<T>( string path, Sys.Func<T> function, [SysCompiler.CallerMemberName] string? operationName = null )
 	{
 		try
 		{
@@ -178,7 +171,7 @@ public abstract class FileSystemPath
 
 	static T? invokeWithTimeout<T>( Sys.TimeSpan timeout, Sys.Func<T> function ) where T : notnull
 	{
-		Task<T> task = new( function );
+		SysTask.Task<T> task = new( function );
 		task.Start();
 		if( !task.Wait( timeout ) )
 			return default;

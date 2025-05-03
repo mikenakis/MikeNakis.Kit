@@ -1,9 +1,5 @@
 namespace MikeNakis.Kit.Extensions;
 
-using CodeAnalysis = System.Diagnostics.CodeAnalysis;
-using Sys = System;
-using SysGlob = System.Globalization;
-
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
 public static class PrimitiveExtensions
 {
@@ -12,17 +8,17 @@ public static class PrimitiveExtensions
 	public static string ToString2( this char self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
 	public static string ToString2( this short self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
 	public static string ToString2( this int self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
-	public static string ToString2( this int self, [CodeAnalysis.StringSyntax( CodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
+	public static string ToString2( this int self, [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
 	public static string ToString2( this uint self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
-	public static string ToString2( this uint self, [CodeAnalysis.StringSyntax( CodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
+	public static string ToString2( this uint self, [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
 	public static string ToString2( this long self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
 	public static string ToString2( this Sys.Int128 self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
 	public static string ToString2( this float self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
-	public static string ToString2( this float self, [CodeAnalysis.StringSyntax( CodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
-	public static string ToString2( this double self, [CodeAnalysis.StringSyntax( CodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
-	public static string ToString2( this decimal self, [CodeAnalysis.StringSyntax( CodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
+	public static string ToString2( this float self, [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
+	public static string ToString2( this double self, [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
+	public static string ToString2( this decimal self, [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.NumericFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
 	public static string ToString2( this Sys.DateTime self ) => self.ToString( SysGlob.CultureInfo.InvariantCulture );
-	public static string ToString2( this Sys.DateTime self, [CodeAnalysis.StringSyntax( CodeAnalysis.StringSyntaxAttribute.DateTimeFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
+	public static string ToString2( this Sys.DateTime self, [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.DateTimeFormat )] string? format ) => self.ToString( format, SysGlob.CultureInfo.InvariantCulture );
 	public static void OrThrow( this bool self ) => _ = self ? true : throw new AssertionFailureException();
 	public static void OrThrow( this bool self, Sys.Func<Sys.Exception> exceptionFactory ) => _ = self ? true : throw exceptionFactory.Invoke();
 

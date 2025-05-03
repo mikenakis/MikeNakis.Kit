@@ -1,9 +1,5 @@
 namespace MikeNakis.Kit.FileSystem;
 
-using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
-using SysIo = System.IO;
-
 ///<summary>Base class for file-system exceptions.</summary>
 public abstract class FilePathException : SaneException
 {

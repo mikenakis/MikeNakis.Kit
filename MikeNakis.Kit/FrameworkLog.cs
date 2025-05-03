@@ -2,8 +2,6 @@ namespace MikeNakis.Kit;
 
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.Logging;
-using Sys = System;
-using SysCompiler = System.Runtime.CompilerServices;
 
 public static class Log
 {

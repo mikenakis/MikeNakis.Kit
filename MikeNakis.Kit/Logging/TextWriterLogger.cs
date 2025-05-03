@@ -1,10 +1,5 @@
 namespace MikeNakis.Kit.Logging;
 
-using System.Collections.Generic;
-using SysIo = System.IO;
-using SysText = System.Text;
-using SysThreading = System.Threading;
-
 public class TextWriterLogger : Logger
 {
 	readonly SysIo.TextWriter textWriter;
@@ -25,7 +20,7 @@ public class TextWriterLogger : Logger
 			if( i == 0 )
 			{
 				while( parts[i].Length > longestFirstPartLength )
-					SysThreading.Interlocked.Increment( ref longestFirstPartLength );
+					SysThread.Interlocked.Increment( ref longestFirstPartLength );
 				stringBuilder.Append( new string( ' ', longestFirstPartLength - parts[i].Length ) );
 			}
 		}

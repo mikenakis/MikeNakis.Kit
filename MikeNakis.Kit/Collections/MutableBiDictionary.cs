@@ -1,9 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System.Collections.Generic;
 using MikeNakis.Kit;
-using static MikeNakis.Kit.GlobalStatics;
-using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]

@@ -1,13 +1,7 @@
 namespace MikeNakis.Kit;
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
-using Sys = System;
-using SysDiag = System.Diagnostics;
-using SysReflect = System.Reflection;
 
 [SysDiag.DebuggerDisplay( "{GetType().Name,nq}: {Message,nq}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]
@@ -60,5 +54,5 @@ public abstract class SaneException : Sys.Exception, IEnumerable<(string, object
 
 	public IEnumerator<(string, object?)> GetEnumerator() => getMemberTuples( this ).GetEnumerator();
 
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	LegacyCollections.IEnumerator LegacyCollections.IEnumerable.GetEnumerator() => GetEnumerator();
 }

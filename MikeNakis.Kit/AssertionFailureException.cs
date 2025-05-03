@@ -1,7 +1,5 @@
 namespace MikeNakis.Kit;
 
-using Sys = System;
-
 /// An exception to throw in the event of an assertion failure.
 public sealed class AssertionFailureException : Sys.Exception
 {

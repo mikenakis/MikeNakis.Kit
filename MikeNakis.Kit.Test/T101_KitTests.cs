@@ -1,12 +1,8 @@
 namespace MikeNakis.Kit.Test;
 
-using System.Collections.Generic;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Collections;
-using static MikeNakis.Kit.GlobalStatics;
-using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
-using SysText = System.Text;
 
 [VSTesting.TestClass]
 public sealed class T101_KitTests

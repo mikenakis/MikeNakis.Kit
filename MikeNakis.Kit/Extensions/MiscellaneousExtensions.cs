@@ -1,9 +1,6 @@
 namespace MikeNakis.Kit.Extensions;
 
 using MikeNakis.Kit.Collections;
-using Sys = System;
-using SysText = System.Text;
-using SysDiag = System.Diagnostics;
 
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
 public static class MiscellaneousExtensions

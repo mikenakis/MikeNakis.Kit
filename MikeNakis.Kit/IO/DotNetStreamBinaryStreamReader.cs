@@ -1,9 +1,5 @@
 namespace MikeNakis.Kit.IO;
 
-using System;
-using static MikeNakis.Kit.GlobalStatics;
-using SysIo = System.IO;
-
 // PEARL: The System.IO.Stream class of DotNet is so retarded that it does not support checking
 //        for end of stream without reading something from the stream.
 //        This class corrects this problem.
@@ -18,7 +14,7 @@ public sealed class DotNetStreamBinaryStreamReader : BinaryStreamReader
 		this.dotNetStream = dotNetStream;
 	}
 
-	public override void ReadBytes( Span<byte> bytes )
+	public override void ReadBytes( Sys.Span<byte> bytes )
 	{
 		int n = 0;
 		if( oneByteBuffer != null )

@@ -1,9 +1,6 @@
 namespace MikeNakis.Kit.Extensions;
 
-using System.Collections.Generic;
 using MikeNakis.Kit.Collections;
-using SysDiag = System.Diagnostics;
-using Sys = System;
 
 public static class DictionaryExtensions
 {

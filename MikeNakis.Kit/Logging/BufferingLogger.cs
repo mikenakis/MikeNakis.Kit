@@ -1,6 +1,5 @@
 namespace MikeNakis.Kit.Logging;
 
-using System.Collections.Generic;
 using MikeNakis.Kit.Collections;
 
 public class BufferingLogger : Logger

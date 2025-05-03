@@ -2,11 +2,6 @@ namespace MikeNakis.Kit.Collections;
 
 //TODO maybe delete this file?
 
-using System.Collections.Generic;
-using static MikeNakis.Kit.GlobalStatics;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-
 public interface Iterator<T>
 {
 	bool HasNext { get; }

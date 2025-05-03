@@ -1,8 +1,5 @@
 namespace MikeNakis.Kit;
 
-using Sys = System;
-using SysText = System.Text;
-
 public sealed class StringBuilderTextConsumer : TextConsumer
 {
 	readonly SysText.StringBuilder stringBuilder;

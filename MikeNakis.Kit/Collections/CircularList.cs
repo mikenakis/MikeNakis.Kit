@@ -1,10 +1,5 @@
 namespace MikeNakis.Kit.Collections;
 
-using Sys = System;
-using System.Collections;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-
 /// <summary>
 /// A double-ended queue implements IList interface.
 /// </summary>
@@ -90,7 +85,7 @@ public sealed class CircularList<T> : IList<T>
 			yield return items[internalIndex];
 	}
 
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	LegacyCollections.IEnumerator LegacyCollections.IEnumerable.GetEnumerator() => GetEnumerator();
 
 	public int IndexOf( T item )
 	{
