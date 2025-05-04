@@ -1,7 +1,5 @@
 namespace MikeNakis.Kit;
 
-using SysCompiler = System.Runtime.CompilerServices;
-
 /// Extremely simple, and therefore fast, Linear Congruential Random Number Generator.
 /// In a debug build, this class is a bit slower than `System.Random` with a seed.
 /// In a release build, this class is slightly faster than `System.Random` with a seed.

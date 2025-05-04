@@ -1,8 +1,6 @@
 namespace MikeNakis.Kit;
 
-using System;
-
-public sealed class DummyDisposable : IDisposable
+public sealed class DummyDisposable : Sys.IDisposable
 {
 	public static readonly DummyDisposable Instance = new();
 

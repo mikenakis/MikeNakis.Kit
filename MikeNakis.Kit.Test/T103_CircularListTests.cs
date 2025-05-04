@@ -148,7 +148,7 @@ public sealed class T103_CircularListTests
 			}
 			catch( Sys.Exception )
 			{
-				SysConsole.WriteLine( $"Case: i={i},index={index},value={value}" );
+				Sys.Console.WriteLine( $"Case: i={i},index={index},value={value}" );
 				printResult( refList, list );
 				throw;
 			}
@@ -179,7 +179,7 @@ public sealed class T103_CircularListTests
 			}
 			catch( Sys.Exception )
 			{
-				SysConsole.WriteLine( $"Case: i={i},index={index},value={value}" );
+				Sys.Console.WriteLine( $"Case: i={i},index={index},value={value}" );
 				printResult( refList, list );
 				throw;
 			}
@@ -221,7 +221,7 @@ public sealed class T103_CircularListTests
 			}
 			catch( Sys.Exception )
 			{
-				SysConsole.WriteLine( $"Case: i={i},action={action},index={index},value={value}" );
+				Sys.Console.WriteLine( $"Case: i={i},action={action},index={index},value={value}" );
 				printResult( refList, list );
 				throw;
 			}
@@ -265,17 +265,17 @@ public sealed class T103_CircularListTests
 
 	static void printResult( MutableList<int> refList, CircularList<int> list )
 	{
-		SysConsole.WriteLine( $"Expected Count:{refList.Count}, Actual Count:{list.Count} " );
+		Sys.Console.WriteLine( $"Expected Count:{refList.Count}, Actual Count:{list.Count} " );
 		int count = 0;
 		for( int i = 0; i < Sys.Math.Min( list.Count, refList.Count ); i++ )
 		{
 			if( list[i] != refList[i] )
 			{
-				SysConsole.WriteLine( $"At index {i}, Expected Value:{refList[i]}, Actual Value:{list[i]}" );
+				Sys.Console.WriteLine( $"At index {i}, Expected Value:{refList[i]}, Actual Value:{list[i]}" );
 				count++;
 				if( count >= 10 )
 				{
-					SysConsole.WriteLine( "...." );
+					Sys.Console.WriteLine( "...." );
 					break;
 				}
 			}

@@ -517,32 +517,6 @@ public static class DotNetHelpers
 			array[arrayIndex++] = item;
 	}
 
-	// PEARL: System.BitConverter has an 'IsLittleEndian' field, which will tell you the endianness of the system,
-	//        but it does not offer any means of selecting the endianness of the conversions!
-	//        For that, you need separate calls to IPAddress.HostToNetworkOrder() and IPAddress.NetworkToHostOrder(),
-	//        which are retarded, because they allow the existence of (no matter how temporary) bogus integer values.
-	//        We hide all this insanity behind this pair of functions.
-	public static void WriteInt( SysIo.Stream stream, int value )
-	{
-		int networkOrderValue = SysNet.IPAddress.HostToNetworkOrder( value );
-		byte[] bytes = Sys.BitConverter.GetBytes( networkOrderValue );
-		Assert( bytes.Length == 4 );
-		stream.Write( bytes, 0, bytes.Length );
-	}
-
-	// See WriteInt() above.
-	public static int ReadInt( SysIo.Stream stream )
-	{
-		byte[] bytes = new byte[4];
-		int n = stream.Read( bytes, 0, bytes.Length );
-		if( n == 0 )
-			throw new SysIo.EndOfStreamException();
-		if( n != bytes.Length ) //NOTE: there is a chance that this may, under normal circumstances, return less than n; if it happens, add code to handle it.
-			throw new SysIo.EndOfStreamException( $"Expected {bytes.Length} bytes, got {n}" );
-		int networkOrderValue = Sys.BitConverter.ToInt32( bytes, 0 );
-		return SysNet.IPAddress.NetworkToHostOrder( networkOrderValue );
-	}
-
 	public static bool IsReferenceTypeOrNullableValueType( Sys.Type type )
 	{
 		if( !type.IsValueType )

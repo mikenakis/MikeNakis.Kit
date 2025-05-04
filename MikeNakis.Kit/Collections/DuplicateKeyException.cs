@@ -1,8 +1,6 @@
 namespace MikeNakis.Kit.Collections;
 
-using System;
-
-public abstract class DuplicateKeyException : ArgumentException
+public abstract class DuplicateKeyException : Sys.ArgumentException
 {
 	public object Key => OnGetKey();
 

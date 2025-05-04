@@ -1,8 +1,5 @@
 namespace MikeNakis.Kit.IO;
 
-using System;
-using SysIo = System.IO;
-
 public sealed class DotNetStreamBinaryStreamWriter : BinaryStreamWriter
 {
 	readonly SysIo.Stream dotNetStream;
@@ -12,7 +9,7 @@ public sealed class DotNetStreamBinaryStreamWriter : BinaryStreamWriter
 		this.dotNetStream = dotNetStream;
 	}
 
-	public override void WriteBytes( ReadOnlySpan<byte> bytes )
+	public override void WriteBytes( Sys.ReadOnlySpan<byte> bytes )
 	{
 		dotNetStream.Write( bytes );
 	}

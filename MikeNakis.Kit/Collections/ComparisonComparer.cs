@@ -3,9 +3,9 @@ namespace MikeNakis.Kit.Collections;
 //This class exists only because `Comparer<T>.Default` does not seem to handle nulls.
 public sealed class ComparisonComparer<T> : IComparer<T>
 {
-	readonly System.Comparison<T> comparison;
+	readonly Sys.Comparison<T> comparison;
 
-	public ComparisonComparer( System.Comparison<T> comparison )
+	public ComparisonComparer( Sys.Comparison<T> comparison )
 	{
 		this.comparison = comparison;
 	}

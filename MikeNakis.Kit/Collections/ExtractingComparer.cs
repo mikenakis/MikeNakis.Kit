@@ -2,11 +2,11 @@ namespace MikeNakis.Kit.Collections;
 
 public sealed class ExtractingComparer<T, E> : IComparer<T>
 {
-	readonly System.Func<T, E> extractor;
-	readonly System.Func<E, E, int> comparator;
+	readonly Sys.Func<T, E> extractor;
+	readonly Sys.Func<E, E, int> comparator;
 	readonly bool descending;
 
-	public ExtractingComparer( System.Func<T, E> extractor, System.Func<E, E, int> comparator, bool descending = false )
+	public ExtractingComparer( Sys.Func<T, E> extractor, Sys.Func<E, E, int> comparator, bool descending = false )
 	{
 		this.extractor = extractor;
 		this.comparator = comparator;

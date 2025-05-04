@@ -14,7 +14,7 @@ public abstract class AbstractEnumerable<T> : IEnumerable<T>
 	public override int GetHashCode()
 	{
 #if NETCOREAPP
-		System.HashCode hashCode = new();
+		Sys.HashCode hashCode = new();
 		foreach( T item in this )
 			hashCode.Add( item?.GetHashCode() ?? 0 );
 		return hashCode.ToHashCode();
