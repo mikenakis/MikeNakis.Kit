@@ -2,6 +2,8 @@ namespace MikeNakis.Kit.Test;
 
 using MikeNakis.Kit;
 using MikeNakis.Kit.Collections;
+using MikeNakis.Kit.Extensions;
+using Testing.Extensions;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
@@ -68,8 +70,10 @@ public sealed class T101_KitTests
 	{
 		MutableList<int> mutableList = new();
 		IReadOnlyList<int> array = new[] { 1 };
-		Sys.Exception? caughtException = TryCatch( () => mutableList.Equals( array ) );
-		NotNullCast( caughtException, out AssertionFailureException _ );
+		TryCatch( () => //
+				mutableList.Equals( array ) ) //
+				.OrThrow() //
+				.Cast( out AssertionFailureException _ );
 	}
 
 	[VSTesting.TestMethod]
@@ -77,8 +81,10 @@ public sealed class T101_KitTests
 	{
 		MutableList<int> mutableList = new();
 		object array = new[] { 1 };
-		Sys.Exception? caughtException = TryCatch( () => mutableList.Equals( array ) );
-		NotNullCast( caughtException, out AssertionFailureException _ );
+		TryCatch( () => //
+				mutableList.Equals( array ) ) //
+				.OrThrow() //
+				.Cast( out AssertionFailureException _ );
 	}
 
 	[VSTesting.TestMethod]

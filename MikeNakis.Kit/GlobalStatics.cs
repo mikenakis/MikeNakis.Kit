@@ -157,11 +157,6 @@ public static class GlobalStatics
 		return nullableValue.Value;
 	}
 
-	[SysDiag.DebuggerHidden]
-#pragma warning disable CA1021 //CA1021: "Avoid `out` parameters"
-	public static void NotNullCast<T, U>( T? input, out U output ) where U : T where T : class => output = (U)NotNull( input );
-#pragma warning restore CA1021 //CA1021: "Avoid `out` parameters"
-
 	/// <summary>If a debugger is attached, hits a breakpoint and returns <c>true</c>; otherwise, returns <c>false</c></summary>
 	[SysDiag.DebuggerHidden]
 	public static bool Breakpoint()
