@@ -3,6 +3,7 @@ namespace MikeNakis.Kit.Collections;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Extensions;
 
+// TODO: get rid of this class, move its contents to Such-And-Such-Extensions.cs
 public static class LinqEx
 {
 	[SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]

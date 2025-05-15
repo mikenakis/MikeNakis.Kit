@@ -51,12 +51,8 @@ public sealed class FilePath : FileSystemPath
 		return FromAbsolutePath( tempFileName );
 	}
 
-	public static FilePath Of( DirectoryPath directoryPath, string fileName )
-	{
-		Assert( IsValidPart( fileName ) );
-		string path = SysIoJoin( directoryPath.Path, fileName );
-		return new FilePath( path );
-	}
+	//TODO: get rid of, replace with call to DirectoryPath.File()
+	public static FilePath Of( DirectoryPath directoryPath, string fileName ) => directoryPath.File( fileName );
 
 	public static FilePath Join( DirectoryPath directoryPath, string relativePath )
 	{

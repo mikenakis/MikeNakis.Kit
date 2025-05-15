@@ -2,6 +2,8 @@ namespace MikeNakis.Kit.Collections;
 
 using MikeNakis.Kit;
 
+//TODO: get rid of, make use of List, and make use of DotNetHelpers.Equals()
+
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]
 public sealed class MutableList<T> : IEnumerable<T>
@@ -257,7 +259,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 	[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.NoInlining )]
 	void addWithResize( T item )
 	{
-		SysDiag.Debug.Assert( Count == array.Length );
+		Assert( Count == array.Length );
 		int size = Count;
 		grow( size + 1 );
 		Count = size + 1;

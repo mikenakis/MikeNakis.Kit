@@ -415,7 +415,8 @@ using SysInterop = System.Runtime.InteropServices;
 		return -1;
 	}
 
-	///<summary>Returns the number of elements from the start of the enumerable that are sorted. Essentially, it finds the index of the first out-of-order element.</summary>
+	///<summary>Returns the number of elements from the start of the enumerable that are sorted. Essentially, it finds
+	///the index of the first out-of-order element.</summary>
 	static int sortedCount<E, T>( IEnumerable<E> enumerable, Sys.Func<E, T> extractor, IComparer<T> comparer, //
 			bool allowDuplicates = true, bool descending = false )
 	{
