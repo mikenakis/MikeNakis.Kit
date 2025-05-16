@@ -31,6 +31,14 @@ public static class GlobalStatics
 	///<remarks>useful as a no-op lambda and sometimes as a debugging aid.</remarks>
 	public static T Identity<T>( T value ) => value;
 
+	///<summary>Returns <c>true</c> if a given nullable is <c>null</c>.</summary>
+	///<remarks>Useful for use as a lambda.</remarks>
+	public static bool IsNull<T>( T? nullable ) => nullable is null;
+
+	///<summary>Returns <c>true</c> if a given nullable is not <c>null</c>.</summary>
+	///<remarks>Useful for use as a lambda.</remarks>
+	public static bool IsNotNull<T>( T? nullable ) => nullable is not null;
+
 	///<summary>Compares two <c>double</c> values for approximate equality.</summary>
 	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
 	public static bool DoubleEquals( double a, double b, double? tolerance = null )
