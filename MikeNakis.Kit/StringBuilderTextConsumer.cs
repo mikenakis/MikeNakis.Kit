@@ -9,10 +9,9 @@ public sealed class StringBuilderTextConsumer : TextConsumer
 		this.stringBuilder = stringBuilder;
 	}
 
-	public TextConsumer Write( Sys.ReadOnlySpan<char> s )
+	public void Write( Sys.ReadOnlySpan<char> s )
 	{
 		stringBuilder.Append( s );
-		return this;
 	}
 
 	[Sys.Obsolete] public override string ToString() => stringBuilder.ToString();

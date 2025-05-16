@@ -125,8 +125,20 @@ public sealed class FilePath : FileSystemPath
 
 	public void WriteAllText( string text, SysText.Encoding? encoding = null )
 	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
+		GetDirectoryPath().CreateIfNotExist();
 		retryOnSharingViolation( () => SysIoWriteAllText( Path, text, encoding ?? DotNetHelpers.BomlessUtf8 ) );
+	}
+
+	public void WriteAllBytes( byte[] bytes )
+	{
+		GetDirectoryPath().CreateIfNotExist();
+		SysIoWriteAllBytes( Path, bytes );
+	}
+
+	public void Truncate()
+	{
+		GetDirectoryPath().CreateIfNotExist();
+		SysIoWriteAllText( Path, "" );
 	}
 
 	public void MoveTo( FilePath newPathName ) //This is essentially 'Rename'
@@ -145,18 +157,6 @@ public sealed class FilePath : FileSystemPath
 	{
 		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
 		return SysIoReadLines( Path );
-	}
-
-	public void WriteAllBytes( byte[] bytes )
-	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		SysIoWriteAllBytes( Path, bytes );
-	}
-
-	public void Truncate()
-	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		SysIoWriteAllText( Path, "" );
 	}
 
 	public void Delete()
@@ -196,30 +196,14 @@ public sealed class FilePath : FileSystemPath
 			Delete();
 	}
 
-	public void CreateParentDirectoryIfNotExists()
-	{
-		GetDirectoryPath().CreateIfNotExist();
-	}
-
 	public DirectoryPath WithoutRelativePath( string relativePath )
 	{
 		Assert( Path.EndsWith2( relativePath ) );
 		return DirectoryPath.FromAbsolutePath( Path[..^relativePath.Length] );
 	}
 
-	static SysIo.FileShare getFileShare( /*SysIo.FileMode fileMode,*/ SysIo.FileAccess fileAccess )
+	static SysIo.FileShare getDefaultFileShare( SysIo.FileAccess fileAccess )
 	{
-		//switch( fileMode )
-		//{
-		//	case SysIo.FileMode.CreateNew:
-		//	case SysIo.FileMode.Create:
-		//	case SysIo.FileMode.Open:
-		//	case SysIo.FileMode.OpenOrCreate:
-		//	case SysIo.FileMode.Truncate:
-		//	case SysIo.FileMode.Append:
-		//	default:
-		//		throw new Sys.ArgumentOutOfRangeException( nameof( fileMode ), fileMode, null )
-		//}
 		return fileAccess switch
 		{
 			SysIo.FileAccess.Read => SysIo.FileShare.Read,
@@ -233,7 +217,7 @@ public sealed class FilePath : FileSystemPath
 	{
 		if( createDirectoryIfNotExist )
 			Directory.CreateIfNotExist();
-		return SysIoNewFileStream( Path, fileMode, fileAccess, fileShare ?? getFileShare( /*fileMode,*/ fileAccess ), bufferSize, fileOptions );
+		return SysIoNewFileStream( Path, fileMode, fileAccess, fileShare ?? getDefaultFileShare( fileAccess ), bufferSize, fileOptions );
 	}
 
 	public SysIo.TextWriter NewTextWriter( bool createDirectoryIfNotExist = false, SysIo.FileMode fileMode = SysIo.FileMode.Create, SysIo.FileShare? fileShare = null, int fileStreamBufferSize = 4096, int textWriterBufferSize = -1, bool deleteOnClose = false, bool writeThrough = false, SysText.Encoding? encoding = null )
