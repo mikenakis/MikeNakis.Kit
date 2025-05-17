@@ -11,14 +11,14 @@ public sealed class DirectoryPath : FileSystemPath
 
 	public static DirectoryPath FromRelativePath( string path )
 	{
-		Assert( !SysIoIsPathRooted( path ) );
+		Assert( !IsAbsolute( path ) );
 		string fullPath = SysIoGetFullPath( path );
 		return FromAbsolutePath( fullPath );
 	}
 
 	public static DirectoryPath FromAbsoluteOrRelativePath( string path )
 	{
-		if( SysIoIsPathRooted( path ) )
+		if( IsAbsolute( path ) )
 			return FromAbsolutePath( SysIoGetFullPath( path ) );
 		return FromRelativePath( path.Length == 0 ? "." : path );
 	}
@@ -108,7 +108,7 @@ public sealed class DirectoryPath : FileSystemPath
 		//PEARL: System.IO.Directory.GetFiles() will completely ignore the "path" parameter if the "pattern" parameter
 		//       contains a path, and instead it will enumerate the files at the path contained within the pattern.
 		//       To avoid this, we assert that the "pattern" parameter does not start with a path.
-		Assert( !SysIoIsPathRooted( pattern ) );
+		Assert( !IsAbsolute( pattern ) );
 		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
 		foreach( string s in SysIoGetFiles( Path, pattern ) )
 			yield return FilePath.FromAbsolutePath( s );

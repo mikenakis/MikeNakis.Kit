@@ -8,6 +8,11 @@ public static class KitHelpers
 {
 	public static readonly SysText.Encoding Latin1Encoding = SysText.Encoding.GetEncoding( "iso-8859-1" );
 
+	public static string GetCallerFilePath( [SysCompiler.CallerFilePath] string? callerFilePathName = null )
+	{
+		return callerFilePathName.OrThrow();
+	}
+
 	static X defaultExtractor<X>( X a ) => a;
 	//static int defaultComparator<T>( T a, T b ) where T : Sys.IComparable<T> => a.CompareTo( b );
 

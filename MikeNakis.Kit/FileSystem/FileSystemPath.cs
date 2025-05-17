@@ -4,6 +4,23 @@ using MikeNakis.Kit.Extensions;
 
 public abstract class FileSystemPath
 {
+	public static bool IsAbsolute( string path )
+	{
+		return SysIoIsPathFullyQualified( path );
+		//return SysIoGetFullPath( path ) == path;
+	}
+
+	public static bool IsNormalized( string path )
+	{
+		//Assert( path == SysIo.Path.Combine( NotNull( SysIo.Path.GetDirectoryName( path ) ), SysIo.Path.GetFileName( path ) ) ); Does not work with UNC paths. The following line, however, does.
+		return SysIoGetFullPath( path ) == path;
+	}
+
+	public static bool IsValidPart( string s )
+	{
+		return s.IndexOfAny( SysIoGetInvalidFileNameChars() ) == -1;
+	}
+
 #pragma warning disable RS0030 // Do not use banned APIs
 	protected static string SysIoGetTempPath() => SysIo.Path.GetTempPath();
 	protected static string SysIoGetTempFileName() => SysIo.Path.GetTempFileName();
@@ -18,9 +35,11 @@ public abstract class FileSystemPath
 	protected static string SysIoGetCurrentDirectory() => SysIo.Directory.GetCurrentDirectory();
 
 	protected static string SysIoGetExtension( string path ) => wrap( path, () => SysIo.Path.GetExtension( path ) );
-	protected static bool SysIoIsPathRooted( string path ) => wrap( path, () => SysIo.Path.IsPathRooted( path ) );
 
-	protected static bool SysIoIsPathFullyQualified( string path ) => wrap( path, () => SysIo.Path.IsPathFullyQualified( path ) );
+	//PEARL: This will return `true` for "C:a".
+	//protected static bool SysIoIsPathRooted( string path ) => wrap( path, () => SysIo.Path.IsPathRooted( path ) );
+
+	protected static bool SysIoIsPathFullyQualified( string path ) => SysIo.Path.IsPathFullyQualified( path );
 
 	protected static string SysIoGetFullPath( string path ) => wrap( path, () => SysIo.Path.GetFullPath( path ) );
 	protected static string SysIoGetFileName( string path ) => wrap( path, () => SysIo.Path.GetFileName( path ) );
@@ -117,18 +136,12 @@ public abstract class FileSystemPath
 		return new FilePathWrapperException( path, operationName, exception );
 	}
 
-	public static bool IsValidPart( string s )
-	{
-		return s.IndexOfAny( SysIoGetInvalidFileNameChars() ) == -1;
-	}
-
 	public string Path { get; }
 
 	protected FileSystemPath( string path )
 	{
-		Assert( SysIoIsPathRooted( path ) );
-		//Assert( path == SysIo.Path.Combine( NotNull( SysIo.Path.GetDirectoryName( path ) ), SysIo.Path.GetFileName( path ) ) ); Does not work with UNC paths. The following line, however, does.
-		Assert( SysIoGetFullPath( path ) == path );
+		Assert( IsAbsolute( path ) );
+		Assert( IsNormalized( path ) );
 		Path = path;
 	}
 

@@ -4,35 +4,30 @@ using MikeNakis.Kit.Extensions;
 
 public sealed class FilePath : FileSystemPath
 {
-	public static bool IsFullyQualified( string path )
-	{
-		return SysIoIsPathFullyQualified( path );
-	}
-
 	public static FilePath FromAbsolutePath( string path )
 	{
-		Assert( SysIoIsPathRooted( path ) );
+		Assert( IsAbsolute( path ) );
 		path = SysIoGetFullPath( path );
 		return new FilePath( path );
 	}
 
 	public static FilePath FromRelativePath( string relativePath )
 	{
-		Assert( !SysIoIsPathRooted( relativePath ) );
+		Assert( !IsAbsolute( relativePath ) );
 		string path = SysIoGetFullPath( relativePath );
 		return FromAbsolutePath( path );
 	}
 
 	public static FilePath FromRelativeOrAbsolutePath( string path )
 	{
-		if( SysIoIsPathRooted( path ) )
+		if( IsAbsolute( path ) )
 			return FromAbsolutePath( SysIoGetFullPath( path ) );
 		return FromRelativePath( path );
 	}
 
 	public static FilePath FromRelativeOrAbsolutePath( string path, DirectoryPath basePathIfRelative )
 	{
-		if( !SysIoIsPathRooted( path ) )
+		if( !IsAbsolute( path ) )
 			path = SysIoGetFullPath( SysIoCombine( basePathIfRelative.Path, path ) );
 		return FromAbsolutePath( path );
 	}
@@ -56,7 +51,7 @@ public sealed class FilePath : FileSystemPath
 
 	public static FilePath Join( DirectoryPath directoryPath, string relativePath )
 	{
-		Assert( !SysIoIsPathRooted( relativePath ) );
+		Assert( !IsAbsolute( relativePath ) );
 		//string path = SysIoJoin( directoryPath.Path, relativePath );
 		//Assert( path == SysIoGetFullPath( path ) );
 		//Assert( path.StartsWith2( directoryPath.Path ) );
