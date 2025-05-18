@@ -532,12 +532,18 @@ using SysInterop = System.Runtime.InteropServices;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Exception
 
+	public static string BuildShortExceptionMessage( string prefix, Sys.Exception exception )
+	{
+		return $"{prefix}: {exception.GetType().FullName}: {fixMessage( exception.Message )}";
+	}
+
 	public static IEnumerable<string> BuildMediumExceptionMessage( string prefix, Sys.Exception exception )
 	{
 		MutableList<string> mutableLines = new();
 		while( true )
 		{
-			mutableLines.Add( $"{prefix}: {exception.GetType().FullName}: {fixMessage( exception.Message )}" );
+			string message = BuildShortExceptionMessage( prefix, exception );
+			mutableLines.Add( message );
 			if( exception.InnerException != null )
 			{
 				prefix = "Caused by";
@@ -561,7 +567,7 @@ using SysInterop = System.Runtime.InteropServices;
 		{
 			for( ; true; exception = exception.InnerException )
 			{
-				lines.Add( $"{prefix}: {exception.GetType().FullName}: {fixMessage( exception.Message )}" );
+				lines.Add( BuildShortExceptionMessage( prefix, exception ) );
 				SysDiag.StackFrame[] stackFrames = new SysDiag.StackTrace( exception, true ).GetFrames();
 				lines.AddRange( stackFrames.Select( stackFrame => stringFromStackFrame( stackFrame, sourceFileNameFixer ) ) );
 				if( exception is Sys.AggregateException aggregateException )
