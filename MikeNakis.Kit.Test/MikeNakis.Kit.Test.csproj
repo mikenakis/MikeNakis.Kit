@@ -10,7 +10,6 @@
 	<Import Project="..\BannedApiAnalyzers.proj.xml" />
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Solution\Testing\Testing.csproj" />
 		<ProjectReference Include="..\MikeNakis.Kit\MikeNakis.Kit.csproj" />
 	</ItemGroup>
 
