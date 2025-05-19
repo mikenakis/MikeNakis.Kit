@@ -89,10 +89,10 @@ public static class KitHelpers
 
 	public static string UnescapeForCSharp( string content )
 	{
-		Result<string, Expectation> result = ParseStringLiteral( '\"', content );
+		Result<string> result = ParseStringLiteral( '\"', content );
 		if( !result.IsSuccess )
-			throw new Sys.FormatException( result.AsFailure.Message );
-		return result.AsSuccess;
+			throw new Sys.FormatException( result.Expectation.Message );
+		return result.Payload;
 	}
 
 	public static Sys.Exception NewFormatException( string typeName, string content )
@@ -176,22 +176,22 @@ public static class KitHelpers
 		}
 	}
 
-	public static Result<string, Expectation> ParseStringLiteral( char quoteCharacter, Sys.ReadOnlySpan<char> charSpan )
+	public static Result<string> ParseStringLiteral( char quoteCharacter, Sys.ReadOnlySpan<char> charSpan )
 	{
 		int i = 0;
 		if( i >= charSpan.Length || charSpan[i] != quoteCharacter )
-			return Result<string, Expectation>.Failure( new CustomExpectation( $"expected an opening '{quoteCharacter}', found '{charSpan[i]}'" ) );
+			return new CustomExpectation( $"expected an opening '{quoteCharacter}', found '{charSpan[i]}'" );
 		i++;
 		SysText.StringBuilder builder = new();
 		while( true )
 		{
 			if( i >= charSpan.Length )
-				return Result<string, Expectation>.Failure( new CustomExpectation( $"expected a closing '{quoteCharacter}'" ) );
+				return new CustomExpectation( $"expected a closing '{quoteCharacter}'" );
 			char c = charSpan[i++];
 			if( c == '"' )
 				break;
 			if( c < 32 )
-				return Result<string, Expectation>.Failure( new CustomExpectation( $"escape character in string literal ({c:x2})" ) );
+				return new CustomExpectation( $"escape character in string literal ({c:x2})" );
 			if( c == '\\' )
 			{
 				c = charSpan[i++];
@@ -215,52 +215,52 @@ public static class KitHelpers
 						break;
 					case 'x':
 					{
-						Result<int, Expectation> result1 = readNibble( charSpan[i++] );
+						Result<int> result1 = readNibble( charSpan[i++] );
 						if( !result1.IsSuccess )
-							return Result<string, Expectation>.Failure( result1.AsFailure );
-						Result<int, Expectation> result2 = readNibble( charSpan[i++] );
+							return result1.Expectation;
+						Result<int> result2 = readNibble( charSpan[i++] );
 						if( !result2.IsSuccess )
-							return Result<string, Expectation>.Failure( result2.AsFailure );
-						c = (char)(result1.AsSuccess << 4 | result2.AsSuccess);
+							return result2.Expectation;
+						c = (char)(result1.Payload << 4 | result2.Payload);
 						break;
 					}
 					case 'u':
 					{
-						Result<int, Expectation> result1 = readNibble( charSpan[i++] );
+						Result<int> result1 = readNibble( charSpan[i++] );
 						if( !result1.IsSuccess )
-							return Result<string, Expectation>.Failure( result1.AsFailure );
-						Result<int, Expectation> result2 = readNibble( charSpan[i++] );
+							return result1.Expectation;
+						Result<int> result2 = readNibble( charSpan[i++] );
 						if( !result2.IsSuccess )
-							return Result<string, Expectation>.Failure( result2.AsFailure );
-						Result<int, Expectation> result3 = readNibble( charSpan[i++] );
+							return result2.Expectation;
+						Result<int> result3 = readNibble( charSpan[i++] );
 						if( !result3.IsSuccess )
-							return Result<string, Expectation>.Failure( result3.AsFailure );
-						Result<int, Expectation> result4 = readNibble( charSpan[i++] );
+							return result3.Expectation;
+						Result<int> result4 = readNibble( charSpan[i++] );
 						if( !result4.IsSuccess )
-							return Result<string, Expectation>.Failure( result4.AsFailure );
-						c = (char)(result1.AsSuccess << 12 | result2.AsSuccess << 8 | result3.AsSuccess << 4 | result4.AsSuccess);
+							return result4.Expectation;
+						c = (char)(result1.Payload << 12 | result2.Payload << 8 | result3.Payload << 4 | result4.Payload);
 						break;
 					}
 					default:
-						return Result<string, Expectation>.Failure( new CustomExpectation( $"expected a valid escape sequence, found '{c}'" ) );
+						return new CustomExpectation( $"expected a valid escape sequence, found '{c}'" );
 				}
 
-				static Result<int, Expectation> readNibble( char c )
+				static Result<int> readNibble( char c )
 				{
 					return c switch
 					{
-						>= '0' and <= '9' => Result<int, Expectation>.Success( c - '0' ),
-						>= 'a' and <= 'f' => Result<int, Expectation>.Success( c - 'a' + 10 ),
-						>= 'A' and <= 'F' => Result<int, Expectation>.Success( c - 'A' + 10 ),
-						_ => Result<int, Expectation>.Failure( new CustomExpectation( $"expected a hex digit, found '{c}'" ) )
+						>= '0' and <= '9' => c - '0',
+						>= 'a' and <= 'f' => c - 'a' + 10,
+						>= 'A' and <= 'F' => c - 'A' + 10,
+						_ => new CustomExpectation( $"expected a hex digit, found '{c}'" )
 					};
 				}
 			}
 			builder.Append( c );
 		}
 		if( i != charSpan.Length )
-			return Result<string, Expectation>.Failure( new CustomExpectation( $"expected nothing, found '{charSpan[i..]}'" ) );
-		return Result<string, Expectation>.Success( builder.ToString() );
+			return new CustomExpectation( $"expected nothing, found '{charSpan[i..]}'" );
+		return builder.ToString();
 	}
 
 	public static bool IsPrintable( char c )
@@ -322,24 +322,13 @@ public static class KitHelpers
 		return v;
 	}
 
-#if false
-using SysInterop = System.Runtime.InteropServices;
-	public static T EnumFromByte<T>( byte byteValue ) where T : struct, Sys.Enum
-	{
-		Sys.Span<byte> byteArray = stackalloc byte[] { byteValue };
-		return SysInterop.MemoryMarshal.Cast<byte, T>( byteArray )[0];
-	}
-
-	public static byte ByteFromEnum<T>( T enumValue ) where T : unmanaged, Sys.Enum
-	{
-		Sys.Span<T> enumArray = stackalloc T[] { enumValue };
-		return SysInterop.MemoryMarshal.Cast<T, byte>( enumArray )[0];
-	}
-#endif
-
 	public static T EnumFromByte<T>( byte byteValue ) where T : struct, Sys.Enum => SysCompiler.Unsafe.BitCast<byte, T>( byteValue );
 
 	public static byte ByteFromEnum<T>( T enumValue ) where T : struct, Sys.Enum => SysCompiler.Unsafe.BitCast<T, byte>( enumValue );
+
+	public static T EnumFromInt<T>( int intValue ) where T : struct, Sys.Enum => SysCompiler.Unsafe.BitCast<int, T>( intValue );
+
+	public static int IntFromEnum<T>( T enumValue ) where T : unmanaged, Sys.Enum => SysCompiler.Unsafe.BitCast<T, int>( enumValue );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Legacy IEnumerable

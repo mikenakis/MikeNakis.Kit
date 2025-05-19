@@ -1,12 +1,17 @@
 namespace MikeNakis.Kit;
 
-/// A lightweight result to be used with <see cref="Result{S,F}"/>
+/// A lightweight result to be used with <see cref="Either{S,F}"/> or, better yet, with <see cref="Result{S}"/>
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public abstract class Expectation
 {
 	public abstract string Message { get; }
 
 	[SysCodeAnalysis.ExcludeFromCodeCoverage] public sealed override string ToString() => $"{Id( this )}: \"{Message}\"";
+
+	public ExpectationFailureException Exception()
+	{
+		throw new ExpectationFailureException( this );
+	}
 }
 
 public sealed class CustomExpectation : Expectation
