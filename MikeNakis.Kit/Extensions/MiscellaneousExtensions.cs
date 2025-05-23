@@ -46,4 +46,24 @@ public static class MiscellaneousExtensions
 		return object.ReferenceEquals( self, other );
 #pragma warning restore RS0030 // Do not use banned APIs
 	}
+
+	public static double Clamped( this double self, double min, double max )
+	{
+		Assert( min <= max );
+		if( self < min )
+			return min;
+		if( self > max )
+			return max;
+		return self;
+	}
+
+	public static float Clamped( this float self, float min, float max )
+	{
+		Assert( min < max );
+		if( self < min )
+			return min;
+		if( self > max )
+			return max;
+		return self;
+	}
 }

@@ -640,102 +640,49 @@ public static class KitHelpers
 	//        This method returns the full name of a type using C#-specific notation instead of DotNet's cryptic notation.
 	public static string GetCSharpTypeName( Sys.Type type )
 	{
-		if( type.IsArray )
-		{
-			SysText.StringBuilder stringBuilder = new();
-			stringBuilder.Append( GetCSharpTypeName( NotNull( type.GetElementType() ) ) );
-			stringBuilder.Append( '[' );
-			int rank = type.GetArrayRank();
-			Assert( rank >= 1 );
-			for( int i = 0; i < rank - 1; i++ )
-				stringBuilder.Append( ',' );
-			stringBuilder.Append( ']' );
-			return stringBuilder.ToString();
-		}
-		if( type.IsGenericType )
-		{
-			SysText.StringBuilder stringBuilder = new();
-			stringBuilder.Append( getBaseTypeName( type ) );
-			stringBuilder.Append( '<' );
-			stringBuilder.Append( type.GenericTypeArguments.Select( GetCSharpTypeName ).MakeString( "," ) );
-			stringBuilder.Append( '>' );
-			return stringBuilder.ToString();
-		}
-		return type.Namespace + '.' + type.Name.Replace( '+', '.' );
+		SysText.StringBuilder stringBuilder = new();
+		recurse( type, stringBuilder );
+		return stringBuilder.ToString();
 
-		static string getBaseTypeName( Sys.Type type )
+		static void recurse( Sys.Type type, SysText.StringBuilder stringBuilder )
 		{
-			string typeName = NotNull( type.GetGenericTypeDefinition().FullName );
-			int indexOfTick = typeName.LastIndexOf( '`' );
-			//Assert( indexOfTick == typeName.IndexOf2( '`' ) );
-			return typeName[..indexOfTick];
-		}
-	}
-
-	public static ListDictionary<K, V> ToListDictionary<T, K, V>( this IEnumerable<T> self, Sys.Func<T, K> keySelector, Sys.Func<T, V> elementSelector ) where K : notnull
-	{
-		if( self is ICollection<T> collection )
-		{
-			if( collection is T[] array )
-				return fromArray( array );
-			if( collection is List<T> list )
-				return fromList( list );
-		}
-		return fromEnumerable( self );
-
-		ListDictionary<K, V> fromEnumerable( IEnumerable<T> enumerable )
-		{
-			ListDictionary<K, V> d = new();
-			foreach( T element in enumerable )
-				d.Add( keySelector( element ), elementSelector( element ) );
-			return d;
-		}
-
-		ListDictionary<K, V> fromArray( T[] array )
-		{
-			ListDictionary<K, V> d = new();
-			foreach( T element in array )
-				d.Add( keySelector( element ), elementSelector( element ) );
-			return d;
-		}
-
-		ListDictionary<K, V> fromList( List<T> list )
-		{
-			ListDictionary<K, V> d = new();
-			foreach( T element in list )
-				d.Add( keySelector( element ), elementSelector( element ) );
-			return d;
+			if( type.IsArray )
+			{
+				recurse( type.GetElementType()!, stringBuilder );
+				stringBuilder.Append( '[' );
+				int highestRank = type.GetArrayRank() - 1;
+				for( int i = 0; i < highestRank; i++ )
+					stringBuilder.Append( ',' );
+				stringBuilder.Append( ']' );
+			}
+			else if( type.IsGenericType )
+			{
+				string typeName = type.GetGenericTypeDefinition().FullName!;
+				int indexOfTick = typeName.LastIndexOf( '`' );
+				stringBuilder.Append( typeName.AsSpan()[..indexOfTick] );
+				stringBuilder.Append( '<' );
+				bool first = true;
+				foreach( var typeArgument in type.GenericTypeArguments )
+				{
+					if( first )
+						first = false;
+					else
+						stringBuilder.Append( ',' );
+					recurse( typeArgument, stringBuilder );
+				}
+				stringBuilder.Append( '>' );
+			}
+			else
+			{
+				if( type.Namespace != null )
+				{
+					stringBuilder.Append( type.Namespace );
+					stringBuilder.Append( '.' );
+				}
+				stringBuilder.Append( type.Name.Replace( '+', '.' ) );
+			}
 		}
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// double
-
-	public static double Clamped( this double self, double min, double max )
-	{
-		Assert( min <= max );
-		if( self < min )
-			return min;
-		if( self > max )
-			return max;
-		return self;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// float
-
-	public static float Clamped( this float self, float min, float max )
-	{
-		Assert( min < max );
-		if( self < min )
-			return min;
-		if( self > max )
-			return max;
-		return self;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Math
 
 	// From https://stackoverflow.com/a/44203452/773113, with a few improvements
 	public static bool IsPrime( long number )
