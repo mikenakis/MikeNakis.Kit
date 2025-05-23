@@ -190,7 +190,7 @@ public static class DotNetHelpers
 
 	public static bool ListsEqual<T>( IList<T> a, IList<T> b )
 	{
-		if( ReferenceEquals( a, b ) )
+		if( a.ReferenceEquals( b ) )
 			return true;
 		int n = Math.Min( a.Count, b.Count );
 		for( int i = 0; i < n; i++ )
@@ -244,7 +244,7 @@ public static class DotNetHelpers
 	// TODO: make sure it works under all circumstances. Specifically, make sure it works with generics.
 	public static new bool Equals( object? a, object? b )
 	{
-		if( ReferenceEquals( a, b ) )
+		if( a.ReferenceEquals( b ) )
 			return true;
 		if( a == null || b == null )
 			return false;

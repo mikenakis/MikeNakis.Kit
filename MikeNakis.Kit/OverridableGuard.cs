@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using MikeNakis.Kit.Extensions;
+
 /// <summary>Guard for overridable methods that need to make sure that descendants will never forget to invoke base.</summary>
 public class OverridableGuard
 {
@@ -63,7 +65,7 @@ public class OverridableGuard
 
 		public void Dispose()
 		{
-			Assert( ReferenceEquals( overridableGuard.invocationStack.Peek(), this ) );
+			Assert( overridableGuard.invocationStack.Peek().ReferenceEquals( this ) );
 			overridableGuard.invocationStack.Pop();
 			if( !Invoked )
 			{

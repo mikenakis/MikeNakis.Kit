@@ -561,7 +561,7 @@ public static class KitHelpers
 				lines.AddRange( stackFrames.Select( stackFrame => stringFromStackFrame( stackFrame, sourceFileNameFixer ) ) );
 				if( exception is Sys.AggregateException aggregateException )
 				{
-					Assert( ReferenceEquals( exception.InnerException, aggregateException.InnerExceptions[0] ) );
+					Assert( exception.InnerException.ReferenceEquals( aggregateException.InnerExceptions[0] ) );
 					foreach( Sys.Exception innerException in aggregateException.InnerExceptions )
 						recurse( "Aggregates", lines, innerException, sourceFileNameFixer );
 					break;

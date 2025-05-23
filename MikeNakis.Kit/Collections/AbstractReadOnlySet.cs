@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
+using MikeNakis.Kit.Extensions;
+
 /// Abstract base class for implementations of <see cref="IReadOnlySet{T}"/>.
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public abstract class AbstractReadOnlySet<T> : AbstractReadOnlyCollection<T>, IReadOnlySet<T> where T : notnull
@@ -20,7 +22,7 @@ public abstract class AbstractReadOnlySet<T> : AbstractReadOnlyCollection<T>, IR
 	{
 		// The empty set is a subset of any set, and a set is a subset of itself.
 		// Set is always a subset of itself
-		if( Count == 0 || ReferenceEquals( other, this ) )
+		if( Count == 0 || other.ReferenceEquals( this ) )
 			return true;
 
 		(int uniqueCount, int unfoundCount) = checkUniqueAndUnfoundElements( other, returnIfUnfound: false );
@@ -31,7 +33,7 @@ public abstract class AbstractReadOnlySet<T> : AbstractReadOnlyCollection<T>, IR
 	public bool IsProperSubsetOf( IEnumerable<T> other )
 	{
 		// No set is a proper subset of itself.
-		if( ReferenceEquals( other, this ) )
+		if( other.ReferenceEquals( this ) )
 			return false;
 
 		if( other is ICollection<T> otherAsCollection )
@@ -53,7 +55,7 @@ public abstract class AbstractReadOnlySet<T> : AbstractReadOnlyCollection<T>, IR
 	public bool IsSupersetOf( IEnumerable<T> other )
 	{
 		// A set is always a superset of itself.
-		if( ReferenceEquals( other, this ) )
+		if( other.ReferenceEquals( this ) )
 			return true;
 
 		// Try to fall out early based on counts.
@@ -75,7 +77,7 @@ public abstract class AbstractReadOnlySet<T> : AbstractReadOnlyCollection<T>, IR
 	public bool IsProperSupersetOf( IEnumerable<T> other )
 	{
 		// The empty set isn't a proper superset of any set, and a set is never a strict superset of itself.
-		if( Count == 0 || ReferenceEquals( other, this ) )
+		if( Count == 0 || other.ReferenceEquals( this ) )
 			return false;
 
 		if( other is ICollection<T> otherAsCollection )
@@ -97,7 +99,7 @@ public abstract class AbstractReadOnlySet<T> : AbstractReadOnlyCollection<T>, IR
 			return false;
 
 		// Set overlaps itself
-		if( ReferenceEquals( other, this ) )
+		if( other.ReferenceEquals( this ) )
 			return true;
 
 		foreach( T element in other )
@@ -111,7 +113,7 @@ public abstract class AbstractReadOnlySet<T> : AbstractReadOnlyCollection<T>, IR
 	public bool SetEquals( IEnumerable<T> other )
 	{
 		// A set is equal to itself.
-		if( ReferenceEquals( other, this ) )
+		if( other.ReferenceEquals( this ) )
 			return true;
 
 		// If this count is 0 but other contains at least one element, they can't be equal.

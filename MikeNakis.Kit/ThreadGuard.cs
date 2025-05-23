@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using MikeNakis.Kit.Extensions;
+
 public abstract class ThreadGuard
 {
 	public static ThreadGuard Create()
@@ -34,9 +36,9 @@ public abstract class ThreadGuard
 			thread = SysThread.Thread.CurrentThread;
 		}
 
-		public override bool InThreadAssertion() => ReferenceEquals( SysThread.Thread.CurrentThread, thread );
+		public override bool InThreadAssertion() => SysThread.Thread.CurrentThread.ReferenceEquals( thread );
 
-		public override bool OutOfThreadAssertion() => !ReferenceEquals( SysThread.Thread.CurrentThread, thread );
+		public override bool OutOfThreadAssertion() => !SysThread.Thread.CurrentThread.ReferenceEquals( thread );
 
 		public override string ToString() => $"thread={thread}";
 	}

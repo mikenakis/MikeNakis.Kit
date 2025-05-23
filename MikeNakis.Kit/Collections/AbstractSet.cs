@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
+using MikeNakis.Kit.Extensions;
+
 /// Abstract base class for implementations of <see cref="ISet{T}"/>.
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public abstract class AbstractSet<T> : AbstractReadOnlySet<T>, ISet<T>, IReadOnlySet<T> where T : notnull
@@ -31,7 +33,7 @@ public abstract class AbstractSet<T> : AbstractReadOnlySet<T>, ISet<T>, IReadOnl
 	{
 		// Intersection of anything with empty set is empty set, so return if count is 0.
 		// Same if the set intersecting with itself is the same set.
-		if( Count == 0 || ReferenceEquals( other, this ) )
+		if( Count == 0 || other.ReferenceEquals( this ) )
 			return;
 
 		// If other is known to be empty, intersection is empty set; remove all elements, and we're done.
@@ -55,7 +57,7 @@ public abstract class AbstractSet<T> : AbstractReadOnlySet<T>, ISet<T>, IReadOnl
 			return;
 
 		// Special case if other is this; a set minus itself is the empty set.
-		if( ReferenceEquals( other, this ) )
+		if( other.ReferenceEquals( this ) )
 		{
 			Clear();
 			return;
@@ -77,7 +79,7 @@ public abstract class AbstractSet<T> : AbstractReadOnlySet<T>, ISet<T>, IReadOnl
 		}
 
 		// Special-case this; the symmetric difference of a set with itself is the empty set.
-		if( ReferenceEquals( other, this ) )
+		if( other.ReferenceEquals( this ) )
 		{
 			Clear();
 			return;

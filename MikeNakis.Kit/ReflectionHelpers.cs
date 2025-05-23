@@ -52,8 +52,10 @@ public static class ReflectionHelpers
 	{
 		if( b == null )
 			return false;
+#pragma warning disable RS0030 // Do not use banned APIs
 		if( ReferenceEquals( a, b ) )
 			return true;
+#pragma warning restore RS0030 // Do not use banned APIs
 		Sys.Type type = typeof( T );
 		Assert( a.GetType() == type );
 		Assert( b.GetType() == type );

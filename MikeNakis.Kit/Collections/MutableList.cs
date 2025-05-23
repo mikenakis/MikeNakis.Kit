@@ -476,7 +476,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 	// 					grow( checked(size + count) );
 	// 				if( index < size )
 	// 					Sys.Array.Copy( array, index, array, index + count, size - index );
-	// 				if( ReferenceEquals( array, mutableList.array ) )
+	// 				if( array.ReferenceEquals( mutableList.array ) )
 	// 				{
 	// 					Sys.Array.Copy( array, 0, array, index, index ); // Copy first part of array to insert location
 	// 					Sys.Array.Copy( array, index + count, array, index * 2, size - index ); // Copy last part of array back to inserted location

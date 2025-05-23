@@ -18,4 +18,16 @@ public static class StringExtensions
 	public static string ToUpper2( this string self ) => self.ToUpper( SysGlob.CultureInfo.InvariantCulture );
 	public static StringSlicer Slice( this string source, char separator ) => new( source, 0, source.Length, separator );
 	public static StringSlicer Slice( this string source, int start, int end, char separator ) => new( source, start, end, separator );
+
+	public static string SafeSubstring( this string self, int startIndex ) => self.SafeSubstring( startIndex, startIndex >= self.Length ? 0 : self.Length - startIndex );
+	public static string SafeSubstring( this string self, int startIndex, int length )
+	{
+		Assert( startIndex >= 0 );
+		Assert( length >= 0 );
+		if( startIndex > self.Length )
+			startIndex = self.Length;
+		if( length - startIndex > self.Length )
+			length = self.Length - startIndex;
+		return self.Substring( startIndex, length );
+	}
 }
