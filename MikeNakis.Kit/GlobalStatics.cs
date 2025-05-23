@@ -217,11 +217,6 @@ public static class GlobalStatics
 		}
 	}
 
-	[SysDiag.DebuggerHidden]
-#pragma warning disable CA1021 //CA1021: "Avoid `out` parameters"
-	public static void Cast<T, U>( this T input, out U output ) where U : T where T : class => output = (U)input;
-#pragma warning restore CA1021 //CA1021: "Avoid `out` parameters"
-
 	public static string S( Sys.FormattableString formattable )
 	{
 		return formattable.ToString( SysGlob.CultureInfo.InvariantCulture );
