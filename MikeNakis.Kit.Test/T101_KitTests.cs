@@ -2,6 +2,7 @@ namespace MikeNakis.Kit.Test;
 
 using MikeNakis.Kit;
 using MikeNakis.Kit.Collections;
+using MikeNakis.Kit.Extensions;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
@@ -135,6 +136,72 @@ public sealed class T101_KitTests
 				if( primeFlags[i] )
 					for( int j = i * i; j < primeFlags.Length; j += i )
 						primeFlags[j] = false;
+		}
+	}
+
+	[VSTesting.TestMethod]
+	public void T08_SafeSubstring_Works()
+	{
+		test( s => s.SafeSubstring( 0 ), "0123456789" );
+		test( s => s.SafeSubstring( 1 ), "123456789" );
+		test( s => s.SafeSubstring( 9 ), "9" );
+		test( s => s.SafeSubstring( 10 ), "" );
+		test( s => s.SafeSubstring( 11 ), "" );
+
+		test( s => s.SafeSubstring( 0, 0 ), "" );
+		test( s => s.SafeSubstring( 0, 1 ), "0" );
+		test( s => s.SafeSubstring( 0, 2 ), "01" );
+		test( s => s.SafeSubstring( 0, 9 ), "012345678" );
+		test( s => s.SafeSubstring( 0, 10 ), "0123456789" );
+		test( s => s.SafeSubstring( 0, 11 ), "0123456789" );
+
+		test( s => s.SafeSubstring( 1, 0 ), "" );
+		test( s => s.SafeSubstring( 1, 1 ), "1" );
+		test( s => s.SafeSubstring( 1, 2 ), "12" );
+		test( s => s.SafeSubstring( 1, 9 ), "123456789" );
+		test( s => s.SafeSubstring( 1, 10 ), "123456789" );
+
+		test( s => s.SafeSubstring( 8, 0 ), "" );
+		test( s => s.SafeSubstring( 8, 1 ), "8" );
+		test( s => s.SafeSubstring( 8, 2 ), "89" );
+		test( s => s.SafeSubstring( 8, 3 ), "89" );
+
+		test( s => s.SafeSubstring( 9, 0 ), "" );
+		test( s => s.SafeSubstring( 9, 1 ), "9" );
+		test( s => s.SafeSubstring( 9, 2 ), "9" );
+
+		test( s => s.SafeSubstring( 10, 0 ), "" );
+		test( s => s.SafeSubstring( 10, 1 ), "" );
+
+		test( s => s.SafeSubstring( 0, 0, true ), "" );
+		test( s => s.SafeSubstring( 0, 1, true ), "…" );
+		test( s => s.SafeSubstring( 0, 2, true ), "0…" );
+		test( s => s.SafeSubstring( 0, 9, true ), "01234567…" );
+		test( s => s.SafeSubstring( 0, 10, true ), "0123456789" );
+		test( s => s.SafeSubstring( 0, 11, true ), "0123456789" );
+
+		test( s => s.SafeSubstring( 1, 0, true ), "" );
+		test( s => s.SafeSubstring( 1, 1, true ), "…" );
+		test( s => s.SafeSubstring( 1, 2, true ), "1…" );
+		test( s => s.SafeSubstring( 1, 9, true ), "123456789" );
+		test( s => s.SafeSubstring( 1, 10, true ), "123456789" );
+
+		test( s => s.SafeSubstring( 8, 0, true ), "" );
+		test( s => s.SafeSubstring( 8, 1, true ), "…" );
+		test( s => s.SafeSubstring( 8, 2, true ), "89" );
+		test( s => s.SafeSubstring( 8, 3, true ), "89" );
+
+		test( s => s.SafeSubstring( 9, 0, true ), "" );
+		test( s => s.SafeSubstring( 9, 1, true ), "9" );
+		test( s => s.SafeSubstring( 9, 2, true ), "9" );
+
+		test( s => s.SafeSubstring( 10, 0, true ), "" );
+		test( s => s.SafeSubstring( 10, 1, true ), "" );
+
+		static void test( Sys.Func<string, string> converter, string expectedResult )
+		{
+			string actualResult = converter.Invoke( "0123456789" );
+			Assert( actualResult == expectedResult );
 		}
 	}
 }

@@ -19,15 +19,20 @@ public static class StringExtensions
 	public static StringSlicer Slice( this string source, char separator ) => new( source, 0, source.Length, separator );
 	public static StringSlicer Slice( this string source, int start, int end, char separator ) => new( source, start, end, separator );
 
-	public static string SafeSubstring( this string self, int startIndex ) => self.SafeSubstring( startIndex, startIndex >= self.Length ? 0 : self.Length - startIndex );
-	public static string SafeSubstring( this string self, int startIndex, int length )
+	public static string SafeSubstring( this string self, int start )
 	{
-		Assert( startIndex >= 0 );
+		return self.SafeSubstring( start, Math.Max( 0, self.Length - start ) );
+	}
+
+	public static string SafeSubstring( this string self, int start, int length, bool ellipsis = false )
+	{
+		Assert( start >= 0 );
 		Assert( length >= 0 );
-		if( startIndex > self.Length )
-			startIndex = self.Length;
-		if( length - startIndex > self.Length )
-			length = self.Length - startIndex;
-		return self.Substring( startIndex, length );
+		int safeStart = Math.Min( start, self.Length );
+		int remainingLength = self.Length - safeStart;
+		int safeLength = Math.Min( length, remainingLength );
+		if( ellipsis && safeLength < remainingLength && safeLength > 0 )
+			return string.Concat( self.AsSpan( safeStart, safeLength - 1 ), "\u2026" );
+		return self.Substring( safeStart, safeLength );
 	}
 }

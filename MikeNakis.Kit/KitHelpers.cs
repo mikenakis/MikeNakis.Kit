@@ -274,33 +274,33 @@ public static class KitHelpers
 			< 160 => false,
 			173 => false,
 			< 256 => true,
-			338 => true, // Œ
-			339 => true, // œ
-			352 => true, // Š
-			353 => true, // š
-			376 => true, // Ÿ
-			381 => true, // Ž
-			382 => true, // ž
-			402 => true, // ƒ
-			710 => true, // ˆ
-			732 => true, // ˜
-			8211 => true, // –
-			8212 => true, // —
-			8216 => true, // ‘
-			8217 => true, // ’
-			8218 => true, // ‚
-			8220 => true, // “
-			8221 => true, // ”
-			8222 => true, // „
-			8224 => true, // †
-			8225 => true, // ‡
-			8226 => true, // •
-			8230 => true, // …
-			8240 => true, // ‰
-			8249 => true, // ‹
-			8250 => true, // ›
-			8364 => true, // €
-			8482 => true, // ™
+			0x0152 => true, // Œ
+			0x0153 => true, // œ
+			0x0160 => true, // Š
+			0x0161 => true, // š
+			0x0178 => true, // Ÿ
+			0x017D => true, // Ž
+			0x017E => true, // ž
+			0x0192 => true, // ƒ
+			0x02C6 => true, // ˆ
+			0x02DC => true, // ˜
+			0x2013 => true, // –
+			0x2014 => true, // —
+			0x2018 => true, // ‘
+			0x2019 => true, // ’
+			0x201A => true, // ‚
+			0x201C => true, // “
+			0x201D => true, // ”
+			0x201E => true, // „
+			0x2020 => true, // †
+			0x2021 => true, // ‡
+			0x2022 => true, // •
+			0x2026 => true, // …
+			0x2030 => true, // ‰
+			0x2039 => true, // ‹
+			0x203A => true, // ›
+			0x20AC => true, // €
+			0x2122 => true, // ™
 			_ => false
 		};
 	}
@@ -584,7 +584,7 @@ public static class KitHelpers
 				stringBuilder.Append( "method " );
 				Sys.Type? declaringType = method.DeclaringType;
 				if( declaringType != null )
-					stringBuilder.Append( GetCSharpTypeName( declaringType ).Replace( '+', '.' ) ).Append( '.' );
+					stringBuilder.Append( declaringType.GetCSharpName() ).Append( '.' );
 				stringBuilder.Append( method.Name );
 				if( method is SysReflect.MethodInfo && method.IsGenericMethod )
 					stringBuilder.Append( '<' ).Append( method.GetGenericArguments().Select( a => a.Name ).MakeString( "," ) ).Append( '>' );
@@ -626,61 +626,6 @@ public static class KitHelpers
 			string message = lines.MakeString( "; " );
 			Log.MessageWithGivenLevel( logLevel, message );
 			return default!;
-		}
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// System.Type
-
-	// Obtains the full name of a type using C# notation.
-	// PEARL: DotNet represents the full names of types in a cryptic way which does not correspond to any language in particular:
-	//        - Generic types are suffixed with a back-quote character, followed by the number of generic parameters.
-	//        - Constructed generic types are further suffixed with a list of assembly-qualified type names, one for each generic parameter.
-	//        Plus, a nested class is denoted with the '+' sign. (Handling of which is TODO.)
-	//        This method returns the full name of a type using C#-specific notation instead of DotNet's cryptic notation.
-	public static string GetCSharpTypeName( Sys.Type type )
-	{
-		SysText.StringBuilder stringBuilder = new();
-		recurse( type, stringBuilder );
-		return stringBuilder.ToString();
-
-		static void recurse( Sys.Type type, SysText.StringBuilder stringBuilder )
-		{
-			if( type.IsArray )
-			{
-				recurse( type.GetElementType()!, stringBuilder );
-				stringBuilder.Append( '[' );
-				int highestRank = type.GetArrayRank() - 1;
-				for( int i = 0; i < highestRank; i++ )
-					stringBuilder.Append( ',' );
-				stringBuilder.Append( ']' );
-			}
-			else if( type.IsGenericType )
-			{
-				string typeName = type.GetGenericTypeDefinition().FullName!;
-				int indexOfTick = typeName.LastIndexOf( '`' );
-				stringBuilder.Append( typeName.AsSpan()[..indexOfTick] );
-				stringBuilder.Append( '<' );
-				bool first = true;
-				foreach( var typeArgument in type.GenericTypeArguments )
-				{
-					if( first )
-						first = false;
-					else
-						stringBuilder.Append( ',' );
-					recurse( typeArgument, stringBuilder );
-				}
-				stringBuilder.Append( '>' );
-			}
-			else
-			{
-				if( type.Namespace != null )
-				{
-					stringBuilder.Append( type.Namespace );
-					stringBuilder.Append( '.' );
-				}
-				stringBuilder.Append( type.Name.Replace( '+', '.' ) );
-			}
 		}
 	}
 

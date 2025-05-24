@@ -17,4 +17,8 @@
 		<Using Static="True" Include="MikeNakis.Kit.GlobalStatics" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="System.CodeDom" Version="9.0.5" />
+	</ItemGroup>
+	
 </Project>

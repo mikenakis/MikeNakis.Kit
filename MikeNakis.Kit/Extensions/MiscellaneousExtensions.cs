@@ -66,4 +66,9 @@ public static class MiscellaneousExtensions
 			return max;
 		return self;
 	}
+
+	public static string GetCSharpName( this Sys.Type type, bool useAliases = true )
+	{
+		return CSharpTypeNameGenerator.GetCSharpTypeName( type, useAliases );
+	}
 }
