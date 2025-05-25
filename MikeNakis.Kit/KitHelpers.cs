@@ -41,11 +41,15 @@ public static class KitHelpers
 			if( value == null )
 			{
 				//PEARL: In dotnet, all default conversions of `object` to `string` will convert `null` to the empty
-				//       string instead of the string "null". Thus, when we print a string, we can never tell whether it
-				//       was `null` or empty, because it always looks empty. We fix this here.
+				//       string instead of the string "null".
+				//       Thus, when we print a string, we can never tell whether it was `null` or empty, because it
+				//       always looks empty.
 				//       I guess this is happening because dotnet is also used by Visual Basic, and Visual Basic
-				//       programmers might have epileptic seizures if they see the word `null`.
-				Assert( $"{value}" == "" ); //Ensure that if the behavior of the runtime ever gets fixed, we will notice.
+				//       programmers might have epileptic seizures if they ever see the word `null`.
+				//       We fix this insanity here.
+				//       We begin by ensuring that the runtime behaves like that, so that if it ever gets fixed, we will
+				//       take notice. (Phat chance!)
+				Assert( $"{value}" == "" );
 				textConsumer.Write( "null" );
 			}
 			else if( value is char c )
@@ -98,11 +102,8 @@ public static class KitHelpers
 	public static Sys.Exception NewFormatException( string typeName, string content )
 	{
 		const int maxLength = 20;
-		string fixedContent = content;
-		fixedContent = SafeToString( fixedContent );
-		if( fixedContent.Length > maxLength )
-			fixedContent = fixedContent[..(maxLength - 1)] + "\u2026";
-		return new Sys.FormatException( $"Expected a value of type {typeName}, found {fixedContent}" );
+		string safeContent = SafeToString( content ).SafeSubstring( 0, maxLength );
+		return new Sys.FormatException( $"Expected a value of type {typeName}, found {safeContent}" );
 	}
 
 	public static void ScribeStringLiteral( char quoteCharacter, Sys.ReadOnlySpan<char> instance, TextConsumer textConsumer )
@@ -146,15 +147,6 @@ public static class KitHelpers
 		{
 			if( IsPrintable( c ) )
 				textConsumer.Write( new Sys.ReadOnlySpan<char>( in c ) );
-			else if( c < 256 ) // no need to check for >= 0 because char is unsigned.
-			{
-				Sys.Span<char> buffer = stackalloc char[4];
-				buffer[0] = '\\';
-				buffer[1] = 'x';
-				buffer[2] = digitFromNibble( c >> 4 );
-				buffer[3] = digitFromNibble( c & 0x0f );
-				textConsumer.Write( buffer );
-			}
 			else
 			{
 				Sys.Span<char> buffer = stackalloc char[6];
@@ -331,15 +323,6 @@ public static class KitHelpers
 	public static int IntFromEnum<T>( T enumValue ) where T : unmanaged, Sys.Enum => SysCompiler.Unsafe.BitCast<T, int>( enumValue );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Legacy IEnumerable
-
-	public static IEnumerable<T> LegacyAsEnumerable<T>( LegacyCollections.IEnumerable self )
-	{
-		foreach( T element in self )
-			yield return element;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// IReadOnlyList
 
 	public static int BinarySearch<E, T>( IReadOnlyList<E> list, T element, Sys.Func<E, T> extractor, IComparer<T> comparer, bool skipDuplicates )
@@ -397,18 +380,6 @@ public static class KitHelpers
 		return true;
 	}
 
-	public static int IndexOf<T>( IReadOnlyList<T> self, T elementToFind )
-	{
-		int i = 0;
-		foreach( T element in self )
-		{
-			if( DotNetHelpers.Equal( element, elementToFind ) )
-				return i;
-			i++;
-		}
-		return -1;
-	}
-
 	///<summary>Returns the number of elements from the start of the enumerable that are sorted. Essentially, it finds
 	///the index of the first out-of-order element.</summary>
 	static int sortedCount<E, T>( IEnumerable<E> enumerable, Sys.Func<E, T> extractor, IComparer<T> comparer, //
@@ -437,85 +408,6 @@ public static class KitHelpers
 			}
 			return i;
 		}
-	}
-
-	public static IEnumerable<T> Concat<T>( IEnumerable<T> self, IEnumerable<T> other )
-	{
-		// PEARL: ReSharper suggests to convert this call to an extension method call;
-		// if you do, it converts it and it thinks that it is invoking the extension method in Linq.Enumerable;
-		// however, the C# compiler thinks otherwise: it invokes this same method instead,
-		// which of course miserably fails with a stack overflow.
-		// the only solution I have been able to come up with is to disable the inspection.
-		// ReSharper disable once InvokeAsExtensionMethod
-		return Enumerable.Concat( self, other );
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// ICollection
-
-	public static void AddRange<T>( ICollection<T> self, IEnumerable<T> other )
-	{
-		foreach( T element in other )
-			self.Add( element );
-	}
-
-	public static bool AddRange<T>( ISet<T> self, IEnumerable<T> other )
-	{
-		bool added = false;
-		foreach( T element in other )
-			if( self.Add( element ) )
-				added = true;
-		return added;
-	}
-
-	//PEARL: the add-item-to-set method of DotNet is not really an "add" method, it is actually a "try-add" method,
-	//       because it returns a boolean to indicate success or failure. So, if we want a real "add" function which
-	//       will actually fail on failure, (duh!) we have to introduce it ourselves.  Unfortunately, since the name
-	//       `Add` is taken, we have to give the new function a different name.
-	public static void DoAdd<T>( ISet<T> self, T element )
-	{
-		bool ok = self.Add( element );
-		Assert( ok );
-	}
-
-	//PEARL: the remove-item-from-collection method of DotNet is not really a "remove" method, it is actually a
-	//       "try-remove" method, because it returns a boolean to indicate success or failure. So, if we want a real
-	//       "remove" function which will actually fail on failure, (duh!) we have to introduce it ourselves.
-	//       Unfortunately, since the name `Remove` is taken, we have to give the new function a different name.
-	public static void DoRemove<T>( ICollection<T> self, T element )
-	{
-		bool ok = self.Remove( element );
-		Assert( ok );
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Legacy IList
-
-	public static bool LegacyContains( LegacyCollections.IList self, object value )
-	{
-		foreach( object v in self )
-			if( Equals( v, value ) )
-				return true;
-		return false;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// IList
-
-	public static T ExtractAt<T>( IList<T> self, int index )
-	{
-		T result = self[index];
-		self.RemoveAt( index );
-		return result;
-	}
-
-	public static void Move<T>( IList<T> self, int oldIndex, int newIndex )
-	{
-		if( oldIndex == newIndex )
-			return;
-		T item = self[oldIndex];
-		self.RemoveAt( oldIndex );
-		self.Insert( newIndex, item );
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,7 +476,11 @@ public static class KitHelpers
 				stringBuilder.Append( "method " );
 				Sys.Type? declaringType = method.DeclaringType;
 				if( declaringType != null )
-					stringBuilder.Append( declaringType.GetCSharpName() ).Append( '.' );
+				{
+					if( declaringType.Namespace != null )
+						stringBuilder.Append( declaringType.Namespace ).Append( '.' );
+					stringBuilder.Append( declaringType.Name ).Append( '.' );
+				}
 				stringBuilder.Append( method.Name );
 				if( method is SysReflect.MethodInfo && method.IsGenericMethod )
 					stringBuilder.Append( '<' ).Append( method.GetGenericArguments().Select( a => a.Name ).MakeString( "," ) ).Append( '>' );

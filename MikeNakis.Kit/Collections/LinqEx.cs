@@ -127,30 +127,109 @@ public static class LinqEx
 	public static T[] ToArraySeriously<T>( this IEnumerable<T> self ) => self.ToArray();
 #pragma warning restore RS0030 // RS0030: "Do not use banned APIs"
 
-	public static int IndexOf<E>( this IReadOnlyList<E> self, E element ) => KitHelpers.IndexOf( self, element );
-	public static void AddRange<T>( this ICollection<T> self, IEnumerable<T> other ) => KitHelpers.AddRange( self, other );
-	public static bool AddRange<T>( this ISet<T> self, IEnumerable<T> other ) => KitHelpers.AddRange( self, other );
-	public static bool LegacyContains( this LegacyCollections.IList self, object value ) => KitHelpers.LegacyContains( self, value );
-	public static IEnumerable<T> Concat<T>( this IEnumerable<T> self, params T[] other ) => KitHelpers.Concat( self, other );
-	public static IEnumerable<T> LegacyAsEnumerable<T>( this LegacyCollections.IEnumerable self ) => KitHelpers.LegacyAsEnumerable<T>( self );
-	public static T ExtractAt<T>( this IList<T> self, int index ) => KitHelpers.ExtractAt( self, index );
+	public static int IndexOf<E>( this IReadOnlyList<E> self, E elementToFind )
+	{
+		int i = 0;
+		foreach( E element in self )
+		{
+			if( DotNetHelpers.Equal( element, elementToFind ) )
+				return i;
+			i++;
+		}
+		return -1;
+	}
+
+	public static void AddRange<T>( this ICollection<T> self, IEnumerable<T> other )
+	{
+		foreach( T element in other )
+			self.Add( element );
+	}
+
+	public static bool AddRange<T>( this ISet<T> self, IEnumerable<T> other )
+	{
+		bool added = false;
+		foreach( T element in other )
+			if( self.Add( element ) )
+				added = true;
+		return added;
+	}
+
+	public static bool LegacyContains( this LegacyCollections.IList self, object value )
+	{
+		foreach( object v in self )
+			if( Equals( v, value ) )
+				return true;
+		return false;
+	}
+
+	public static IEnumerable<T> Concat<T>( this IEnumerable<T> self, params T[] other )
+	{
+		// PEARL: ReSharper suggests to convert this call to an extension method call;
+		// if you do, it converts it and it thinks that it is invoking the extension method in Linq.Enumerable;
+		// however, the C# compiler thinks otherwise: it invokes this same method instead,
+		// which of course miserably fails with a stack overflow.
+		// the only solution I have been able to come up with is to disable the inspection.
+		// ReSharper disable once InvokeAsExtensionMethod
+		return Enumerable.Concat( self, other );
+	}
+
+	public static IEnumerable<T> LegacyAsEnumerable<T>( this LegacyCollections.IEnumerable self )
+	{
+		foreach( T element in self )
+			yield return element;
+	}
+
+	public static T ExtractAt<T>( this IList<T> self, int index )
+	{
+		T result = self[index];
+		self.RemoveAt( index );
+		return result;
+	}
+
 	//public static V Extract<K, V>( this IDictionary<K, V> self, K key ) => KitHelpers.Extract( self, key );
 	//public static V? TryExtract<K, V>( this IDictionary<K, V> self, K key ) where K : notnull where V : class => KitHelpers.TryExtract( self, key );
-	public static void DoAdd<T>( this ISet<T> self, T element ) => KitHelpers.DoAdd( self, element );
-	public static void DoRemove<T>( this ICollection<T> self, T element ) => KitHelpers.DoRemove( self, element );
 
-	//PEARL: the remove-item-from-dictionary method of DotNet is not really a "remove" method, it is actually a
-	//"try-remove" method, because it does not throw if the key is not found; instead, it returns a boolean to indicate
-	//success or failure. So, if we want a real "remove" function which will actually fail on failure, (duh!) we have to
-	//introduce it ourselves.  Unfortunately, the name `Remove` is taken, so we have to give the new function a
-	//different name.
+	//PEARL: the "add-item-to-set" method of DotNet is not really an "add" method, it is actually a "try-add" method,
+	//       because instead of failing if the item already exists, it returns a boolean to indicate what happened.
+	//       So, if we want a real "add" function which does not fail to fail, (duh!) we have to write it ourselves.
+	//       Unfortunately, the name `Add` is taken, so  we have to give the new function a different name.
+	public static void DoAdd<T>( this ISet<T> self, T element )
+	{
+		bool ok = self.Add( element );
+		Assert( ok );
+	}
+
+	//PEARL: the "remove-item-from-collection" method of DotNet is not really a "remove" method, it is actually a
+	//       "try-remove" method, because instead of failing if the item does not exist, it returns a boolean to
+	//       indicate what happened.
+	//       So, if we want a real "remove" function which does not fail to fail, (duh!) we have to write it ourselves.
+	//       Unfortunately, the name `Remove` is taken, so we have to give the new function a different name.
+	public static void DoRemove<T>( this ICollection<T> self, T element )
+	{
+		bool ok = self.Remove( element );
+		Assert( ok );
+	}
+
+	//PEARL: the "remove-item-from-dictionary" method of DotNet is not really a "remove" method, it is actually a
+	//       "try-remove" method, because instead of failing if the key is not found, it returns a boolean to indicate
+	//       what happened.
+	//       So, if we want a real "remove" function which does not fail to fail, (duh!) we have to write it ourselves.
+	//       Unfortunately, the name `Remove` is taken, so we have to give the new function a different name.
 	public static void DoRemove<K, V>( this IDictionary<K, V> self, K key )
 	{
 		bool ok = self.Remove( key );
 		Assert( ok );
 	}
 
-	public static void Move<T>( this IList<T> self, int oldIndex, int newIndex ) => KitHelpers.Move( self, oldIndex, newIndex );
+	public static void Move<T>( this IList<T> self, int oldIndex, int newIndex )
+	{
+		if( oldIndex == newIndex )
+			return;
+		T item = self[oldIndex];
+		self.RemoveAt( oldIndex );
+		self.Insert( newIndex, item );
+	}
+
 	//public static V? TryGet<K, V>( this IDictionary<K, V> self, K key ) where K : notnull where V : notnull => KitHelpers.TryGet( self, key );
 	public static bool ContainsAll<T>( this ICollection<T> self, IEnumerable<T> items ) => items.All( self.Contains );
 	public static bool ContainsAny<T>( this ICollection<T> self, IEnumerable<T> items ) => items.Any( self.Contains );

@@ -17,9 +17,9 @@ public sealed class T101_KitTests
 		Assert( KitHelpers.SafeToString( "" ) == "\"\"" );
 		Assert( KitHelpers.SafeToString( "x" ) == "\"x\"" );
 		Assert( KitHelpers.SafeToString( 'x' ) == "\'x\'" );
-		Assert( KitHelpers.SafeToString( "\x1a" ) == "\"\\x1a\"" );
+		Assert( KitHelpers.SafeToString( "\x1a" ) == "\"\\u001a\"" );
 		Assert( KitHelpers.SafeToString( "\x0a" ) == "\"\\n\"" );
-		Assert( KitHelpers.SafeToString( '\x1a' ) == "'\\x1a'" );
+		Assert( KitHelpers.SafeToString( '\x1a' ) == "'\\u001a'" );
 		Assert( KitHelpers.SafeToString( '\x0a' ) == "'\\n'" );
 	}
 
