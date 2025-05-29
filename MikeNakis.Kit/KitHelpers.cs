@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit;
 
+using MikeNakis.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.Logging;
@@ -56,6 +57,8 @@ public static class KitHelpers
 				EscapeForCSharp( c, textConsumer );
 			else if( value is string s )
 				EscapeForCSharp( s, textConsumer );
+			else if( value is Sys.Type t )
+				textConsumer.Write( t.GetCSharpName() );
 			else if( value is LegacyCollections.IEnumerable enumerable )
 				enumerable.Cast<object>().MakeString( recurse, "[ ", ", ", " ]", "[]", textConsumer );
 			else if( value.GetType().IsValueType || visitedObjects.Add( value ) )
