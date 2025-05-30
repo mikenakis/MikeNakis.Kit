@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit;
 
+using MikeNakis.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 
@@ -77,7 +78,7 @@ public static class GlobalStatics
 	public static char CharToUpper( char c ) => char.ToUpper( c, SysGlob.CultureInfo.InvariantCulture );
 	public static string StringFormat( [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.CompositeFormat )] string format, params object?[] arguments ) => string.Format( SysGlob.CultureInfo.InvariantCulture, format, arguments );
 
-	public static string Id<T>( T instance ) where T : class => $"{CSharpTypeNames.Generator.GetCSharpTypeName( instance.GetType(), CSharpTypeNames.Options.OmitNamespaces )}@{DotNetHelpers.IdentityHashCode( instance ).ToString2( "x8" )}";
+	public static string Id<T>( T instance ) where T : class => $"{instance.GetType().GetCSharpName( CSharpTypeNames.Options.NoNamespaces )}@{DotNetHelpers.IdentityHashCode( instance ).ToString2( "x8" )}";
 
 	/// <summary>Performs an assertion.</summary>
 	/// <remarks>Invokes the supplied <paramref name="check" /> function, passing it the supplied <paramref name="value"/>.
@@ -85,7 +86,8 @@ public static class GlobalStatics
 	/// then the <paramref name="value"/> is passed to the supplied <paramref name="exceptionFactory"/> function, and the returned <see cref="Sys.Exception"/> is thrown.
 	/// (Though the factory may just as well throw the exception instead of returning it.)
 	/// This function is only executed (and the supplied <paramref name="value"/> is only evaluated) when running a debug build.</remarks>
-	[SysDiag.DebuggerHidden, SysDiag.Conditional( "DEBUG" )]
+	[SysDiag.DebuggerNonUserCode]
+	[/*SysDiag.DebuggerHidden,*/ SysDiag.Conditional( "DEBUG" )]
 	public static void Assert<T>( T value, Sys.Func<T, bool> check, Sys.Func<T, Sys.Exception> exceptionFactory )
 	{
 		if( check.Invoke( value ) )
@@ -97,7 +99,8 @@ public static class GlobalStatics
 	/// <remarks>If the given <paramref name="condition"/> is <c>false</c>, the supplied <paramref name="exceptionFactory"/> is invoked, and the returned <see cref="Sys.Exception"/> is thrown.
 	/// (Though the factory may just as well throw the exception instead of returning it.)
 	/// This function is only executed (and the supplied <paramref name="condition"/> is only evaluated) when running a debug build.</remarks>
-	[SysDiag.DebuggerHidden, SysDiag.Conditional( "DEBUG" )]
+	[SysDiag.DebuggerNonUserCode]
+	[/*SysDiag.DebuggerHidden,*/ SysDiag.Conditional( "DEBUG" )]
 	public static void Assert( [SysCodeAnalysis.DoesNotReturnIf( false )] bool condition, Sys.Func<Sys.Exception> exceptionFactory ) //
 	{
 		if( condition )
@@ -108,7 +111,8 @@ public static class GlobalStatics
 	/// <summary>Performs an assertion.</summary>
 	/// <remarks>If the given <paramref name="condition"/> is <c>false</c>, an <see cref="AssertionFailureException"/> is thrown.
 	/// This function is only executed (and the supplied <paramref name="condition"/> is only evaluated) when running a debug build.</remarks>
-	[SysDiag.DebuggerHidden, SysDiag.Conditional( "DEBUG" )]
+	[SysDiag.DebuggerNonUserCode]
+	[/*SysDiag.DebuggerHidden,*/ SysDiag.Conditional( "DEBUG" )]
 	public static void Assert( [SysCodeAnalysis.DoesNotReturnIf( false )] bool condition ) //
 	{
 		if( condition )
