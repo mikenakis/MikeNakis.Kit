@@ -69,9 +69,9 @@ public sealed class FilePath : FileSystemPath
 
 	public string Extension => SysIoGetExtension( Path );
 	public DirectoryPath GetDirectoryPath() => DirectoryPath.FromAbsolutePath( SysIoGetDirectoryName( Path )! );
-	public string GetFileNameAndExtension() => NotNull( SysIoGetFileName( Path ) );
-	public string GetFileNameWithoutExtension() => NotNull( SysIoGetFileNameWithoutExtension( Path ) );
-	public DirectoryPath Directory => DirectoryPath.FromAbsolutePath( NotNull( SysIoGetParent( Path )! ).FullName );
+	public string GetFileNameAndExtension() => SysIoGetFileName( Path ).OrThrow();
+	public string GetFileNameWithoutExtension() => SysIoGetFileNameWithoutExtension( Path ).OrThrow();
+	public DirectoryPath Directory => DirectoryPath.FromAbsolutePath( SysIoGetParent( Path ).OrThrow().FullName );
 	public SysIo.FileInfo FileInfo => new( Path );
 	public bool StartsWith( DirectoryPath other ) => Path.StartsWithIgnoreCase( other.Path );
 	public bool EndsWith( string suffix ) => Path.EndsWithIgnoreCase( suffix );

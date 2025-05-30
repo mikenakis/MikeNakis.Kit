@@ -268,6 +268,17 @@ public static class LinqEx
 		}
 	}
 
+	// See Stack Overflow: How to combine `Select` and `Where` https://stackoverflow.com/q/75844910/773113
+	public static IEnumerable<R> SelectWhereNotNull<T, R>( this IEnumerable<T> source, Sys.Func<T, R?> selector ) where T : notnull
+	{
+		foreach( T item in source )
+		{
+			R? value = selector( item );
+			if( value != null )
+				yield return value;
+		}
+	}
+
 	public static bool UpdateFrom<K, V>( this IDictionary<K, V> self, IReadOnlyDictionary<K, V> other ) where K : notnull
 	{
 		bool changed = false;

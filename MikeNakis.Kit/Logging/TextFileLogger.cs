@@ -77,7 +77,7 @@ public class TextFileLogger : Logger
 		Log.Debug( $"Archiving {logPathName} to {archivedLogPathName}" );
 		logPathName.CopyTo( archivedLogPathName );
 		KitHelpers.SwallowException( LogLevel.Warn, "Log file truncation", logPathName.Truncate );
-		KitHelpers.SwallowException( LogLevel.Warn, "Log file touch", () => logPathName.SetCreationTime( DotNetHelpers.GetWallClockTime() ) );
+		KitHelpers.SwallowException( LogLevel.Warn, "Log file touch", () => logPathName.SetCreationTime( DotNetHelpers.GetWallClockTimeUtc() ) );
 	}
 
 	static SysIo.TextWriter openLogFile( FilePath filePath )
@@ -103,7 +103,7 @@ public class TextFileLogger : Logger
 	public void DeleteOld( Sys.TimeSpan maxAge, int minToKeep, int maxToKeep, long maxSize )
 	{
 		Assert( minToKeep <= maxToKeep );
-		Sys.DateTime cutOffTime = DotNetHelpers.GetWallClockTime() - maxAge;
+		Sys.DateTime cutOffTime = DotNetHelpers.GetWallClockTimeUtc() - maxAge;
 		long totalSize = 0;
 		int number = 0;
 		IEnumerable<SysIo.FileInfo> sortedFileInfos = getSortedFileInfos( logDirectory, prefix );

@@ -38,8 +38,8 @@ public sealed class DirectoryPath : FileSystemPath
 			: base( path )
 	{ }
 
-	public string GetDirectoryName() => NotNull( SysIoGetFileName( Path ) );
-	public DirectoryPath GetParent() => new( NotNull( SysIoGetParent( Path )! ).FullName );
+	public string GetDirectoryName() => SysIoGetFileName( Path ).OrThrow();
+	public DirectoryPath GetParent() => new( SysIoGetParent( Path ).OrThrow().FullName );
 	public bool StartsWith( DirectoryPath other ) => Path.StartsWithIgnoreCase( other.Path );
 	public string GetRelativePath( DirectoryPath fullPath ) => SysIoGetRelativePath( Path, fullPath.Path );
 	public string GetRelativePath( FilePath fullPath ) => SysIoGetRelativePath( Path, fullPath.Path );

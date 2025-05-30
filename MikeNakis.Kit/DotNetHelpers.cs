@@ -111,7 +111,7 @@ public static class DotNetHelpers
 
 	public static FilePath GetMainModuleFilePath()
 	{
-		SysDiag.ProcessModule mainModule = NotNull( SysDiag.Process.GetCurrentProcess().MainModule );
+		SysDiag.ProcessModule mainModule = SysDiag.Process.GetCurrentProcess().MainModule.OrThrow();
 		// PEARL: System.Diagnostics.Process.GetCurrentProcess().MainModule.Filename is not a filename, it is a pathname!
 		string fullPathName = mainModule.FileName;
 		return FilePath.FromAbsolutePath( fullPathName );
@@ -128,7 +128,7 @@ public static class DotNetHelpers
 
 	static string getMainModuleName()
 	{
-		string mainModuleName = NotNull( SysDiag.Process.GetCurrentProcess().MainModule ).ModuleName;
+		string mainModuleName = SysDiag.Process.GetCurrentProcess().MainModule.OrThrow().ModuleName;
 		const string exeExtension = ".exe";
 		Assert( mainModuleName.EndsWithIgnoreCase( exeExtension ) );
 		return mainModuleName[..^exeExtension.Length];
@@ -406,7 +406,7 @@ public static class DotNetHelpers
 		if( jagged.GetLength( 0 ) > 0 )
 			for( ; dimension > 0; dimension-- )
 			{
-				jagged = (Sys.Array)NotNull( jagged.GetValue( 0 ) );
+				jagged = (Sys.Array)jagged.GetValue( 0 ).OrThrow();
 				Assert( jagged.Rank == 1 ); //nested array must also be a jagged array
 			}
 		return jagged.GetLength( 0 );
@@ -436,11 +436,11 @@ public static class DotNetHelpers
 				return length;
 			if( dimension == rank - 1 )
 				return length;
-			Sys.Array firstJaggedChild = (Sys.Array)NotNull( jagged.GetValue( 0 ) );
+			Sys.Array firstJaggedChild = (Sys.Array)jagged.GetValue( 0 ).OrThrow();
 			int firstChildLength = recurse( dimension + 1, firstJaggedChild );
 			for( int index = 1; index < length; index++ )
 			{
-				Sys.Array anotherJaggedChild = (Sys.Array)NotNull( jagged.GetValue( index ) );
+				Sys.Array anotherJaggedChild = (Sys.Array)jagged.GetValue( index ).OrThrow();
 				int anotherChildLength = recurse( dimension + 1, anotherJaggedChild );
 				Assert( firstChildLength == anotherChildLength );
 			}
@@ -498,7 +498,7 @@ public static class DotNetHelpers
 				if( dimension == multiDimensional.Rank - 1 )
 					multiDimensional.SetValue( jagged.GetValue( index ), indices );
 				else
-					recurse( dimension + 1, (Sys.Array)NotNull( jagged.GetValue( index ) ) );
+					recurse( dimension + 1, (Sys.Array)jagged.GetValue( index ).OrThrow() );
 			}
 		}
 	}
@@ -830,7 +830,7 @@ public static class DotNetHelpers
 		string fullResourceName;
 		if( locatorType == null )
 		{
-			locatorAssembly = NotNull( SysReflect.Assembly.GetEntryAssembly() );
+			locatorAssembly = SysReflect.Assembly.GetEntryAssembly().OrThrow();
 			fullResourceName = resourceName;
 		}
 		else
@@ -891,12 +891,12 @@ public static class DotNetHelpers
 				while( !process.StandardOutput.EndOfStream )
 				{
 					string? line = process.StandardOutput.ReadLine();
-					yield return (false, NotNull( line )); // should never be null because we check for end-of-stream
+					yield return (false, line.OrThrow()); // should never be null because we check for end-of-stream
 				}
 				while( !process.StandardError.EndOfStream )
 				{
-					string line = NotNull( process.StandardError.ReadLine() ); // should never be null because we check for end-of-stream
-					yield return (true, NotNull( line ));
+					string? line = process.StandardError.ReadLine();
+					yield return (true, line.OrThrow()); // should never be null because we check for end-of-stream
 				}
 				process.WaitForExit();
 				if( process.ExitCode != 0 )
@@ -909,43 +909,9 @@ public static class DotNetHelpers
 		}
 	}
 
-	public static string GetFriendlyTypeName( Sys.Type type, bool includeNamespace )
-	{
-		Sys.Type? underlyingType = Sys.Nullable.GetUnderlyingType( type );
-		if( underlyingType != null )
-			return GetFriendlyTypeName( underlyingType, includeNamespace ) + "?";
-		if( type.IsArray )
-			return GetFriendlyTypeName( NotNull( type.GetElementType() ), includeNamespace ) + "[]";
-		if( type.IsGenericParameter )
-			return type.Name;
-		if( type.IsGenericType )
-		{
-			SysText.StringBuilder builder = new();
-			if( includeNamespace )
-				builder.Append( type.Namespace ).Append( '.' );
-			builder.Append( nonGenericName( type ) );
-			builder.Append( '<' );
-			builder.Append( type.GetGenericArguments().Select( type => GetFriendlyTypeName( type, includeNamespace ) ).MakeString( "," ) );
-			builder.Append( '>' );
-			return builder.ToString();
-		}
-		if( type.DeclaringType != null )
-			return GetFriendlyTypeName( type.DeclaringType, includeNamespace ) + "." + type.Name;
-		return includeNamespace ? NotNull( type.FullName ) : type.Name;
-
-		static string nonGenericName( Sys.Type type )
-		{
-			Assert( type.IsGenericType );
-			string name = type.Name;
-			int index = name.IndexOf2( '`' );
-			Assert( index != -1 );
-			return name[..index];
-		}
-	}
-
 	/// CAUTION: do not use this method unless you really know what you are doing.
 #pragma warning disable RS0030 // Do not use banned APIs
-	public static Sys.DateTime GetWallClockTime() => Sys.DateTime.UtcNow;
+	public static Sys.DateTime GetWallClockTimeUtc() => Sys.DateTime.UtcNow;
 #pragma warning restore RS0030 // Do not use banned APIs
 
 	/// CAUTION: returns 1 for char.

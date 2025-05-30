@@ -12,7 +12,7 @@ public abstract class FileSystemPath
 
 	public static bool IsNormalized( string path )
 	{
-		//Assert( path == SysIo.Path.Combine( NotNull( SysIo.Path.GetDirectoryName( path ) ), SysIo.Path.GetFileName( path ) ) ); Does not work with UNC paths. The following line, however, does.
+		//Assert( path == SysIo.Path.Combine( SysIo.Path.GetDirectoryName( path ).OrThrow(), SysIo.Path.GetFileName( path ) ) ); Does not work with UNC paths. The following line, however, does.
 		return SysIoGetFullPath( path ) == path;
 	}
 
@@ -91,7 +91,7 @@ public abstract class FileSystemPath
 		}
 		catch( Sys.Exception exception )
 		{
-			throw MapException( exception, path, NotNull( operationName ) );
+			throw MapException( exception, path, operationName.OrThrow() );
 		}
 	}
 
@@ -154,7 +154,7 @@ public abstract class FileSystemPath
 		string path = fileSystemInfo.FullName;
 		if( path.StartsWith2( "//" ) || path.StartsWith2( @"\\" ) )
 			return true; // is a UNC path
-		string rootPath = NotNull( SysIoGetPathRoot( path ) ); // get drive letter or \\host\share (will not return null because `path` is not null)
+		string rootPath = SysIoGetPathRoot( path ).OrThrow(); // get drive letter or \\host\share (will not return null because `path` is not null)
 		SysIo.DriveInfo driveInfo = new( rootPath ); // get info about the drive
 		return driveInfo.DriveType == SysIo.DriveType.Network; // return true if a network drive
 	}

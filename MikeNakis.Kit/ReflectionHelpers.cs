@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using MikeNakis.Kit.Extensions;
+
 public static class ReflectionHelpers
 {
 	public static SysReflect.PropertyInfo? TryGetPropertyInfo( Sys.Type containingType, string propertyName ) //
@@ -7,7 +9,7 @@ public static class ReflectionHelpers
 
 	public static SysReflect.MethodInfo? TryGetMethodInfo( Sys.Type containingType, string methodName ) => containingType.GetMethod( methodName, SysReflect.BindingFlags.Instance | SysReflect.BindingFlags.Public | SysReflect.BindingFlags.NonPublic );
 
-	public static SysReflect.PropertyInfo GetPropertyInfo( Sys.Type containingType, string propertyName ) => NotNull( TryGetPropertyInfo( containingType, propertyName ) );
+	public static SysReflect.PropertyInfo GetPropertyInfo( Sys.Type containingType, string propertyName ) => TryGetPropertyInfo( containingType, propertyName ).OrThrow();
 
 	public static Sys.Type GetPropertyType( Sys.Type containingType, string propertyName )
 	{
@@ -24,13 +26,13 @@ public static class ReflectionHelpers
 	public static T CreateInstanceInAppDomain<T>( Sys.AppDomain newAppDomain, object?[] arguments ) where T : Sys.MarshalByRefObject
 	{
 		Sys.Type type = typeof( T );
-		string assemblyName = NotNull( type.Assembly.FullName );
-		string typeName = NotNull( type.FullName );
+		string assemblyName = type.Assembly.FullName.OrThrow();
+		string typeName = type.FullName.OrThrow();
 		Assert( type.GetConstructors().Any( constructorInfo => constructorMatchesArguments( constructorInfo, arguments ) ) );
 		object? instance = newAppDomain.CreateInstanceAndUnwrap( assemblyName: assemblyName, typeName: typeName, ignoreCase: false, //
 				bindingAttr: SysReflect.BindingFlags.Instance | SysReflect.BindingFlags.Public | SysReflect.BindingFlags.CreateInstance, binder: null, args: arguments, //
 				culture: SysGlob.CultureInfo.InvariantCulture, activationAttributes: null );
-		return (T)NotNull( instance );
+		return (T)instance.OrThrow();
 	}
 
 	static bool constructorMatchesArguments( SysReflect.ConstructorInfo constructorInfo, object?[] arguments )

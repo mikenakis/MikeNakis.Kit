@@ -35,10 +35,6 @@ public static class GlobalStatics
 	///<remarks>Useful for use as a lambda.</remarks>
 	public static bool IsNull<T>( T? nullable ) => nullable is null;
 
-	///<summary>Returns <c>true</c> if a given nullable is not <c>null</c>.</summary>
-	///<remarks>Useful for use as a lambda.</remarks>
-	public static bool IsNotNull<T>( T? nullable ) => nullable is not null;
-
 	///<summary>Compares two <c>double</c> values for approximate equality.</summary>
 	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
 	public static bool DoubleEquals( double a, double b, double? tolerance = null )
@@ -81,7 +77,7 @@ public static class GlobalStatics
 	public static char CharToUpper( char c ) => char.ToUpper( c, SysGlob.CultureInfo.InvariantCulture );
 	public static string StringFormat( [SysCodeAnalysis.StringSyntax( SysCodeAnalysis.StringSyntaxAttribute.CompositeFormat )] string format, params object?[] arguments ) => string.Format( SysGlob.CultureInfo.InvariantCulture, format, arguments );
 
-	public static string Id<T>( T o ) where T : class => $"{DotNetHelpers.GetFriendlyTypeName( o.GetType(), false )}@{DotNetHelpers.IdentityHashCode( o ).ToString2( "x8" )}";
+	public static string Id<T>( T instance ) where T : class => $"{CSharpTypeNames.Generator.GetCSharpTypeName( instance.GetType(), CSharpTypeNames.Options.OmitNamespaces )}@{DotNetHelpers.IdentityHashCode( instance ).ToString2( "x8" )}";
 
 	/// <summary>Performs an assertion.</summary>
 	/// <remarks>Invokes the supplied <paramref name="check" /> function, passing it the supplied <paramref name="value"/>.
@@ -131,38 +127,6 @@ public static class GlobalStatics
 				return;
 		}
 		throw exception;
-	}
-
-	/// <summary>Returns the supplied pointer unchanged, while asserting that it is non-<c>null</c>.</summary>
-	[SysDiag.DebuggerHidden]
-	public static T NotNull<T>( T? nullableReference ) where T : class //
-	{
-		Assert( nullableReference != null );
-		return nullableReference;
-	}
-
-	/// <summary>Returns the supplied pointer unchanged, while asserting that it is non-<c>null</c>.</summary>
-	[SysDiag.DebuggerHidden]
-	public static T NotNull<T>( T? nullableReference, Sys.Func<Sys.Exception> exceptionFactory ) where T : class //
-	{
-		Assert( nullableReference != null, exceptionFactory );
-		return nullableReference;
-	}
-
-	/// <summary>Converts a nullable value to non-nullable, while asserting that it is non-<c>null</c>.</summary>
-	[SysDiag.DebuggerHidden]
-	public static T NotNull<T>( T? nullableValue ) where T : struct //
-	{
-		Assert( nullableValue.HasValue );
-		return nullableValue.Value;
-	}
-
-	/// <summary>Converts a nullable value to non-nullable, while asserting that it is non-<c>null</c>.</summary>
-	[SysDiag.DebuggerHidden]
-	public static T NotNull<T>( T? nullableValue, Sys.Func<Sys.Exception> exceptionFactory ) where T : struct //
-	{
-		Assert( nullableValue.HasValue, exceptionFactory );
-		return nullableValue.Value;
 	}
 
 	/// <summary>If a debugger is attached, hits a breakpoint and returns <c>true</c>; otherwise, returns <c>false</c></summary>

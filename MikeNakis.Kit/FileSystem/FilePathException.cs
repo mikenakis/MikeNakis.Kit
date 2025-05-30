@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit.FileSystem;
 
+using MikeNakis.Kit.Extensions;
+
 ///<summary>Base class for file-system exceptions.</summary>
 public abstract class FilePathException : SaneException
 {
@@ -25,7 +27,7 @@ public class FilePathWrapperException : FilePathException
 			: base( path, operationName, innerException )
 	{ }
 
-	public override string Message => $"{base.Message}; InnerException = {NotNull( InnerException ).GetType().Name}: \"{InnerException!.Message}\"";
+	public override string Message => $"{base.Message}; InnerException = {InnerException.OrThrow().GetType().Name}: \"{InnerException!.Message}\"";
 }
 
 ///<summary>Indicates that the caller does not have the required permission to access a certain resource.</summary>

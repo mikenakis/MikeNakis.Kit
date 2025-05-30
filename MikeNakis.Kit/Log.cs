@@ -8,35 +8,35 @@ public static class Log
 {
 	public static void Debug( string message, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> fixAndLogMessage( LogLevel.Debug, DotNetHelpers.GetWallClockTime(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> fixAndLogMessage( LogLevel.Debug, DotNetHelpers.GetWallClockTimeUtc(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	public static void Info( string message, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> fixAndLogMessage( LogLevel.Info, DotNetHelpers.GetWallClockTime(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> fixAndLogMessage( LogLevel.Info, DotNetHelpers.GetWallClockTimeUtc(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	public static void Warn( string message, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> fixAndLogMessage( LogLevel.Warn, DotNetHelpers.GetWallClockTime(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> fixAndLogMessage( LogLevel.Warn, DotNetHelpers.GetWallClockTimeUtc(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	public static void Error( string message, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> fixAndLogMessage( LogLevel.Error, DotNetHelpers.GetWallClockTime(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> fixAndLogMessage( LogLevel.Error, DotNetHelpers.GetWallClockTimeUtc(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	public static void MessageWithGivenLevel( LogLevel logLevel, string message, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> fixAndLogMessage( logLevel, DotNetHelpers.GetWallClockTime(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> fixAndLogMessage( logLevel, DotNetHelpers.GetWallClockTimeUtc(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	public static void Warn( string prefix, Sys.Exception exception, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> logRawMessage( LogLevel.Warn, DotNetHelpers.GetWallClockTime(), buildLongExceptionMessage( prefix, exception ), sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> logRawMessage( LogLevel.Warn, DotNetHelpers.GetWallClockTimeUtc(), buildLongExceptionMessage( prefix, exception ), sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	public static void Error( string prefix, Sys.Exception exception, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> logRawMessage( LogLevel.Error, DotNetHelpers.GetWallClockTime(), buildLongExceptionMessage( prefix, exception ), sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> logRawMessage( LogLevel.Error, DotNetHelpers.GetWallClockTimeUtc(), buildLongExceptionMessage( prefix, exception ), sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	public static void LogRawMessage( LogLevel logLevel, string message, //
 			[SysCompiler.CallerFilePath] string? sourceFilePathName = null, [SysCompiler.CallerLineNumber] int sourceLineNumber = 0 ) //
-		=> logRawMessage( logLevel, DotNetHelpers.GetWallClockTime(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
+		=> logRawMessage( logLevel, DotNetHelpers.GetWallClockTimeUtc(), message, sourceFilePathName.OrThrow(), sourceLineNumber );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
