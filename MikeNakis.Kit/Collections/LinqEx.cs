@@ -307,4 +307,9 @@ public static class LinqEx
 	}
 
 	public static T? LastOrDefault<T>( this IReadOnlyList<T> self ) => self.Count == 0 ? default : self[^1];
+
+	public static IEnumerable<R> Select2<K, V, R>( this IReadOnlyDictionary<K, V> source, Sys.Func<K, V, R> selector ) where K : notnull
+	{
+		return source.Select( keyValuePair => selector.Invoke( keyValuePair.Key, keyValuePair.Value ) );
+	}
 }
