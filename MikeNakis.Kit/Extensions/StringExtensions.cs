@@ -24,15 +24,17 @@ public static class StringExtensions
 		return self.SafeSubstring( start, Math.Max( 0, self.Length - start ) );
 	}
 
-	public static string SafeSubstring( this string self, int start, int length, bool ellipsis = false )
+	public static string SafeSubstring( this string self, int start, int length, bool useEllipsis = false )
 	{
+		const string ellipsis = "\u2026"; //Unicode "Horizontal Ellipsis"
+
 		Assert( start >= 0 );
 		Assert( length >= 0 );
 		int safeStart = Math.Min( start, self.Length );
 		int remainingLength = self.Length - safeStart;
 		int safeLength = Math.Min( length, remainingLength );
-		if( ellipsis && safeLength < remainingLength && safeLength > 0 )
-			return string.Concat( self.AsSpan( safeStart, safeLength - 1 ), "\u2026" );
+		if( useEllipsis && safeLength < remainingLength && safeLength > 0 )
+			return string.Concat( self.AsSpan( safeStart, safeLength - 1 ), ellipsis );
 		return self.Substring( safeStart, safeLength );
 	}
 }

@@ -21,39 +21,19 @@ public sealed class T101_KitTests
 		Assert( KitHelpers.SafeToString( "\x0a" ) == "\"\\n\"" );
 		Assert( KitHelpers.SafeToString( '\x1a' ) == "'\\u001a'" );
 		Assert( KitHelpers.SafeToString( '\x0a' ) == "'\\n'" );
+		Assert( KitHelpers.SafeToString( typeof( int ) ) == "int" );
+		Assert( KitHelpers.SafeToString( typeof( Sys.DateTime ) ) == "struct System.DateTime" );
 	}
 
 	[VSTesting.TestMethod]
 	public void T02_My_MutableList_Equals_Works()
 	{
-		Assert( createAndCompare( createMutableList ) );
+		IEnumerable<int> enumerable1 = createMutableList();
+		IEnumerable<int> enumerable2 = createMutableList();
+		Assert( enumerable1.Equals( enumerable2 ) );
 		return;
 
 		static IEnumerable<int> createMutableList() => new MutableList<int>( EnumerableOf( 1, 2, 3 ) ).AsEnumerable;
-	}
-
-	[VSTesting.TestMethod]
-	public void T03_Collection_Expressions_Are_Defective()
-	{
-		Assert( !createAndCompare( createEnumerable ) );
-		Assert( !createAndCompare( createReadOnlyCollection ) );
-		Assert( !createAndCompare( createReadOnlyList ) );
-		Assert( !createAndCompare( createCollection ) );
-		Assert( !createAndCompare( createList ) );
-		return;
-
-		static IEnumerable<int> createEnumerable() => [1, 2, 3];
-		static IReadOnlyCollection<int> createReadOnlyCollection() => [1, 2, 3];
-		static IReadOnlyList<int> createReadOnlyList() => [1, 2, 3];
-		static ICollection<int> createCollection() => [1, 2, 3];
-		static IList<int> createList() => [1, 2, 3];
-	}
-
-	static bool createAndCompare<T>( Sys.Func<IEnumerable<T>> factory )
-	{
-		IEnumerable<T> enumerable1 = factory.Invoke();
-		IEnumerable<T> enumerable2 = factory.Invoke();
-		return enumerable1.Equals( enumerable2 );
 	}
 
 	[VSTesting.TestMethod]
@@ -142,66 +122,62 @@ public sealed class T101_KitTests
 	[VSTesting.TestMethod]
 	public void T08_SafeSubstring_Works()
 	{
-		test( s => s.SafeSubstring( 0 ), "0123456789" );
-		test( s => s.SafeSubstring( 1 ), "123456789" );
-		test( s => s.SafeSubstring( 9 ), "9" );
-		test( s => s.SafeSubstring( 10 ), "" );
-		test( s => s.SafeSubstring( 11 ), "" );
+		const char ellipsis = '\u2026'; //Unicode "Horizontal Ellipsis"
 
-		test( s => s.SafeSubstring( 0, 0 ), "" );
-		test( s => s.SafeSubstring( 0, 1 ), "0" );
-		test( s => s.SafeSubstring( 0, 2 ), "01" );
-		test( s => s.SafeSubstring( 0, 9 ), "012345678" );
-		test( s => s.SafeSubstring( 0, 10 ), "0123456789" );
-		test( s => s.SafeSubstring( 0, 11 ), "0123456789" );
+		Assert( "0123456789".SafeSubstring( 0 ) == "0123456789" );
+		Assert( "0123456789".SafeSubstring( 1 ) == "123456789" );
+		Assert( "0123456789".SafeSubstring( 9 ) == "9" );
+		Assert( "0123456789".SafeSubstring( 10 ) == "" );
+		Assert( "0123456789".SafeSubstring( 11 ) == "" );
 
-		test( s => s.SafeSubstring( 1, 0 ), "" );
-		test( s => s.SafeSubstring( 1, 1 ), "1" );
-		test( s => s.SafeSubstring( 1, 2 ), "12" );
-		test( s => s.SafeSubstring( 1, 9 ), "123456789" );
-		test( s => s.SafeSubstring( 1, 10 ), "123456789" );
+		Assert( "0123456789".SafeSubstring( 0, 0 ) == "" );
+		Assert( "0123456789".SafeSubstring( 0, 1 ) == "0" );
+		Assert( "0123456789".SafeSubstring( 0, 2 ) == "01" );
+		Assert( "0123456789".SafeSubstring( 0, 9 ) == "012345678" );
+		Assert( "0123456789".SafeSubstring( 0, 10 ) == "0123456789" );
+		Assert( "0123456789".SafeSubstring( 0, 11 ) == "0123456789" );
 
-		test( s => s.SafeSubstring( 8, 0 ), "" );
-		test( s => s.SafeSubstring( 8, 1 ), "8" );
-		test( s => s.SafeSubstring( 8, 2 ), "89" );
-		test( s => s.SafeSubstring( 8, 3 ), "89" );
+		Assert( "0123456789".SafeSubstring( 1, 0 ) == "" );
+		Assert( "0123456789".SafeSubstring( 1, 1 ) == "1" );
+		Assert( "0123456789".SafeSubstring( 1, 2 ) == "12" );
+		Assert( "0123456789".SafeSubstring( 1, 9 ) == "123456789" );
+		Assert( "0123456789".SafeSubstring( 1, 10 ) == "123456789" );
 
-		test( s => s.SafeSubstring( 9, 0 ), "" );
-		test( s => s.SafeSubstring( 9, 1 ), "9" );
-		test( s => s.SafeSubstring( 9, 2 ), "9" );
+		Assert( "0123456789".SafeSubstring( 8, 0 ) == "" );
+		Assert( "0123456789".SafeSubstring( 8, 1 ) == "8" );
+		Assert( "0123456789".SafeSubstring( 8, 2 ) == "89" );
+		Assert( "0123456789".SafeSubstring( 8, 3 ) == "89" );
 
-		test( s => s.SafeSubstring( 10, 0 ), "" );
-		test( s => s.SafeSubstring( 10, 1 ), "" );
+		Assert( "0123456789".SafeSubstring( 9, 0 ) == "" );
+		Assert( "0123456789".SafeSubstring( 9, 1 ) == "9" );
+		Assert( "0123456789".SafeSubstring( 9, 2 ) == "9" );
 
-		test( s => s.SafeSubstring( 0, 0, true ), "" );
-		test( s => s.SafeSubstring( 0, 1, true ), "…" );
-		test( s => s.SafeSubstring( 0, 2, true ), "0…" );
-		test( s => s.SafeSubstring( 0, 9, true ), "01234567…" );
-		test( s => s.SafeSubstring( 0, 10, true ), "0123456789" );
-		test( s => s.SafeSubstring( 0, 11, true ), "0123456789" );
+		Assert( "0123456789".SafeSubstring( 10, 0 ) == "" );
+		Assert( "0123456789".SafeSubstring( 10, 1 ) == "" );
 
-		test( s => s.SafeSubstring( 1, 0, true ), "" );
-		test( s => s.SafeSubstring( 1, 1, true ), "…" );
-		test( s => s.SafeSubstring( 1, 2, true ), "1…" );
-		test( s => s.SafeSubstring( 1, 9, true ), "123456789" );
-		test( s => s.SafeSubstring( 1, 10, true ), "123456789" );
+		Assert( "0123456789".SafeSubstring( 0, 0, true ) == "" );
+		Assert( "0123456789".SafeSubstring( 0, 1, true ) == $"{ellipsis}" );
+		Assert( "0123456789".SafeSubstring( 0, 2, true ) == "0…" );
+		Assert( "0123456789".SafeSubstring( 0, 9, true ) == "01234567…" );
+		Assert( "0123456789".SafeSubstring( 0, 10, true ) == "0123456789" );
+		Assert( "0123456789".SafeSubstring( 0, 11, true ) == "0123456789" );
 
-		test( s => s.SafeSubstring( 8, 0, true ), "" );
-		test( s => s.SafeSubstring( 8, 1, true ), "…" );
-		test( s => s.SafeSubstring( 8, 2, true ), "89" );
-		test( s => s.SafeSubstring( 8, 3, true ), "89" );
+		Assert( "0123456789".SafeSubstring( 1, 0, true ) == "" );
+		Assert( "0123456789".SafeSubstring( 1, 1, true ) == $"{ellipsis}" );
+		Assert( "0123456789".SafeSubstring( 1, 2, true ) == $"1{ellipsis}" );
+		Assert( "0123456789".SafeSubstring( 1, 9, true ) == "123456789" );
+		Assert( "0123456789".SafeSubstring( 1, 10, true ) == "123456789" );
 
-		test( s => s.SafeSubstring( 9, 0, true ), "" );
-		test( s => s.SafeSubstring( 9, 1, true ), "9" );
-		test( s => s.SafeSubstring( 9, 2, true ), "9" );
+		Assert( "0123456789".SafeSubstring( 8, 0, true ) == "" );
+		Assert( "0123456789".SafeSubstring( 8, 1, true ) == $"{ellipsis}" );
+		Assert( "0123456789".SafeSubstring( 8, 2, true ) == "89" );
+		Assert( "0123456789".SafeSubstring( 8, 3, true ) == "89" );
 
-		test( s => s.SafeSubstring( 10, 0, true ), "" );
-		test( s => s.SafeSubstring( 10, 1, true ), "" );
+		Assert( "0123456789".SafeSubstring( 9, 0, true ) == "" );
+		Assert( "0123456789".SafeSubstring( 9, 1, true ) == "9" );
+		Assert( "0123456789".SafeSubstring( 9, 2, true ) == "9" );
 
-		static void test( Sys.Func<string, string> converter, string expectedResult )
-		{
-			string actualResult = converter.Invoke( "0123456789" );
-			Assert( actualResult == expectedResult );
-		}
+		Assert( "0123456789".SafeSubstring( 10, 0, true ) == "" );
+		Assert( "0123456789".SafeSubstring( 10, 1, true ) == "" );
 	}
 }

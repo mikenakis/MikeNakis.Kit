@@ -58,7 +58,7 @@ public static class KitHelpers
 			else if( value is string s )
 				EscapeForCSharp( s, textConsumer );
 			else if( value is Sys.Type t )
-				textConsumer.Write( t.GetCSharpName() );
+				textConsumer.Write( t.GetCSharpName( CSharpTypeNames.Options.EmitTypeDefinitionKeyword ) );
 			else if( value is LegacyCollections.IEnumerable enumerable )
 				enumerable.Cast<object>().MakeString( recurse, "[ ", ", ", " ]", "[]", textConsumer );
 			else if( value.GetType().IsValueType || visitedObjects.Add( value ) )
