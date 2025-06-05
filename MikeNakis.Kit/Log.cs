@@ -1,7 +1,6 @@
 namespace MikeNakis.Kit;
 
 using MikeNakis.Kit.Extensions;
-using MikeNakis.Kit.FileSystem;
 using MikeNakis.Kit.Logging;
 
 public static class Log
@@ -40,18 +39,6 @@ public static class Log
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	static DirectoryPath? startupProjectDirectoryPath;
-
-	public static void SetStartupProjectDirectoryPathName( string directoryPathName )
-	{
-		if( startupProjectDirectoryPath != null )
-		{
-			Warn( $"Ignoring Startup Project Directory Path '{directoryPathName}'" );
-			return;
-		}
-		startupProjectDirectoryPath = DirectoryPath.FromAbsolutePath( directoryPathName );
-	}
-
 	static void fixAndLogMessage( LogLevel logLevel, Sys.DateTime utc, string message, string sourceFileName, int sourceLineNumber )
 	{
 		message = fixMessage( message );
@@ -60,7 +47,7 @@ public static class Log
 
 	static void logRawMessage( LogLevel logLevel, Sys.DateTime utc, string message, string sourceFilePathName, int sourceLineNumber )
 	{
-		sourceFilePathName = fixSourceFileName( sourceFilePathName );
+		sourceFilePathName = StartupProjectDirectory.MakeRelative( sourceFilePathName );
 		LogEntry entry = new( logLevel, utc, message, sourceFilePathName, sourceLineNumber );
 		Logger.Instance.AddLogEntry( entry );
 	}
@@ -76,21 +63,4 @@ public static class Log
 	}
 
 	static string buildLongExceptionMessage( string prefix, Sys.Exception exception ) => KitHelpers.BuildLongExceptionMessage( prefix, exception ).MakeString( "\r\n" );
-
-	static bool reported;
-
-	static string fixSourceFileName( string sourceFilePathName )
-	{
-		if( startupProjectDirectoryPath != null && FileSystemPath.IsAbsolute( sourceFilePathName ) )
-		{
-			if( !reported )
-			{
-				reported = true;
-				Info( $"Startup Project Directory Path: {startupProjectDirectoryPath}" );
-			}
-			FilePath sourceFilePath = FilePath.FromAbsolutePath( sourceFilePathName );
-			return startupProjectDirectoryPath.GetRelativePath( sourceFilePath );
-		}
-		return sourceFilePathName;
-	}
 }
