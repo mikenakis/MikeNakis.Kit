@@ -4,7 +4,8 @@
   <img title="MikeNakis.Kit Logo" src="MikeNakis.Kit-Logo.svg" width="256" />
 </p>
 
-[![Build](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/Kit-github-workflow.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/Kit-github-workflow.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/Kit-build-and-test-on-push.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/Kit-build-and-test-on-push.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/Kit-publish-to-nuget-org.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/Kit-publish-to-nuget-org.yml)
 
 ## License
 
