@@ -1,7 +1,7 @@
 namespace MikeNakis.Kit;
 
-using MikeNakis.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Collections;
+using MikeNakis.Kit.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Extensions;
 
 ///<summary>Frequently used stuff that needs to be conveniently accessible without a type name qualification.</summary>

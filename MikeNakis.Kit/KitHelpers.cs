@@ -1,7 +1,7 @@
 namespace MikeNakis.Kit;
 
-using MikeNakis.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Collections;
+using MikeNakis.Kit.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.Logging;
 
