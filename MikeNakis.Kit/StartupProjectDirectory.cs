@@ -47,6 +47,7 @@ public static class StartupProjectDirectory
 		if( startupProjectDirectory != null )
 		{
 			Log.Warn( $"Startup Project Directory Path has already been set to '{startupProjectDirectory}'; an attempt is being made to set it to '{directory}'; ignoring." );
+			Assert( false );
 			return;
 		}
 		startupProjectDirectory = directory;
