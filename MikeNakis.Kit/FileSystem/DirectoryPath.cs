@@ -131,8 +131,8 @@ public sealed class DirectoryPath : FileSystemPath
 
 	public void Delete()
 	{
-		// PEARL: the System.IO.Directory.Delete() method will throw an exception if it fails to delete a directory, but the exception does not tell which
-		//        directory could not be deleted. We correct this imbecility here.
+		// PEARL: the System.IO.Directory.Delete() method will throw an exception if it fails to delete a directory, but
+		//        the exception does not tell which directory could not be deleted. We correct this imbecility here.
 		try
 		{
 			SysIoDirectoryDelete( Path, true );
@@ -276,6 +276,25 @@ public sealed class DirectoryPath : FileSystemPath
 			}
 		}
 	}
+
+	//public IEnumerable<FileSystemPath> EnumerateEntries( bool recursive )
+	//{
+	//	SysIo.EnumerationOptions enumerationOptions = new();
+	//	enumerationOptions.RecurseSubdirectories = recursive;
+	//	enumerationOptions.IgnoreInaccessible = false;
+	//	enumerationOptions.AttributesToSkip = 0;
+	//	enumerationOptions.MatchType = SysIo.MatchType.Simple;
+	//	SysIo.DirectoryInfo currentDirectoryInfo = new( Path );
+	//	foreach( SysIo.FileSystemInfo fileSystemInfo in currentDirectoryInfo.EnumerateFileSystemInfos( "*", enumerationOptions ) )
+	//	{
+	//		yield return fileSystemInfo switch
+	//		{
+	//			SysIo.DirectoryInfo directoryInfo => FromAbsolutePath( fileSystemInfo.FullName ),
+	//			SysIo.FileInfo fileInfo => FilePath.FromAbsolutePath( fileSystemInfo.FullName ),
+	//			_ => throw new AssertionFailureException()
+	//		};
+	//	}
+	//}
 
 	public IEnumerable<DirectoryPath> EnumerateDirectories( bool recursive )
 	{
