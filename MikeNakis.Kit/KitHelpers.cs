@@ -68,6 +68,11 @@ public static class KitHelpers
 		}
 	}
 
+	public static string SafeCharacterToString( char value )
+	{
+		return IsPrintable( value ) ? $"'{value}'" : $"\\u{(int)value:x8}";
+	}
+
 	public static string EscapeForCSharp( string content ) => EscapeForCSharp( content, '"' );
 
 	public static string EscapeForCSharp( char content ) => EscapeForCSharp( content.ToString(), '\'' );

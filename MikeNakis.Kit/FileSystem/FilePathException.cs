@@ -55,7 +55,7 @@ public class SharingViolationException : FilePathWrapperException
 	{ }
 }
 
-///<summary>Indicates that a directory cannot be created because it already exists.</summary>
+///<summary>Indicates that a file or directory cannot be created because it already exists.</summary>
 public class PathAlreadyExistsException : FilePathException
 {
 	public PathAlreadyExistsException( string path, string operationName )

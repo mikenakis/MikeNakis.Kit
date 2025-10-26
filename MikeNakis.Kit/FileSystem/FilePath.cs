@@ -1,87 +1,46 @@
 namespace MikeNakis.Kit.FileSystem;
 
 using MikeNakis.Kit.Extensions;
+using static MikeNakis.Kit.GlobalStatics;
 
 public sealed class FilePath : FileSystemPath
 {
-	public static FilePath FromAbsolutePath( string path )
+	public static FilePath FromAbsolutePath( string pathName )
 	{
-		Assert( IsAbsolute( path ) );
-		path = SysIoGetFullPath( path );
-		return new FilePath( path );
+		Assert( IsAbsolute( pathName ) );
+		Assert( IsNormalized( pathName ) );
+		return new FilePath( pathName );
 	}
 
-	public static FilePath FromRelativePath( string relativePath )
+	public static FilePath FromRelativeOrAbsolutePath( string relativeOrAbsolutePathName, DirectoryPath basePathIfRelative )
 	{
-		Assert( !IsAbsolute( relativePath ) );
-		string path = SysIoGetFullPath( relativePath );
-		return FromAbsolutePath( path );
-	}
-
-	public static FilePath FromRelativeOrAbsolutePath( string path )
-	{
-		if( IsAbsolute( path ) )
-			return FromAbsolutePath( SysIoGetFullPath( path ) );
-		return FromRelativePath( path );
-	}
-
-	public static FilePath FromRelativeOrAbsolutePath( string path, DirectoryPath basePathIfRelative )
-	{
-		if( !IsAbsolute( path ) )
-			path = SysIoGetFullPath( SysIoCombine( basePathIfRelative.Path, path ) );
-		return FromAbsolutePath( path );
-	}
-
-	public static FilePath GetTempFileName()
-	{
-		// PEARL: System.IO.Path.GetTempFileName() returns a unique filename with a ".tmp" extension, and there is
-		//        nothing we can do about that.
-		//        We cannot replace the ".tmp" extension with our own nor append our own extension to it, because:
-		//        - there would be no guarantees anymore that the filename is unique.
-		//        - a zero-length file with the returned filename has already been created.
-		// PEARL ON PEARL: The Win32::GetTempFileName() which is used internally to implement this function DOES support
-		//        passing the desired extension as a parameter; however, System.IO.Path.GetTempFileName() passes the
-		//        hard-coded extension ".tmp" to it.
-		string tempFileName = SysIoGetTempFileName();
-		return FromAbsolutePath( tempFileName );
-	}
-
-	//TODO: get rid of, replace with call to DirectoryPath.File()
-	public static FilePath Of( DirectoryPath directoryPath, string fileName ) => directoryPath.File( fileName );
-
-	public static FilePath Join( DirectoryPath directoryPath, string relativePath )
-	{
-		Assert( !IsAbsolute( relativePath ) );
-		//string path = SysIoJoin( directoryPath.Path, relativePath );
-		//Assert( path == SysIoGetFullPath( path ) );
-		//Assert( path.StartsWith2( directoryPath.Path ) );
-		//return new FilePath( path );
-		string joinedPath = SysIoJoin( directoryPath.Path, relativePath );
-		string fullPath = SysIoGetFullPath( joinedPath );
-		return new FilePath( fullPath );
+		if( SysIoPathIsPathRooted( relativeOrAbsolutePathName ) )
+			return FromAbsolutePath( relativeOrAbsolutePathName );
+		return basePathIfRelative.RelativeFile( relativeOrAbsolutePathName );
 	}
 
 	FilePath( string path )
 			: base( path )
 	{
-		Assert( !SysIoEndsInDirectorySeparator( path ) );
+		Assert( !SysIoPathEndsInDirectorySeparator( path ) );
 	}
 
-	public string Extension => SysIoGetExtension( Path );
-	public DirectoryPath GetDirectoryPath() => DirectoryPath.FromAbsolutePath( SysIoGetDirectoryName( Path )! );
-	public string GetFileNameAndExtension() => SysIoGetFileName( Path ).OrThrow();
-	public string GetFileNameWithoutExtension() => SysIoGetFileNameWithoutExtension( Path ).OrThrow();
-	public DirectoryPath Directory => DirectoryPath.FromAbsolutePath( SysIoGetParent( Path ).OrThrow().FullName );
-	public SysIo.FileInfo FileInfo => new( Path );
+	public string Extension => SysIoPathGetExtension( Path );
+	public DirectoryPath GetDirectoryPatrh() => Directory;
+	public string GetFileNameAndExtension() => SysIoPathGetFileName( Path );
+	public string GetFileNameWithoutExtension() => SysIoPathGetFileNameWithoutExtension( Path );
+	[Sys.Obsolete] public override bool Equals( object? other ) => other is FilePath kin && Equals( kin );
+	public DirectoryPath Directory => DirectoryPath.FromAbsolutePath( SysIoPathGetDirectoryName( Path ).OrThrow() ); //Note: Unlike GetParent(), the GetDirectoryName() function does not access the fileSystem.
+	public long FileLength => new SysIo.FileInfo( Path ).Length;
 	public bool StartsWith( DirectoryPath other ) => Path.StartsWithIgnoreCase( other.Path );
 	public bool EndsWith( string suffix ) => Path.EndsWithIgnoreCase( suffix );
-	public override bool Equals( object? other ) => other is FilePath kin && Equals( kin );
-	public override int GetHashCode() => Path.GetHashCode2();
+	public bool Equals( FilePath other ) => Path.Equals( other.Path, Sys.StringComparison.OrdinalIgnoreCase );
+	public override int GetHashCode() => Path.GetHashCode( Sys.StringComparison.OrdinalIgnoreCase );
 
 	public FilePath WithReplacedExtension( string extension )
 	{
 		Assert( IsValidPart( extension ) );
-		return FromAbsolutePath( SysIoChangeExtension( Path, extension ) );
+		return FromAbsolutePath( SysIoPathChangeExtension( Path, extension ) );
 	}
 
 	public bool Exists()
@@ -92,97 +51,149 @@ public sealed class FilePath : FileSystemPath
 		return fileSystemInfo.Exists;
 	}
 
-	public bool ExistsAndIsWritable()
+	public string[] ReadAllLines( SysText.Encoding? encoding = null )
 	{
-		try
-		{
-			using( SysIoNewFileStream( Path, SysIo.FileMode.Open, SysIo.FileAccess.ReadWrite, SysIo.FileShare.Read ) )
-			{ }
-		}
-		catch( SysIo.FileNotFoundException )
-		{
-			return false;
-		}
-		return true;
+		throwIfNetworkInaccessible();
+		return SysIoFileReadAllLines( Path, encoding ?? DotNetHelpers.BomlessUtf8 );
+	}
+
+	public void WriteAllLines( IEnumerable<string> lines, SysText.Encoding? encoding = null )
+	{
+		throwIfNetworkInaccessible();
+		SysIoFileWriteAllLines( Path, lines, encoding ?? DotNetHelpers.BomlessUtf8 );
 	}
 
 	public string ReadAllText( SysText.Encoding? encoding = null )
 	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		return SysIoReadAllText( Path, encoding );
+		throwIfNetworkInaccessible();
+		return SysIoFileReadAllText( Path, encoding ?? DotNetHelpers.BomlessUtf8 );
 	}
 
 	public byte[] ReadAllBytes()
 	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		return SysIoReadAllBytes( Path );
+		throwIfNetworkInaccessible();
+		return SysIoFileReadAllBytes( Path );
 	}
 
 	public void WriteAllText( string text, SysText.Encoding? encoding = null )
 	{
-		GetDirectoryPath().CreateIfNotExist();
-		retryOnSharingViolation( () => SysIoWriteAllText( Path, text, encoding ?? DotNetHelpers.BomlessUtf8 ) );
+		Directory.CreateIfNotExist();
+		SysIoFileWriteAllText( Path, text, encoding ?? DotNetHelpers.BomlessUtf8 );
 	}
 
 	public void WriteAllBytes( byte[] bytes )
 	{
-		GetDirectoryPath().CreateIfNotExist();
-		SysIoWriteAllBytes( Path, bytes );
+		Directory.CreateIfNotExist();
+		SysIoFileWriteAllBytes( Path, bytes );
 	}
 
 	public void Truncate()
 	{
-		GetDirectoryPath().CreateIfNotExist();
-		SysIoWriteAllText( Path, "" );
+		Directory.CreateIfNotExist();
+		SysIoFileWriteAllBytes( Path, Sys.Array.Empty<byte>() );
 	}
 
+	///<summary>Moves the file to a new location, allowing it to also be renamed. This will probably fail if the new
+	///location is on a different drive, and this is due to a limitation of Windows.</summary>
 	public void MoveTo( FilePath newPathName ) //This is essentially 'Rename'
 	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		SysIoDirectoryMove( Path, newPathName.Path );
+		throwIfNetworkInaccessible();
+		try
+		{
+			SysIoFileMove( Path, newPathName.Path );
+		}
+		catch( SysIo.IOException exception )
+		{
+			throw new SysIo.IOException( $"Failed to move '{this}' to '{newPathName}'", exception );
+		}
 	}
 
-	public void CopyTo( FilePath other )
+	///<summary>Copies this file to the given destination file.</summary>
+	///<param name="destination">The <see cref="FilePath"/> to copy to.</param>
+	///<param name="overwrite">Whether overwriting of an already-existing file should be allowed.</param>
+	///<remarks>Note: <paramref name="overwrite"/> controls what happens if the destination file already exists. If
+	///set to <b><see langword="true"/></b>, then the destination file is overwritten. If set to <b><see langword="false"/></b>,
+	///then an exception is thrown.</remarks>
+	public void CopyTo( FilePath destination, bool overwrite )
 	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		SysIoCopy( Path, other.Path, true );
+		throwIfNetworkInaccessible();
+		SysIoFileCopy( Path, destination.Path, overwrite );
 	}
 
-	public IEnumerable<string> ReadLines()
+	///<summary>Copies this file to the given destination directory.</summary>
+	///<param name="destinationDirectoryPath">The <see cref="Directory"/> to copy to.</param>
+	///<param name="overwrite">Whether overwriting of an already-existing file should be allowed.</param>
+	///<remarks>Note: <paramref name="overwrite"/> controls what happens if a file with the same name already exists in
+	///the destination. If set to <b><see langword="true"/></b>, then the destination file is overwritten. If set to
+	///<b><see langword="false"/></b>, then an exception is thrown.</remarks>
+	public void CopyTo( DirectoryPath destinationDirectoryPath, bool overwrite )
 	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		return SysIoReadLines( Path );
+		FilePath destinationFilePath = destinationDirectoryPath.File( GetFileNameAndExtension() );
+		CopyTo( destinationFilePath, overwrite );
+	}
+
+	public Sys.DateTime CreationTimeUtc
+	{
+		get
+		{
+			throwIfNetworkInaccessible();
+			return SysIoFileGetCreationTimeUtc( Path );
+		}
+	}
+
+	public void SetCreationTimeUtc( Sys.DateTime utc )
+	{
+		throwIfNetworkInaccessible();
+		SysIoFileSetCreationTimeUtc( Path, utc );
+	}
+
+	public Sys.DateTime LastWriteTimeUtc
+	{
+		get
+		{
+			throwIfNetworkInaccessible();
+			return SysIoFileGetLastWriteTimeUtc( Path );
+		}
+	}
+
+	public void SetLastWriteTimeUtc( Sys.DateTime utc )
+	{
+		throwIfNetworkInaccessible();
+		SysIoFileSetLastWriteTimeUtc( Path, utc );
 	}
 
 	public void Delete()
 	{
-		AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible();
-		retryOnSharingViolation( () => SysIoFileDelete( Path ) );
+		throwIfNetworkInaccessible();
+		try
+		{
+			SysIoFileDelete( Path );
+		}
+		catch( Sys.Exception exception )
+		{
+			throw MapException( exception, Path );
+		}
 	}
 
-	static T retryOnSharingViolation<T>( Sys.Func<T> function, int retryCount = 10 )
+	public void Delete( int retryCount )
 	{
 		for( int retry = 0; true; retry++ )
 			try
 			{
-				return function.Invoke();
+				Delete();
+				break;
 			}
-			catch( SharingViolationException sharingViolationException )
+			catch( SharingViolationException )
 			{
-				if( retry >= retryCount )
-					throw;
-				Log.Warn( $"Retry {retry + 1} of {retryCount} due to: {sharingViolationException.Message}" );
-				SysThread.Thread.Sleep( 100 );
+				if( retry < retryCount )
+				{
+					Log.Info( $"Retry {retry + 1} of {retryCount} while {Path} is in use..." );
+					SysThread.Thread.Sleep( 100 );
+					continue;
+				}
+				throw;
 			}
-	}
-
-	static void retryOnSharingViolation( Sys.Action action, int retryCount = 10 )
-	{
-		_ = retryOnSharingViolation( () =>
-		{
-			action.Invoke();
-			return Unit.Instance;
-		}, retryCount );
+		return;
 	}
 
 	public void DeleteIfExists()
@@ -191,58 +202,84 @@ public sealed class FilePath : FileSystemPath
 			Delete();
 	}
 
+	public void CreateParentDirectoryIfNotExists()
+	{
+		DirectoryPath parent = Directory;
+		if( parent.Exists() ) //avoids a huge timeout penalty if this is a network path and the network is inaccessible.
+			return;
+		Log.Info( $"Creating directory '{parent}'" );
+		parent.Create();
+	}
+
 	public DirectoryPath WithoutRelativePath( string relativePath )
 	{
-		Assert( Path.EndsWith2( relativePath ) );
+		Assert( Path.EndsWith( relativePath, Sys.StringComparison.Ordinal ) );
 		return DirectoryPath.FromAbsolutePath( Path[..^relativePath.Length] );
 	}
 
-	static SysIo.FileShare getDefaultFileShare( SysIo.FileAccess fileAccess )
+	public SysIo.FileStream OpenBinaryForReading( SysIo.FileShare fileShare = SysIo.FileShare.Read )
 	{
-		return fileAccess switch
+		throwIfNetworkInaccessible();
+		return openBinary( SysIo.FileMode.Open, SysIo.FileAccess.Read, fileShare );
+	}
+
+	public SysIo.FileStream OpenBinaryForWriting()
+	{
+		Directory.ThrowIfNetworkInaccessible();
+		return openBinary( SysIo.FileMode.OpenOrCreate, SysIo.FileAccess.ReadWrite, SysIo.FileShare.None );
+	}
+
+	public SysIo.FileStream OpenBinaryForAppending()
+	{
+		Directory.ThrowIfNetworkInaccessible();
+		return openBinary( SysIo.FileMode.Append, SysIo.FileAccess.Write, SysIo.FileShare.Read );
+	}
+
+	SysIo.FileStream openBinary( SysIo.FileMode fileMode, SysIo.FileAccess fileAccess, SysIo.FileShare fileShare )
+	{
+		try
 		{
-			SysIo.FileAccess.Read => SysIo.FileShare.Read,
-			SysIo.FileAccess.Write => SysIo.FileShare.None,
-			SysIo.FileAccess.ReadWrite => SysIo.FileShare.None,
-			_ => throw new Sys.ArgumentOutOfRangeException( nameof( fileAccess ), fileAccess, null )
-		};
+			return new SysIo.FileStream( Path, fileMode, fileAccess, fileShare );
+		}
+		catch( Sys.Exception exception )
+		{
+			throw MapException( exception, Path );
+		}
 	}
 
-	public SysIo.FileStream NewStream( SysIo.FileMode fileMode, SysIo.FileAccess fileAccess, SysIo.FileShare? fileShare = null, int bufferSize = 4096, SysIo.FileOptions fileOptions = SysIo.FileOptions.None, bool createDirectoryIfNotExist = false )
+	public SysIo.FileStream CreateBinary() => createBinary( SysIo.FileMode.Create );
+
+	public SysIo.FileStream CreateNewBinary() => createBinary( SysIo.FileMode.CreateNew );
+
+	SysIo.FileStream createBinary( SysIo.FileMode fileMode )
+	{
+		Directory.ThrowIfNetworkInaccessible();
+		try
+		{
+			return new SysIo.FileStream( Path, fileMode, SysIo.FileAccess.ReadWrite, SysIo.FileShare.None );
+		}
+		catch( Sys.Exception exception )
+		{
+			throw MapException( exception, Path );
+		}
+	}
+
+	public SysIo.TextReader OpenText( SysText.Encoding? encoding = null )
+	{
+		SysIo.Stream fileStream = OpenBinaryForReading(); //will be disposed by StreamReader
+		return new SysIo.StreamReader( fileStream, encoding ?? DotNetHelpers.BomlessUtf8 );
+	}
+
+	public SysIo.TextWriter CreateText( bool createDirectoryIfNotExist = false )
 	{
 		if( createDirectoryIfNotExist )
 			Directory.CreateIfNotExist();
-		return SysIoNewFileStream( Path, fileMode, fileAccess, fileShare ?? getDefaultFileShare( fileAccess ), bufferSize, fileOptions );
+		return SysIoFileCreateText( Path );
 	}
 
-	public SysIo.TextWriter NewTextWriter( bool createDirectoryIfNotExist = false, SysIo.FileMode fileMode = SysIo.FileMode.Create, SysIo.FileShare? fileShare = null, int fileStreamBufferSize = 4096, int textWriterBufferSize = -1, bool deleteOnClose = false, bool writeThrough = false, SysText.Encoding? encoding = null )
+	//avoids a huge timeout penalty if this is a network path and the network is inaccessible.
+	void throwIfNetworkInaccessible()
 	{
-		if( createDirectoryIfNotExist )
-			Directory.CreateIfNotExist();
-		SysIo.FileOptions fileOptions = SysIo.FileOptions.None;
-		if( deleteOnClose )
-			fileOptions |= SysIo.FileOptions.DeleteOnClose;
-		if( writeThrough )
-			fileOptions |= SysIo.FileOptions.WriteThrough;
-		SysIo.Stream fileStream = NewStream( fileMode, SysIo.FileAccess.Write, fileShare ?? SysIo.FileShare.ReadWrite, fileStreamBufferSize, fileOptions, createDirectoryIfNotExist: createDirectoryIfNotExist );
-		return new SysIo.StreamWriter( fileStream, encoding ?? DotNetHelpers.BomlessUtf8, textWriterBufferSize, leaveOpen: false );
-	}
-
-	public SysIo.TextReader NewTextReader( SysIo.FileAccess access = SysIo.FileAccess.Read, SysIo.FileShare? share = null, int fileStreamBufferSize = 4096, int textReaderBufferSize = -1, SysIo.FileOptions fileOptions = SysIo.FileOptions.None, SysText.Encoding? encoding = null )
-	{
-		SysIo.Stream fileStream = NewStream( SysIo.FileMode.Open, access, share, fileStreamBufferSize, fileOptions, createDirectoryIfNotExist: false );
-		return new SysIo.StreamReader( fileStream, encoding, detectEncodingFromByteOrderMarks: true, textReaderBufferSize, leaveOpen: false );
-	}
-
-	public void RenameTo( FilePath targetFilePath )
-	{
-		SysIoFileMove( Path, targetFilePath.Path );
-	}
-
-	protected override void AvoidHugeTimeoutPenaltyIfThisIsANetworkPathAndTheNetworkIsInaccessible()
-	{
-		DirectoryPath directoryPath = GetDirectoryPath();
-		if( !directoryPath.Exists() ) //avoids a huge timeout penalty if this is a network path and the network is inaccessible.
-			throw new SysIo.FileNotFoundException( directoryPath.Path ); //this is really a "path not found" exception.
+		Directory.ThrowIfNetworkInaccessible();
 	}
 }

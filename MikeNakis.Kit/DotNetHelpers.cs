@@ -145,9 +145,74 @@ public static class DotNetHelpers
 	static DirectoryPath getApplicationLocalAppDataFolder()
 	{
 		DirectoryPath localAppDataFolder = DirectoryPath.FromAbsolutePath( Sys.Environment.GetFolderPath( Sys.Environment.SpecialFolder.LocalApplicationData ) );
-		DirectoryPath applicationLocalAppDataFolder = localAppDataFolder.SubDirectory( MainModuleName );
+		DirectoryPath applicationLocalAppDataFolder = localAppDataFolder.Directory( MainModuleName );
 		applicationLocalAppDataFolder.CreateIfNotExist(); // necessary on the first run after a fresh installation.
 		return applicationLocalAppDataFolder;
+	}
+
+	/// <summary>Returns the temporary directory for the current user and the current application.
+	/// Typically, this is %USERPROFILE%\AppData\Local\Temp\{application-name}.</summary>
+	public static DirectoryPath GetApplicationTempDirectoryPath()
+	{
+		string pathName = Sys.Environment.GetFolderPath( Sys.Environment.SpecialFolder.LocalApplicationData );
+		DirectoryPath directoryPath = DirectoryPath.FromAbsolutePath( pathName ).Directory( "Temp" ).Directory( GetProductName() );
+		directoryPath.CreateIfNotExist();
+		return directoryPath;
+	}
+
+	public static DirectoryPath GetTempDirectoryPath()
+	{
+#pragma warning disable RS0030 // Do not use banned APIs
+		string tempPath = SysIo.Path.GetTempPath(); //typically, this is C:\Users\UserName\AppData\Local\Temp
+#pragma warning restore RS0030 // Do not use banned APIs
+		return DirectoryPath.FromAbsolutePath( tempPath );
+	}
+
+	public static FilePath GetTempFilePath()
+	{
+		// PEARL: System.IO.Path.GetTempFileName() returns a unique filename with a ".tmp" extension, and there is
+		//        nothing we can do about that.
+		//        We cannot replace the ".tmp" extension with our own nor append our own extension to it, because:
+		//        - there would be no guarantees anymore that the filename is unique.
+		//        - a zero-length file with the returned filename has already been created.
+		// PEARL ON PEARL: The Win32::GetTempFileName() which is used internally to implement this function DOES support
+		//        passing the desired extension as a parameter; however, System.IO.Path.GetTempFileName() passes the
+		//        hard-coded extension ".tmp" to it.
+#pragma warning disable RS0030 // Do not use banned APIs
+		string tempFileName = SysIo.Path.GetTempFileName();
+#pragma warning restore RS0030 // Do not use banned APIs
+		return FilePath.FromAbsolutePath( tempFileName );
+	}
+
+	/// <summary>Returns whatever Windows considers to be the "working" directory for the current process.</summary>
+	/// <remarks>
+	/// PEARL: In windows programming, there is a notion of a "current directory". This notion is entirely misguided.
+	///        There should be no such thing. All paths, everywhere, should be absolute.
+	///        The only piece of software that should perhaps have a notion of a "current directory" is the command
+	///        prompt, but it should be keeping it for itself, meaning that absolutely no application should ever be
+	///        aware of what some command prompt considers to be "the current directory".
+	///        Unfortunately, that's not how things are.
+	///        Under windows, the notion of "the current directory" is very popular.
+	///        As such, it has come to be that when doing Windows programming you cannot simply refrain from dealing
+	///        with the current directory; there are certain things that absolutely require getting dirty with it.
+	///        For example, if you want to load an assembly and execute code in it, you have to set the current
+	///        directory to be the same as the directory where the assembly is located, because the code that you
+	///        are going to execute expects it to be so.
+	///        To understand what is wrong with the notion of a "current directory", consider that it is a mutable global
+	///        variable. Having said that, I should not need to add anything else, but here are a couple of facts that
+	///        are worth freaking out over:
+	///          - All threads within a process share the same "current directory". This means that when you change the
+	///            "current directory" in one thread, you are actually changing it for all threads in the current
+	///            process. Nice?
+	///          - AppDomains are meant to isolate lots of things, but they do not isolate the "current directory": when
+	///            you change its value, you are changing it for all AppDomains in the current process. Nice?
+	/// </remarks>
+	public static DirectoryPath GetWorkingDirectoryPath()
+	{
+#pragma warning disable RS0030 // Do not use banned APIs
+		string pathName = SysIo.Path.GetFullPath( "." );
+#pragma warning restore RS0030 // Do not use banned APIs
+		return DirectoryPath.FromAbsolutePath( pathName );
 	}
 
 	public static byte[] ReadAll( SysIo.Stream self )

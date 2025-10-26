@@ -16,7 +16,7 @@ public class TextFileLogger : Logger
 		this.logDirectory = logDirectory;
 		this.prefix = prefix;
 		logDirectory.CreateIfNotExist();
-		LogPathName = FilePath.Of( logDirectory, buildLogFileName( prefix, "" ) );
+		LogPathName = logDirectory.File( buildLogFileName( prefix, "" ) );
 		if( LogPathName.Exists() )
 			archive( LogPathName );
 		SysIo.TextWriter textWriter = openLogFile( LogPathName );
@@ -27,9 +27,9 @@ public class TextFileLogger : Logger
 
 	void archive( FilePath logPathName )
 	{
-		Sys.DateTime t = logPathName.FileInfo.CreationTimeUtc;
+		Sys.DateTime t = logPathName.CreationTimeUtc;
 		string timeString = $"{t.Year:D4}-{t.Month:D2}-{t.Day:D2}.{t.Hour:D2}-{t.Minute:D2}-{t.Second:D2}-{t.Millisecond:D3}";
-		FilePath archivedLogPathName = FilePath.Of( logDirectory, buildLogFileName( prefix, timeString ) );
+		FilePath archivedLogPathName = logDirectory.File( buildLogFileName( prefix, timeString ) );
 		archive( logPathName, archivedLogPathName );
 	}
 
@@ -75,9 +75,9 @@ public class TextFileLogger : Logger
 	static void archive( FilePath logPathName, FilePath archivedLogPathName )
 	{
 		Log.Debug( $"Archiving {logPathName} to {archivedLogPathName}" );
-		logPathName.CopyTo( archivedLogPathName );
+		logPathName.CopyTo( archivedLogPathName, overwrite: true );
 		KitHelpers.SwallowException( LogLevel.Warn, "Log file truncation", logPathName.Truncate );
-		KitHelpers.SwallowException( LogLevel.Warn, "Log file touch", () => logPathName.SetCreationTime( DotNetHelpers.GetWallClockTimeUtc() ) );
+		KitHelpers.SwallowException( LogLevel.Warn, "Log file touch", () => logPathName.SetCreationTimeUtc( DotNetHelpers.GetWallClockTimeUtc() ) );
 	}
 
 	static SysIo.TextWriter openLogFile( FilePath filePath )
@@ -96,7 +96,7 @@ public class TextFileLogger : Logger
 				Log.Warn( message );
 				if( attempt > 10 )
 					throw Failure();
-				filePath = FilePath.Of( filePath.GetDirectoryPath(), filePath.GetFileNameWithoutExtension() + "-" + attempt + filePath.Extension );
+				filePath = filePath.Directory.File( filePath.GetFileNameWithoutExtension() + "-" + attempt + filePath.Extension );
 			}
 	}
 
@@ -106,22 +106,22 @@ public class TextFileLogger : Logger
 		Sys.DateTime cutOffTime = DotNetHelpers.GetWallClockTimeUtc() - maxAge;
 		long totalSize = 0;
 		int number = 0;
-		IEnumerable<SysIo.FileInfo> sortedFileInfos = getSortedFileInfos( logDirectory, prefix );
-		foreach( SysIo.FileInfo fileInfo in sortedFileInfos )
+		IEnumerable<FilePath> sortedFilePaths = getSortedFilePaths( logDirectory, prefix );
+		foreach( FilePath filePath in sortedFilePaths )
 		{
 			number++;
-			totalSize += fileInfo.Length;
+			totalSize += filePath.FileLength;
 			if( number > minToKeep && totalSize > maxSize )
-				Log.Debug( $"deleting {fileInfo.Name} because Number:{number} is above MinToKeep:{minToKeep} and TotalSize:{totalSize} is above MaxSize:{maxSize}" );
-			else if( number > minToKeep && fileInfo.LastWriteTimeUtc < cutOffTime )
-				Log.Debug( $"deleting {fileInfo.Name} because Number:{number} is above MinToKeep:{minToKeep} and Time:{fileInfo.LastWriteTimeUtc} is older than CutOffTime:{cutOffTime}" );
+				Log.Debug( $"deleting {filePath} because Number:{number} is above MinToKeep:{minToKeep} and TotalSize:{totalSize} is above MaxSize:{maxSize}" );
+			else if( number > minToKeep && filePath.LastWriteTimeUtc < cutOffTime )
+				Log.Debug( $"deleting {filePath} because Number:{number} is above MinToKeep:{minToKeep} and Time:{filePath.LastWriteTimeUtc} is older than CutOffTime:{cutOffTime}" );
 			else if( number > maxToKeep )
-				Log.Debug( $"deleting {fileInfo.Name} because Number:{number} is above MaxToKeep:{maxToKeep}" );
+				Log.Debug( $"deleting {filePath} because Number:{number} is above MaxToKeep:{maxToKeep}" );
 			else
 				continue;
 			try
 			{
-				fileInfo.Delete();
+				filePath.Delete();
 			}
 			catch( SysIo.IOException e )
 			{
@@ -130,11 +130,11 @@ public class TextFileLogger : Logger
 		}
 	}
 
-	static IEnumerable<SysIo.FileInfo> getSortedFileInfos( DirectoryPath logDirectory, string prefix )
+	static IEnumerable<FilePath> getSortedFilePaths( DirectoryPath logDirectory, string prefix )
 	{
 		string pattern = buildLogFileName( prefix, "*" );
 		return logDirectory //
-				.EnumerateFiles( pattern ).Select( n => n.FileInfo )
+				.EnumerateFiles( pattern )
 				.Sorted( ( a, b ) => b.LastWriteTimeUtc.CompareTo( a.LastWriteTimeUtc ) )
 				.AsEnumerable;
 	}
