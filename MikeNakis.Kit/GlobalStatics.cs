@@ -112,7 +112,7 @@ public static class GlobalStatics
 	/// <remarks>If the given <paramref name="condition"/> is <c>false</c>, an <see cref="AssertionFailureException"/> is thrown.
 	/// This function is only executed (and the supplied <paramref name="condition"/> is only evaluated) when running a debug build.</remarks>
 	[SysDiag.DebuggerNonUserCode]
-	[/*SysDiag.DebuggerHidden,*/ SysDiag.Conditional( "DEBUG" )]
+	[SysDiag.DebuggerHidden, SysDiag.Conditional( "DEBUG" )]
 	public static void Assert( [SysCodeAnalysis.DoesNotReturnIf( false )] bool condition ) //
 	{
 		if( condition )

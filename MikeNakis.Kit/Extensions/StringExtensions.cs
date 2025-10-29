@@ -37,4 +37,6 @@ public static class StringExtensions
 			return string.Concat( self.AsSpan( safeStart, safeLength - 1 ), ellipsis );
 		return self.Substring( safeStart, safeLength );
 	}
+
+	public static bool IsWhitespace( this string self ) => string.IsNullOrWhiteSpace( self );
 }

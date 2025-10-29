@@ -134,7 +134,10 @@ public abstract class FileSystemPath
 		}
 		catch( Sys.Exception exception )
 		{
-			throw MapException( exception, path, operationName.OrThrow() );
+			Sys.Exception mappedException = MapException( exception, path, operationName.OrThrow() );
+			if( mappedException != exception )
+				throw mappedException;
+			throw;
 		}
 	}
 
@@ -148,6 +151,7 @@ public abstract class FileSystemPath
 			case SysIo.EndOfStreamException:
 			case SysIo.FileLoadException:
 			case SysIo.FileNotFoundException:
+				return exception;
 			case SysIo.PathTooLongException:
 			case SysIo.InternalBufferOverflowException:
 			case SysIo.InvalidDataException:
