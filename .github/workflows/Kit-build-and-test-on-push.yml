@@ -36,8 +36,11 @@ jobs:
       with:
         dotnet-version: 9.0.200
 
+    - name: troubleshooting
+      run: ls -al
+
     - name: build debug and run tests
-      run: build.bash Configuration=Debug RunTests=Yes
+      run: bash build.bash Configuration=Debug RunTests=Yes
 
     - name: build develop
       run: build.bash Configuration=Develop
