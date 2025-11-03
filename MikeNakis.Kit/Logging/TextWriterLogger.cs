@@ -1,5 +1,10 @@
 namespace MikeNakis.Kit.Logging;
 
+using System.Collections.Generic;
+using SysIo = System.IO;
+using SysText = System.Text;
+using SysThread = System.Threading;
+
 public class TextWriterLogger : Logger
 {
 	readonly SysIo.TextWriter textWriter;

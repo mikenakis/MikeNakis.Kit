@@ -1,6 +1,12 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Logging;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
+using SysReflect = System.Reflection;
 
 // NOTE: a better name for this class would be "ObjectLifeTimeGuard", but that would be too damn long; hence, "LifeGuard".
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]

@@ -1,5 +1,9 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using System.Linq;
+using SysDiag = System.Diagnostics;
+
 public static class OrderedDictionary
 {
 	public static OrderedDictionary<V, K> InverseOf<K, V>( IReadOnlyDictionary<K, V> self ) where V : notnull

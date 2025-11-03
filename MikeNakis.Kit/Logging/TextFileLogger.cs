@@ -1,8 +1,12 @@
 namespace MikeNakis.Kit.Logging;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
+using Sys = System;
+using SysIo = System.IO;
 
 public class TextFileLogger : Logger
 {

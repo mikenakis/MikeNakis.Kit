@@ -1,6 +1,10 @@
 namespace MikeNakis.Kit;
 
+using System.Linq;
 using MikeNakis.Kit.Extensions;
+using Sys = System;
+using SysGlob = System.Globalization;
+using SysReflect = System.Reflection;
 
 public static class ReflectionHelpers
 {

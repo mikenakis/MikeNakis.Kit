@@ -1,5 +1,9 @@
 namespace MikeNakis.Kit;
 
+using System.Linq;
+using LegacyCollections = System.Collections;
+using SysDiag = System.Diagnostics;
+
 /// A debugger type proxy for enumerables. Use with <see cref="SysDiag.DebuggerTypeProxyAttribute"/>.
 // When troubleshooting why this is not working, try the following:
 // - Uncheck "Tools" > "Options" > "Debugging" > "General" > "Show raw structure of objects in variables windows".

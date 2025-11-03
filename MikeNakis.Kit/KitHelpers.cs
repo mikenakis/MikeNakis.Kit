@@ -1,9 +1,19 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.Logging;
+using LegacyCollections = System.Collections;
+using Math = System.Math;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
+using SysReflect = System.Reflection;
+using SysText = System.Text;
+using SysThread = System.Threading;
 
 public static class KitHelpers
 {

@@ -1,5 +1,9 @@
 namespace MikeNakis.Kit;
 
+using Sys = System;
+using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
+using SysDiag = System.Diagnostics;
+
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public readonly record struct Either<S, F>
 {

@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.Extensions;
 
+using Sys = System;
+using SysDiag = System.Diagnostics;
+
 public static class NullableExtensions
 {
 	[SysDiag.DebuggerHidden] public static T OrThrow<T>( this T? self ) where T : class => self ?? throw Failure();

@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.IO;
 
+using Sys = System;
+using SysIo = System.IO;
+
 public sealed class DotNetStreamBinaryStreamWriter : BinaryStreamWriter
 {
 	readonly SysIo.Stream dotNetStream;

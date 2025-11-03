@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using Sys = System;
+
 ///<summary>Invokes a certain <see cref="Sys.Action"/> when disposed.</summary>
 public sealed class MakeshiftDisposable : Sys.IDisposable
 {

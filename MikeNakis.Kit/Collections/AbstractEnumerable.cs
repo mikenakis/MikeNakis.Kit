@@ -1,5 +1,12 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using System.Linq;
+using MikeNakis.Kit.Collections;
+using static System.MemoryExtensions;
+using LegacyCollections = System.Collections;
+using Sys = System;
+
 /// Abstract base class for implementations of <see cref="IEnumerable{T}"/>.
 public abstract class AbstractEnumerable<T> : IEnumerable<T>
 {

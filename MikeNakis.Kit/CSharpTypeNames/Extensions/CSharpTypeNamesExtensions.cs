@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit.CSharpTypeNames.Extensions;
 
+using Sys = System;
+
 public static class CSharpTypeNamesExtensions
 {
 	/// <summary>Generates the human-readable name of the <see cref="Sys.Type"/> using C# notation.</summary>

@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.Test;
 
+using System.Collections.Generic;
+using Math = System.Math;
+using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]

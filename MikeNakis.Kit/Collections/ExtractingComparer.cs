@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using Sys = System;
+
 public sealed class ExtractingComparer<T, E> : IComparer<T>
 {
 	readonly Sys.Func<T, E> extractor;

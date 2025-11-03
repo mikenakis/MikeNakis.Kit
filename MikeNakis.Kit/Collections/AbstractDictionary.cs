@@ -1,5 +1,9 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using System.Linq;
+using Sys = System;
+
 /// Abstract base class for implementations of <see cref="IDictionary{K,V}"/>.
 public abstract class AbstractDictionary<K, V> : AbstractReadOnlyDictionary<K, V>, IDictionary<K, V>, IReadOnlyDictionary<K, V> where K : notnull
 {

@@ -1,6 +1,11 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
 using MikeNakis.Kit;
+using LegacyCollections = System.Collections;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
 
 public static class ArrayWrapper
 {

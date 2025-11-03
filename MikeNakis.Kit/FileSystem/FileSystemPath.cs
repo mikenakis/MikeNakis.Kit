@@ -2,6 +2,11 @@ namespace MikeNakis.Kit.FileSystem;
 
 using MikeNakis.Kit.Extensions;
 using static MikeNakis.Kit.GlobalStatics;
+using System.Collections.Generic;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysIo = System.IO;
+using SysText = System.Text;
 
 public abstract class FileSystemPath
 {

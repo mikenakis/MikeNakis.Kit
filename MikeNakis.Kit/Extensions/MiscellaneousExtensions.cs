@@ -1,6 +1,13 @@
 namespace MikeNakis.Kit.Extensions;
 
+using System.Collections.Generic;
 using MikeNakis.Kit.Collections;
+using static System.MemoryExtensions;
+using Sys = System;
+using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
+using SysDiag = System.Diagnostics;
+using SysGlob = System.Globalization;
+using SysText = System.Text;
 
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
 public static class MiscellaneousExtensions

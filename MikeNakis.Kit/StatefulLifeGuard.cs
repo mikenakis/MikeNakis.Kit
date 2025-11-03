@@ -1,5 +1,9 @@
 namespace MikeNakis.Kit;
 
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
+
 public sealed class StatefulLifeGuard : Sys.IDisposable
 {
 	public static StatefulLifeGuard Create( bool collectStackTrace = false, //

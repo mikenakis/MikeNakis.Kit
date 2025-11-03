@@ -1,7 +1,13 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
+using LegacyCollections = System.Collections;
+using Sys = System;
+using SysDiag = System.Diagnostics;
+using SysReflect = System.Reflection;
 
 [SysDiag.DebuggerDisplay( "{GetType().Name,nq}: {Message,nq}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]

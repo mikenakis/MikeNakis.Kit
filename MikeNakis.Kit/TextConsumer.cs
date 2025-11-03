@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using Sys = System;
+
 public interface TextConsumer
 {
 	void Write( Sys.ReadOnlySpan<char> text );

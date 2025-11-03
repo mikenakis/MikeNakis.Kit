@@ -1,6 +1,9 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Extensions;
+using SysDiag = System.Diagnostics;
 
 /// Abstract base class for implementations of <see cref="ISet{T}"/>.
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]

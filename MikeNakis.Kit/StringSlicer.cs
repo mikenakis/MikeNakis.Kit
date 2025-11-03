@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit;
 
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
+
 public class StringSlicer : Traversable<(int start, int end)>
 {
 	readonly string source;

@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using Sys = System;
+
 //This class exists only because `Comparer<T>.Default` does not seem to handle nulls.
 public sealed class ComparisonComparer<T> : IComparer<T>
 {

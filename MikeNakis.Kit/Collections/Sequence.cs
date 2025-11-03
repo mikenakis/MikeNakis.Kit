@@ -1,6 +1,10 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
 using MikeNakis.Kit;
+using LegacyCollections = System.Collections;
+using SysContracts = System.Diagnostics.Contracts;
+using SysDiag = System.Diagnostics;
 
 /// An add-only list implemented as an immutable linked list, using structural sharing.
 /// An instance of this class is also a node of the linked list.

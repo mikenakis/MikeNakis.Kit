@@ -1,5 +1,11 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using LegacyCollections = System.Collections;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
+
 /// <summary>
 /// A double-ended queue implements IList interface.
 /// </summary>

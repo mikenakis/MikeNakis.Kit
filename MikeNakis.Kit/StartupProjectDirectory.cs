@@ -2,7 +2,7 @@ namespace MikeNakis.Kit;
 
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
-using SysCompiler = SysCompiler;
+using SysCompiler = System.Runtime.CompilerServices;
 
 /*
 	In the Visual Studio Output Window, if a line starts with a source file pathname followed by a line number in

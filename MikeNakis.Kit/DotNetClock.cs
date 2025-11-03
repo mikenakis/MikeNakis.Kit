@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit;
 
+using Sys = System;
+
 public class DotNetClock : Clock
 {
 	public static Clock Instance { get; } = new DotNetClock();

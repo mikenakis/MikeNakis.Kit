@@ -1,7 +1,12 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Extensions;
+using LegacyCollections = System.Collections;
+using Sys = System;
+using SysDiag = System.Diagnostics;
 
 // TODO: get rid of this class, move its contents to Such-And-Such-Extensions.cs
 public static class LinqEx

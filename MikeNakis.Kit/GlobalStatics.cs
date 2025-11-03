@@ -1,8 +1,15 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Extensions;
+using Math = System.Math;
+using Sys = System;
+using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
+using SysDiag = System.Diagnostics;
+using SysGlob = System.Globalization;
 
 ///<summary>Frequently used stuff that needs to be conveniently accessible without a type name qualification.</summary>
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>

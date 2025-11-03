@@ -1,5 +1,9 @@
 namespace MikeNakis.Kit.IO;
 
+using Sys = System;
+using SysIo = System.IO;
+using SysText = System.Text;
+
 ///<summary>A <see cref="SysIo.TextWriter"/> which sends each line to a <see cref="Sys.Action{T}"/> of <c>string</c>.</summary>
 //PEARL: `System.IO.TextWriter` is an abstract class instead of an interface!
 //PEARL: `System.IO.TextWriter` contains methods that have an empty implementation instead of being abstract, for

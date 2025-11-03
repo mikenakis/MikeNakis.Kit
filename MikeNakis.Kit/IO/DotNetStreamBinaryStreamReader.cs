@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.IO;
 
+using Sys = System;
+using SysIo = System.IO;
+
 // PEARL: The System.IO.Stream class of DotNet is so retarded that it does not support checking
 //        for end of stream without reading something from the stream.
 //        This class corrects this problem.

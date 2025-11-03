@@ -1,8 +1,21 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
+using static MikeNakis.Kit.GlobalStatics;
+using LegacyCollections = System.Collections;
+using Math = System.Math;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
+using SysGlob = System.Globalization;
+using SysInterop = System.Runtime.InteropServices;
+using SysIo = System.IO;
+using SysReflect = System.Reflection;
+using SysText = System.Text;
+using SysThread = System.Threading;
 
 public static class DotNetHelpers
 {

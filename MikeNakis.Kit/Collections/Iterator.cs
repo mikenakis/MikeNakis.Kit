@@ -1,5 +1,9 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysDiag = System.Diagnostics;
+
 //TODO maybe delete this file?
 
 public interface Iterator<T>

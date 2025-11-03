@@ -1,6 +1,8 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
 using MikeNakis.Kit;
+using SysDiag = System.Diagnostics;
 
 public static class ListDictionary
 {

@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
+using Sys = System;
+
 public interface Traverser<out T> : Sys.IDisposable
 {
 	IEnumerator<T> AsEnumerator => new TraverserEnumerator<T>( this );

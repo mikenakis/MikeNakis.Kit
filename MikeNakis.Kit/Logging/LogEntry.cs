@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit.Logging;
 
+using System.Collections.Generic;
+using Sys = System;
+
 public class LogEntry
 {
 	public LogLevel LogLevel { get; }

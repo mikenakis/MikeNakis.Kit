@@ -1,7 +1,12 @@
 namespace MikeNakis.Kit.FileSystem;
 
+using System.Collections.Generic;
 using MikeNakis.Kit.Extensions;
 using static MikeNakis.Kit.GlobalStatics;
+using Sys = System;
+using SysIo = System.IO;
+using SysText = System.Text;
+using SysThread = System.Threading;
 
 public sealed class FilePath : FileSystemPath
 {

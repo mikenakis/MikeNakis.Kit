@@ -1,5 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
+using System.Collections.Generic;
+
 /// An <see cref="IDictionary{K,V}" /> which evicts least-frequently-accessed items so as to never exceed a certain capacity.
 // Based on https://stackoverflow.com/a/3719378/773113
 public class CachingDictionary<K, V> : OrderedDictionary<K, V> where K : notnull

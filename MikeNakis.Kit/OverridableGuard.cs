@@ -1,6 +1,9 @@
 namespace MikeNakis.Kit;
 
+using System.Collections.Generic;
 using MikeNakis.Kit.Extensions;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
 
 /// <summary>Guard for overridable methods that need to make sure that descendants will never forget to invoke base.</summary>
 public class OverridableGuard

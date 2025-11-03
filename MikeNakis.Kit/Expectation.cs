@@ -1,5 +1,8 @@
 namespace MikeNakis.Kit;
 
+using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
+using SysDiag = System.Diagnostics;
+
 /// A lightweight result to be used with <see cref="Either{S,F}"/> or, better yet, with <see cref="Result{S}"/>
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public abstract class Expectation

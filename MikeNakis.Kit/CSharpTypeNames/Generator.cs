@@ -1,5 +1,10 @@
 namespace MikeNakis.Kit.CSharpTypeNames;
 
+using Sys = System;
+using SysDiag = System.Diagnostics;
+using SysGlob = System.Globalization;
+using SysText = System.Text;
+
 [Sys.Flags]
 public enum Options
 {
