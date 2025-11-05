@@ -5,6 +5,7 @@ using System.Linq;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
+using static MikeNakis.Kit.GlobalStatics;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]

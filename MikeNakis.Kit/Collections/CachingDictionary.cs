@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
 
 /// An <see cref="IDictionary{K,V}" /> which evicts least-frequently-accessed items so as to never exceed a certain capacity.
 // Based on https://stackoverflow.com/a/3719378/773113

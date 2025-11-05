@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit.Extensions;
 
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysDiag = System.Diagnostics;
 

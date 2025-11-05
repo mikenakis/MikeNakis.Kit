@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit;
 
+using static MikeNakis.Kit.GlobalStatics;
 using SysCompiler = System.Runtime.CompilerServices;
 
 /// Extremely simple, and therefore fast, Linear Congruential Random Number Generator.

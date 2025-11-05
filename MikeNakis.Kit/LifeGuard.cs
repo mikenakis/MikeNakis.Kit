@@ -3,6 +3,7 @@ namespace MikeNakis.Kit;
 using System.Collections.Generic;
 using System.Linq;
 using MikeNakis.Kit.Logging;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;

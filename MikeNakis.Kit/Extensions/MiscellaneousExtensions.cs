@@ -3,6 +3,7 @@ namespace MikeNakis.Kit.Extensions;
 using System.Collections.Generic;
 using MikeNakis.Kit.Collections;
 using static System.MemoryExtensions;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
 using SysDiag = System.Diagnostics;

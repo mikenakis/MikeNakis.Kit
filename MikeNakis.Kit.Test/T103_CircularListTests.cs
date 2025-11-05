@@ -2,6 +2,7 @@ namespace MikeNakis.Kit.Test;
 
 using System.Linq;
 using MikeNakis.Kit.Collections;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 

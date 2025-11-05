@@ -44,8 +44,4 @@
 		<None Include="README-for-nuget.md" Pack="True" PackagePath="/README.md" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Using Static="True" Include="MikeNakis.Kit.GlobalStatics" />
-	</ItemGroup>
-
 </Project>

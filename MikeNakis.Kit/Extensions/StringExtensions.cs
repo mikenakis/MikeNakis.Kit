@@ -1,10 +1,11 @@
 namespace MikeNakis.Kit.Extensions;
 
+using static System.MemoryExtensions;
+using static MikeNakis.Kit.GlobalStatics;
 using Math = System.Math;
 using Sys = System;
 using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
 using SysGlob = System.Globalization;
-using static System.MemoryExtensions;
 
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
 public static class StringExtensions

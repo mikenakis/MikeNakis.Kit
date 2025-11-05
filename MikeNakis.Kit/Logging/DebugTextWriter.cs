@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit.Logging;
 
+using static MikeNakis.Kit.GlobalStatics;
 using SysDiag = System.Diagnostics;
 using SysIo = System.IO;
 using SysText = System.Text;

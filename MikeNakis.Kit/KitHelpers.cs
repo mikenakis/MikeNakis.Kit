@@ -6,6 +6,7 @@ using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.Logging;
+using static MikeNakis.Kit.GlobalStatics;
 using LegacyCollections = System.Collections;
 using Math = System.Math;
 using Sys = System;

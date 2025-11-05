@@ -2,6 +2,7 @@ namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
 using System.Linq;
+using static MikeNakis.Kit.GlobalStatics;
 using SysDiag = System.Diagnostics;
 
 public static class OrderedDictionary

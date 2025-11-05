@@ -2,6 +2,7 @@ namespace MikeNakis.Kit;
 
 using System.Linq;
 using MikeNakis.Kit.Extensions;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysGlob = System.Globalization;
 using SysReflect = System.Reflection;

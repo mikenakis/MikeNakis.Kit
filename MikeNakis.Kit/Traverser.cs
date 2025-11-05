@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit;
 
 using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 
 public interface Traverser<out T> : Sys.IDisposable

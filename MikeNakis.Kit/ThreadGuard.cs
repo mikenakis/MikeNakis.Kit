@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit;
 
 using MikeNakis.Kit.Extensions;
+using static MikeNakis.Kit.GlobalStatics;
 using SysThread = System.Threading;
 
 public abstract class ThreadGuard

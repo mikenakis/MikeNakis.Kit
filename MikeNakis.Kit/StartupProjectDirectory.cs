@@ -2,6 +2,7 @@ namespace MikeNakis.Kit;
 
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
+using static MikeNakis.Kit.GlobalStatics;
 using SysCompiler = System.Runtime.CompilerServices;
 
 /*

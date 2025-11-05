@@ -1,7 +1,8 @@
 namespace MikeNakis.Kit.Logging;
 
-using MikeNakis.Kit.Collections;
 using System.Collections.Generic;
+using MikeNakis.Kit.Collections;
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysDiag = System.Diagnostics;
 

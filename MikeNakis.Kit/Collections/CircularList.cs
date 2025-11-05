@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
 using LegacyCollections = System.Collections;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;

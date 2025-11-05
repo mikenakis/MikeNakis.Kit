@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Extensions;
+using static MikeNakis.Kit.GlobalStatics;
 using LegacyCollections = System.Collections;
 using Sys = System;
 using SysDiag = System.Diagnostics;

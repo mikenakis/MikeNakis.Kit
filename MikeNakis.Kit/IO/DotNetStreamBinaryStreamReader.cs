@@ -1,5 +1,6 @@
 namespace MikeNakis.Kit.IO;
 
+using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;
 using SysIo = System.IO;
 

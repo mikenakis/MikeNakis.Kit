@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Test;
 
 using System.Collections.Generic;
+using static MikeNakis.Kit.GlobalStatics;
 using Math = System.Math;
 using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
