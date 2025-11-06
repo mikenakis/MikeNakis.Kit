@@ -127,10 +127,9 @@ public static class LinqEx
 		int comparison( E a, E b ) => comparator.Invoke( extractor.Invoke( a ), extractor.Invoke( b ) ) * multiplier;
 	}
 
-	public static IReadOnlyList<T> Collect<T>( this IReadOnlyList<T> self ) => new ArrayWrapper<T>( self );
+	public static ImmutableArray<T> Collect<T>( this IEnumerable<T> self ) => self.ToImmutableArray();
 
 #pragma warning disable RS0030 // RS0030: "Do not use banned APIs"
-	public static IReadOnlyList<T> Collect<T>( this IEnumerable<T> self ) => self.ToImmutableArray();// ReadOnlyListOf( self.ToArray() );
 	public static T[] ToArraySeriously<T>( this IEnumerable<T> self ) => self.ToArray();
 #pragma warning restore RS0030 // RS0030: "Do not use banned APIs"
 

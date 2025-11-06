@@ -300,59 +300,9 @@ public static class DotNetHelpers
 		}
 	}
 
-	// PEARL: Arrays in C# implement `IEnumerable` but provide no implementation for `Equals()`!
-	//        This means that `object.Equals( array1, array2 )` will always return false, even if the arrays have
-	//        identical contents! This is especially sinister since `IEnumerable`s are often cast from arrays, so you
-	//        may have two instances of `IEnumerable` which yield identical elements and yet `object.Equals()` fails to
-	//        return `true` on them.
-	//        The standing advice is to use `a.SequenceEqual( b )` to compare `IEnumerable`, but this is retarded, due
-	//        to the following reasons:
-	//          1. This will only work when you know the exact types of the objects being compared; it might suit
-	//             application programmers who are accustomed to writing copious amounts of mindless custom code to
-	//             accomplish standard tasks, but it does not work when writing general-purpose code, which must operate
-	//             on data without needing to know (nor wanting to know) the exact type of the data.
-	//          2. This will not work when the `IEnumerable`s in turn contain other `IEnumerable`s (or arrays) because
-	//             guess what `SequenceEqual()` uses internally to compare each pair of elements of the `IEnumerable`s?
-	//             It uses `object.Equals()`! So, it miserably fails when comparing `IEnumerable`s of `IEnumerable`!
-	//             Again, this might be fine for application programmers who will happily write thousands of lines of
-	//             custom code to compare application data having intimate knowledge of the structure of the data, but
-	//             it does not work when writing general-purpose code.
-	//        This method fixes this insanity. It is meant to be used as a replacement for `object.Equals()` under all
-	//        circumstances.
-	// TODO: make sure it works under all circumstances. Specifically, make sure it works with generics.
-	public static new bool Equals( object? a, object? b )
+	public static bool Equals<T>( T a, T b )
 	{
-		if( a.ReferenceEquals( b ) )
-			return true;
-		if( a == null || b == null )
-			return false;
-		if( a is LegacyCollections.IEnumerable enumerableA && b is LegacyCollections.IEnumerable enumerableB )
-			return legacyEnumerablesEqual( enumerableA, enumerableB );
-		return a.Equals( b );
-
-		static bool legacyEnumerablesEqual( LegacyCollections.IEnumerable a, LegacyCollections.IEnumerable b )
-		{
-			LegacyCollections.IEnumerator enumerator1 = a.GetEnumerator();
-			LegacyCollections.IEnumerator enumerator2 = b.GetEnumerator();
-			try
-			{
-				while( enumerator1.MoveNext() )
-				{
-					if( !enumerator2.MoveNext() )
-						return false;
-					if( !Equals( enumerator1.Current, enumerator2.Current ) )
-						return false;
-				}
-				if( enumerator2.MoveNext() )
-					return false;
-				return true;
-			}
-			finally
-			{
-				(enumerator1 as Sys.IDisposable)?.Dispose();
-				(enumerator2 as Sys.IDisposable)?.Dispose();
-			}
-		}
+		return UniversalComparer.Instance.Equals( a, b );
 	}
 
 	// public static IEnumerable<(object, IReadOnlyList<int>)> Enumerate( Sys.Array array )
