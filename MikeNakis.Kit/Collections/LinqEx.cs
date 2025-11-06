@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using MikeNakis.Kit;
 using MikeNakis.Kit.Extensions;
@@ -129,7 +130,7 @@ public static class LinqEx
 	public static IReadOnlyList<T> Collect<T>( this IReadOnlyList<T> self ) => new ArrayWrapper<T>( self );
 
 #pragma warning disable RS0030 // RS0030: "Do not use banned APIs"
-	public static IReadOnlyList<T> Collect<T>( this IEnumerable<T> self ) => ReadOnlyListOf( self.ToArray() );
+	public static IReadOnlyList<T> Collect<T>( this IEnumerable<T> self ) => self.ToImmutableArray();// ReadOnlyListOf( self.ToArray() );
 	public static T[] ToArraySeriously<T>( this IEnumerable<T> self ) => self.ToArray();
 #pragma warning restore RS0030 // RS0030: "Do not use banned APIs"
 

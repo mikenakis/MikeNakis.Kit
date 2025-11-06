@@ -6,63 +6,63 @@ using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
 using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
-public readonly record struct Either<S, F>
+public readonly record struct Either<L, R>
 {
-	public static implicit operator Either<S, F>( S success ) => Either<S, F>.Success( success );
-	public static implicit operator Either<S, F>( F failure ) => Either<S, F>.Failure( failure );
+	public static implicit operator Either<L, R>( L left ) => Either<L, R>.CreateWithLeft( left );
+	public static implicit operator Either<L, R>( R right ) => Either<L, R>.CreateWithRight( right );
 
-	public static Either<S, F> Success( S success ) => new( true, success, default! );
-	public static Either<S, F> Failure( F failure ) => new( false, default!, failure );
+	public static Either<L, R> CreateWithLeft( L success ) => new( true, success, default! );
+	public static Either<L, R> CreateWithRight( R failure ) => new( false, default!, failure );
 
-	public static Either<S, F> Convert<S2, F2>( Either<S2, F2> source ) where S2 : S where F2 : F
+	public static Either<L, R> Convert<S2, F2>( Either<S2, F2> source ) where S2 : L where F2 : R
 	{
-		if( source.IsSuccess )
-			return Success( source.Payload );
-		return Failure( source.Expectation );
+		if( source.IsLeft )
+			return CreateWithLeft( source.Left );
+		return CreateWithRight( source.Right );
 	}
 
-	public bool IsSuccess { get; }
-	readonly S success;
-	readonly F failure;
+	public bool IsLeft { get; }
+	readonly L left;
+	readonly R right;
 
-	public S Payload
+	public L Left
 	{
 		get
 		{
-			Assert( IsSuccess );
-			return success;
+			Assert( IsLeft );
+			return left;
 		}
 	}
 
-	public F Expectation
+	public R Right
 	{
 		get
 		{
-			Assert( !IsSuccess );
-			return failure;
+			Assert( !IsLeft );
+			return right;
 		}
 	}
 
-	Either( bool isSuccess, S success, F failure )
+	Either( bool isSuccess, L left, R right )
 	{
-		IsSuccess = isSuccess;
-		this.success = success;
-		this.failure = failure;
+		IsLeft = isSuccess;
+		this.left = left;
+		this.right = right;
 	}
 
-	[SysCodeAnalysis.ExcludeFromCodeCoverage] public override string ToString() => IsSuccess ? $"Success: {success}" : $"Failure: {failure}";
+	[SysCodeAnalysis.ExcludeFromCodeCoverage] public override string ToString() => IsLeft ? $"Success: {left}" : $"Failure: {right}";
 
-	public S OrThrow()
+	public L OrThrow()
 	{
-		if( !IsSuccess )
+		if( !IsLeft )
 			throw new AssertionFailureException();
-		return Payload;
+		return Left;
 	}
 
-	public S OrThrow( Sys.Func<F, Sys.Exception> exceptionFactory )
+	public L OrThrow( Sys.Func<R, Sys.Exception> exceptionFactory )
 	{
-		if( !IsSuccess )
-			throw exceptionFactory.Invoke( Expectation );
-		return Payload;
+		if( !IsLeft )
+			throw exceptionFactory.Invoke( Right );
+		return Left;
 	}
 }
