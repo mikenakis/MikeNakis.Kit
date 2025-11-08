@@ -21,3 +21,4 @@ More information: [michael.gr - On Coding Style](https://blog.michael.gr/2018/04
 
 ----------------------
 Cover image: The MikeNakis.Kit logo, <i>a Swiss army knife</i> by Mike Nakis, based on original work by <a href="https://thenounproject.com/term/multi-tool/1641155/">Mariah Gardziola</a> from the Noun Project, license: "<a href="https://creativecommons.org/licenses/by/3.0/us/">CC BY</a>".
+
