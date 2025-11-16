@@ -31,7 +31,6 @@ public sealed class FilePath : FileSystemPath
 	}
 
 	public string Extension => SysIoPathGetExtension( Path );
-	public DirectoryPath GetDirectoryPatrh() => Directory;
 	public string GetFileNameAndExtension() => SysIoPathGetFileName( Path );
 	public string GetFileNameWithoutExtension() => SysIoPathGetFileNameWithoutExtension( Path );
 	[Sys.Obsolete] public override bool Equals( object? other ) => other is FilePath kin && Equals( kin );
