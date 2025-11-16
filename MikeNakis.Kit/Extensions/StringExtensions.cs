@@ -21,6 +21,7 @@ public static class StringExtensions
 	public static bool EndsWith2( this string self, string s ) => self.EndsWith( s, Sys.StringComparison.Ordinal );
 	public static bool EndsWithIgnoreCase( this string self, string s ) => self.EndsWith( s, Sys.StringComparison.OrdinalIgnoreCase );
 	public static bool Contains2( this string self, char c ) => self.Contains( c, Sys.StringComparison.Ordinal );
+	public static bool Contains2( this string self, string s ) => self.IndexOf2( s ) != -1;
 	public static int GetHashCode2( this string self ) => self.GetHashCode( Sys.StringComparison.Ordinal );
 	public static string ToUpper2( this string self ) => self.ToUpper( SysGlob.CultureInfo.InvariantCulture );
 	public static StringSlicer Slice( this string source, char separator ) => new( source, 0, source.Length, separator );
