@@ -61,4 +61,11 @@ public static class DictionaryExtensions
 		public override bool TryGetValue( K key, out V value ) => dictionary.TryGetValue( key, out value! );
 		public override string? ToString() => dictionary.ToString();
 	}
+
+	public static V? TryGet2<V, K>( this IReadOnlyDictionary<K, V> self, K key ) where K : notnull where V : notnull
+	{
+		if( self.TryGetValue( key, out V? value ) )
+			return value;
+		return default;
+	}
 }
