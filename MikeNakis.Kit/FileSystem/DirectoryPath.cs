@@ -524,9 +524,10 @@ public sealed class DirectoryPath : FileSystemPath
 		return childPathName.StartsWith( pathName, Sys.StringComparison.Ordinal );
 	}
 
+	//avoids a huge timeout penalty if this is a network path and the network is inaccessible.
 	internal void ThrowIfNetworkInaccessible()
 	{
-		if( !Exists() ) //avoids a huge timeout penalty if this is a network path and the network is inaccessible.
+		if( !Exists() )
 			throw new SysIo.DirectoryNotFoundException( Path );
 	}
 }
