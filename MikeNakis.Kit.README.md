@@ -4,8 +4,7 @@
   <img title="MikeNakis.Kit Logo" src="MikeNakis.Kit-Logo.svg" width="256" />
 </p>
 
-[![Build](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/auto.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/auto.yml)
-[![Build](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/manual.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/manual.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/continuous-integration.yml)
 
 ## License
 
