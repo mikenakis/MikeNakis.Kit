@@ -10,7 +10,7 @@
     <File Path="exclusion.dic" />
     <File Path="LICENSE.md" />
     <File Path="MikeNakis.Kit-Logo.svg" />
-    <File Path="README.md" />
+    <File Path="MikeNakis.Kit.README.md" />
   </Folder>
   <Project Path="MikeNakis.Kit.Test/MikeNakis.Kit.Test.csproj" />
   <Project Path="MikeNakis.Kit/MikeNakis.Kit.csproj" />
