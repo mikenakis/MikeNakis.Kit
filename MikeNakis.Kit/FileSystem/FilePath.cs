@@ -35,7 +35,7 @@ public sealed class FilePath : FileSystemPath
 	public string GetFileNameWithoutExtension() => SysIoPathGetFileNameWithoutExtension( Path );
 	[Sys.Obsolete] public override bool Equals( object? other ) => other is FilePath kin && Equals( kin );
 	public DirectoryPath Directory => DirectoryPath.FromAbsolutePath( SysIoPathGetDirectoryName( Path ).OrThrow() ); //Note: Unlike GetParent(), the GetDirectoryName() function does not access the fileSystem.
-	public long FileLength => new SysIo.FileInfo( Path ).Length;
+	public long GetFileLength() => new SysIo.FileInfo( Path ).Length;
 	public bool StartsWith( DirectoryPath other ) => Path.StartsWithIgnoreCase( other.Path );
 	public bool EndsWith( string suffix ) => Path.EndsWithIgnoreCase( suffix );
 	public bool Equals( FilePath other ) => Path.Equals( other.Path, Sys.StringComparison.OrdinalIgnoreCase );

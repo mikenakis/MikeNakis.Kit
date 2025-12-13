@@ -115,7 +115,7 @@ public class TextFileLogger : Logger
 		foreach( FilePath filePath in sortedFilePaths )
 		{
 			number++;
-			totalSize += filePath.FileLength;
+			totalSize += filePath.GetFileLength();
 			if( number > minToKeep && totalSize > maxSize )
 				Log.Debug( $"deleting {filePath} because Number:{number} is above MinToKeep:{minToKeep} and TotalSize:{totalSize} is above MaxSize:{maxSize}" );
 			else if( number > minToKeep && filePath.LastWriteTimeUtc < cutOffTime )
