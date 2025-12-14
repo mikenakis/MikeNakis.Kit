@@ -20,7 +20,7 @@ public sealed class FilePath : FileSystemPath
 	public static FilePath FromRelativeOrAbsolutePath( string relativeOrAbsolutePathName, DirectoryPath basePathIfRelative )
 	{
 		if( SysIoPathIsPathRooted( relativeOrAbsolutePathName ) )
-			return FromAbsolutePath( relativeOrAbsolutePathName );
+			return FromAbsolutePath( SysIoPathGetFullPath( relativeOrAbsolutePathName ) );
 		return basePathIfRelative.RelativeFile( relativeOrAbsolutePathName );
 	}
 
