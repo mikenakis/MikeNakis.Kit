@@ -28,7 +28,10 @@ public class TextFileLogger : Logger
 		textWriterLogger = new TextWriterLogger( textWriter );
 	}
 
-	public override void AddLogEntry( LogEntry logEntry ) => textWriterLogger.AddLogEntry( logEntry );
+	protected override void OnAddLogEntry( LogEntry logEntry )
+	{
+		textWriterLogger.AddLogEntry( logEntry );
+	}
 
 	void archive( FilePath logPathName )
 	{

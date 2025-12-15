@@ -6,5 +6,13 @@ public abstract class Logger
 	public static Logger Instance = DebugLogger.Instance; //by default, we only have a debug logger; the application may replace this with a more elaborate logger.
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
-	public abstract void AddLogEntry( LogEntry logEntry );
+	readonly object myLock = new();
+
+	public void AddLogEntry( LogEntry logEntry )
+	{
+		lock( myLock )
+			OnAddLogEntry( logEntry );
+	}
+
+	protected abstract void OnAddLogEntry( LogEntry logEntry );
 }

@@ -16,31 +16,25 @@ public sealed class DistributingLogger : Logger
 		return distributingLogger;
 	}
 
-	readonly object lockObject = new();
 	readonly MutableList<Logger> loggers = new();
 
 	public void AddLogger( Logger logger )
 	{
-		lock( lockObject )
-		{
-			Assert( !loggers.Contains( logger ) );
-			loggers.Add( logger );
-		}
+		Assert( !loggers.Contains( logger ) );
+		loggers.Add( logger );
 	}
 
 	public void RemoveLog( Logger logger )
 	{
-		lock( lockObject )
-			loggers.DoRemove( logger );
+		loggers.DoRemove( logger );
 	}
 
 	IReadOnlyList<Logger> getLoggers()
 	{
-		lock( lockObject )
-			return loggers.AsReadOnlyList.Collect();
+		return loggers.AsReadOnlyList.Collect();
 	}
 
-	public override void AddLogEntry( LogEntry logEntry )
+	protected override void OnAddLogEntry( LogEntry logEntry )
 	{
 		IReadOnlyList<Logger> loggers = getLoggers();
 		if( loggers.Count == 0 )

@@ -22,8 +22,8 @@ public class DebugTextWriter : SysIo.TextWriter
 
 	public override void Flush()
 	{
-		SysDiag.Debug.Flush();
 		base.Flush();
+		SysDiag.Debug.Flush();
 	}
 
 	// Must override:
@@ -44,7 +44,7 @@ public class DebugTextWriter : SysIo.TextWriter
 		if( False )
 			base.Write( buffer, index, count );
 		else
-			Write( new string( buffer, index, count ) );
+			SysDiag.Debug.Write( new string( buffer, index, count ) );
 	}
 
 	// Not necessary to override:

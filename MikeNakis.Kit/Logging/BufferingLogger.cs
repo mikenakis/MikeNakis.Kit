@@ -5,26 +5,21 @@ using MikeNakis.Kit.Collections;
 
 public class BufferingLogger : Logger
 {
-	readonly object myLock = new();
 	MutableList<LogEntry> logEntries = new();
 
 	public BufferingLogger()
 	{ }
 
-	public override void AddLogEntry( LogEntry logEntry )
+	protected override void OnAddLogEntry( LogEntry logEntry )
 	{
-		lock( myLock )
-			logEntries.Add( logEntry );
+		logEntries.Add( logEntry );
 	}
 
 	public void ReplayAndClear( Logger log )
 	{
 		IReadOnlyList<LogEntry> tempLogEntries;
-		lock( myLock )
-		{
-			tempLogEntries = logEntries.AsReadOnlyList;
-			logEntries = new MutableList<LogEntry>();
-		}
+		tempLogEntries = logEntries.AsReadOnlyList;
+		logEntries = new MutableList<LogEntry>();
 		foreach( LogEntry logEntry in tempLogEntries )
 			log.AddLogEntry( logEntry );
 	}
@@ -32,11 +27,8 @@ public class BufferingLogger : Logger
 	public IReadOnlyList<LogEntry> GetEntriesAndClear()
 	{
 		IReadOnlyList<LogEntry> tempLogEntries;
-		lock( myLock )
-		{
-			tempLogEntries = logEntries.AsReadOnlyList;
-			logEntries = new MutableList<LogEntry>();
-		}
+		tempLogEntries = logEntries.AsReadOnlyList;
+		logEntries = new MutableList<LogEntry>();
 		return tempLogEntries;
 	}
 }

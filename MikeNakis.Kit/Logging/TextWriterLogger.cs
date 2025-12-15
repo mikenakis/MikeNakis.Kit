@@ -15,7 +15,7 @@ public class TextWriterLogger : Logger
 		this.textWriter = textWriter;
 	}
 
-	public override void AddLogEntry( LogEntry logEntry )
+	protected override void OnAddLogEntry( LogEntry logEntry )
 	{
 		IReadOnlyList<string> parts = logEntry.ToStrings();
 		SysText.StringBuilder stringBuilder = new();
@@ -29,7 +29,9 @@ public class TextWriterLogger : Logger
 				stringBuilder.Append( new string( ' ', longestFirstPartLength - parts[i].Length ) );
 			}
 		}
+		stringBuilder.Append( "\n" );
 		string text = stringBuilder.ToString();
-		textWriter.WriteLine( text );
+		textWriter.Write( text );
+		textWriter.Flush();
 	}
 }
