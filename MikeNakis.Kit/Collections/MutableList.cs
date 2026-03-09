@@ -19,7 +19,6 @@ public sealed class MutableList<T> : IEnumerable<T>
 	T[] array;
 	int version;
 	public bool IsFrozen { get; private set; }
-	public int Capacity => array.Length;
 	IReadOnlyList<T>? lazyAsReadOnlyList;
 	public IReadOnlyList<T> AsReadOnlyList => lazyAsReadOnlyList ??= new ReadOnlyList( this );
 	public IEnumerable<T> AsEnumerable => AsReadOnlyList;
