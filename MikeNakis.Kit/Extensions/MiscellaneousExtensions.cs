@@ -74,4 +74,13 @@ public static class MiscellaneousExtensions
 			return max;
 		return self;
 	}
+	public static int Clamped( this int self, int min, int max )
+	{
+		Assert( min < max );
+		if( self < min )
+			return min;
+		if( self > max )
+			return max;
+		return self;
+	}
 }
