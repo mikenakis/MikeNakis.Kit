@@ -245,6 +245,13 @@ public sealed class T101_KitTests
 		check( 123490.0, 3, (123000.0, -3) );
 		check( 123500.0, 3, (124000.0, -3) );
 
+		//check for the claim made in the documentation of the ToString() method.
+		check( 0.002, 2, (0.002, 4) );
+
+		//check for special case in the original at https://stackoverflow.com/a/1987721/773113 against a bug where
+		//rounding 9.96 to 2 figures would yield "10.0" instead of "10"
+		check( 9.96, 2, (10.0, 0) );
+
 		return;
 
 		static void check( double value, int significantDigits, (double value, int roundingPosition) expectedResult )
@@ -314,7 +321,12 @@ public sealed class T101_KitTests
 		check( 123490.0, 3, "123000" );
 		check( 123500.0, 3, "124000" );
 
-		check( 9.96, 2, "10" ); // to 2 figures yields 10.0 instead of 10
+		//check for the claim made in the documentation of the ToString() method.
+		check( 0.002, 2, "0.0020" );
+
+		//check for special case in the original at https://stackoverflow.com/a/1987721/773113 against a bug where
+		//rounding 9.96 to 2 figures would yield "10.0" instead of "10"
+		check( 9.96, 2, "10" );
 
 		return;
 

@@ -16,6 +16,7 @@ using SysReflect = System.Reflection;
 using SysText = System.Text;
 using SysThread = System.Threading;
 using SysGlob = System.Globalization;
+using MemoryExtensions = System.MemoryExtensions;
 
 public static class KitHelpers
 {
@@ -337,39 +338,50 @@ public static class KitHelpers
 	// See https://stackoverflow.com/a/1987721/773113
 	// this method will round and then append zeros if needed.
 	// i.e. if you round .002 to two significant figures, the resulting number should be .0020.
-	public static string ToString( double value, int significantDigits )
+	public static int ToString( Sys.Span<char> buffer, double value, int significantDigits )
 	{
-		SysGlob.NumberFormatInfo currentInfo = SysGlob.CultureInfo.CurrentCulture.NumberFormat;
+		SysGlob.NumberFormatInfo currentInfo = SysGlob.CultureInfo.InvariantCulture.NumberFormat;
 
 		if( double.IsNaN( value ) )
-			return currentInfo.NaNSymbol;
+			return copyFromString( buffer, currentInfo.NaNSymbol );
 
 		if( double.IsPositiveInfinity( value ) )
-			return currentInfo.PositiveInfinitySymbol;
+			return copyFromString( buffer, currentInfo.PositiveInfinitySymbol );
 
 		if( double.IsNegativeInfinity( value ) )
-			return currentInfo.NegativeInfinitySymbol;
+			return copyFromString( buffer, currentInfo.NegativeInfinitySymbol );
 
-#if true
-		(double roundedValue, _) = RoundSignificantDigits( value, significantDigits );
+#if false
+		(double roundedValue, int roundingPosition) = RoundSignificantDigits( value, significantDigits );
 
 		// when rounding causes a cascading round affecting digits of greater significance, 
 		// need to re-round to get a correct rounding position afterwards
 		// this fixes a bug where rounding 9.96 to 2 figures yields 10.0 instead of 10
-		(_, double roundingPosition) = RoundSignificantDigits( roundedValue, significantDigits );
+		(_, int newRoundingPosition) = RoundSignificantDigits( roundedValue, significantDigits );
+		if( newRoundingPosition != roundingPosition )
+			roundingPosition = newRoundingPosition;
 #else
 		(double roundedValue, double roundingPosition) = RoundSignificantDigits( value, significantDigits );
 #endif
 
-		// use exponential notation format
-		// ReSharper disable FormatStringProblem
-		if( Math.Abs( roundingPosition ) > 9 )
-			return string.Format( currentInfo, "{0:E" + (significantDigits - 1) + "}", roundedValue );
-		// ReSharper restore FormatStringProblem
-		// string.format is only needed with decimal numbers (whole numbers won't need to be padded with zeros to the right.)
-		// ReSharper disable FormatStringProblem
-		return roundingPosition > 0 ? string.Format( currentInfo, "{0:F" + roundingPosition + "}", roundedValue ) : roundedValue.ToString( currentInfo );
-		// ReSharper restore FormatStringProblem
+		string format = Math.Abs( roundingPosition ) > 9 ? "E" + (significantDigits - 1) : "F" + Math.Max( 0, roundingPosition );
+		bool ok = roundedValue.TryFormat( buffer, out int charsWritten, format, currentInfo );
+		Assert( ok );
+		return charsWritten;
+
+		static int copyFromString( Sys.Span<char> buffer, string source )
+		{
+			int length = Math.Min( buffer.Length, source.Length );
+			MemoryExtensions.AsSpan( source )[..length].CopyTo( buffer );
+			return length;
+		}
+	}
+
+	public static string ToString( double value, int significantDigits )
+	{
+		Sys.Span<char> buffer = stackalloc char[32];
+		int charsWritten = ToString( buffer, value, significantDigits );
+		return new string( buffer[..charsWritten] );
 	}
 
 	public static double Round( double value, int significantDigits )
@@ -403,13 +415,19 @@ public static class KitHelpers
 		// this is because the scale multiplication after the rounding can introduce error, although
 		// this only happens when you're dealing with really tiny numbers, i.e 9.9e-14.
 		if( roundingPosition is > 0 and < 16 )
-			return (Math.Round( value, roundingPosition, Sys.MidpointRounding.AwayFromZero ), roundingPosition);
+			value = Math.Round( value, roundingPosition, Sys.MidpointRounding.AwayFromZero );
+		else
+		{
+			// Shouldn't get here unless we need to scale it.
+			// Set the scaling value, for rounding whole numbers or decimals past 15 places
+			double scale = Math.Pow( 10, Math.Ceiling( Math.Log10( Math.Abs( value ) ) ) );
+			value /= scale;
+			value = Math.Round( value, significantDigits, Sys.MidpointRounding.AwayFromZero );
+			value *= scale;
+		}
 
-		// Shouldn't get here unless we need to scale it.
-		// Set the scaling value, for rounding whole numbers or decimals past 15 places
-		double scale = Math.Pow( 10, Math.Ceiling( Math.Log10( Math.Abs( value ) ) ) );
-
-		return (Math.Round( value / scale, significantDigits, Sys.MidpointRounding.AwayFromZero ) * scale, roundingPosition);
+		roundingPosition = significantDigits - 1 - (int)Math.Floor( Math.Log10( Math.Abs( value ) ) );
+		return (value, roundingPosition);
 	}
 
 	public static T EnumFromByte<T>( byte byteValue ) where T : struct, Sys.Enum => SysCompiler.Unsafe.BitCast<byte, T>( byteValue );
