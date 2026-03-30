@@ -10,7 +10,6 @@ using Math = System.Math;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;
-using SysGlob = System.Globalization;
 using SysInterop = System.Runtime.InteropServices;
 using SysIo = System.IO;
 using SysReflect = System.Reflection;
@@ -683,86 +682,6 @@ public static class DotNetHelpers
 			if( Equals( value, enumValue ) )
 				return true;
 		return true;
-	}
-
-	// See https://stackoverflow.com/a/1987721/773113
-	// this method will round and then append zeros if needed.
-	// i.e. if you round .002 to two significant figures, the resulting number should be .0020.
-	public static string ToString( double value, int significantDigits )
-	{
-		SysGlob.NumberFormatInfo currentInfo = SysGlob.CultureInfo.CurrentCulture.NumberFormat;
-
-		if( double.IsNaN( value ) )
-			return currentInfo.NaNSymbol;
-
-		if( double.IsPositiveInfinity( value ) )
-			return currentInfo.PositiveInfinitySymbol;
-
-		if( double.IsNegativeInfinity( value ) )
-			return currentInfo.NegativeInfinitySymbol;
-
-		double roundedValue = roundSignificantDigits( value, significantDigits, out _ );
-
-		// when rounding causes a cascading round affecting digits of greater significance, 
-		// need to re-round to get a correct rounding position afterwards
-		// this fixes a bug where rounding 9.96 to 2 figures yields 10.0 instead of 10
-		roundSignificantDigits( roundedValue, significantDigits, out int roundingPosition );
-
-		// use exponential notation format
-		// ReSharper disable FormatStringProblem
-		if( Math.Abs( roundingPosition ) > 9 )
-			return string.Format( currentInfo, "{0:E" + (significantDigits - 1) + "}", roundedValue );
-		// ReSharper restore FormatStringProblem
-		// string.format is only needed with decimal numbers (whole numbers won't need to be padded with zeros to the right.)
-		// ReSharper disable FormatStringProblem
-		return roundingPosition > 0 ? string.Format( currentInfo, "{0:F" + roundingPosition + "}", roundedValue ) : roundedValue.ToString( currentInfo );
-		// ReSharper restore FormatStringProblem
-	}
-
-	// this method will return a rounded double value at a number of significant figures.
-	// the significantDigits parameter must be between 0 and 15, exclusive.
-#pragma warning disable CA1021 // Avoid out parameters
-	static double roundSignificantDigits( double value, int significantDigits, out int roundingPosition )
-#pragma warning restore CA1021 // Avoid out parameters
-	{
-		roundingPosition = 0;
-
-		if( DoubleEquals( value, 0d ) )
-		{
-			roundingPosition = significantDigits - 1;
-			return 0d;
-		}
-
-		if( double.IsNaN( value ) )
-			return double.NaN;
-
-		if( double.IsPositiveInfinity( value ) )
-			return double.PositiveInfinity;
-
-		if( double.IsNegativeInfinity( value ) )
-			return double.NegativeInfinity;
-
-		Assert( significantDigits is >= 1 and <= 15 );
-
-		// The resulting rounding position will be negative for rounding at whole numbers, and positive for decimal places.
-		roundingPosition = significantDigits - 1 - (int)Math.Floor( Math.Log10( Math.Abs( value ) ) );
-
-		// try to use a rounding position directly, if no scale is needed.
-		// this is because the scale multiplication after the rounding can introduce error, although
-		// this only happens when you're dealing with really tiny numbers, i.e 9.9e-14.
-		if( roundingPosition is > 0 and < 16 )
-			return Math.Round( value, roundingPosition, Sys.MidpointRounding.AwayFromZero );
-
-		// Shouldn't get here unless we need to scale it.
-		// Set the scaling value, for rounding whole numbers or decimals past 15 places
-		double scale = Math.Pow( 10, Math.Ceiling( Math.Log10( Math.Abs( value ) ) ) );
-
-		return Math.Round( value / scale, significantDigits, Sys.MidpointRounding.AwayFromZero ) * scale;
-	}
-
-	public static double Round( double value, int significantDigits )
-	{
-		return roundSignificantDigits( value, significantDigits, out _ );
 	}
 
 	public static int EnumerableHashCode<T>( IEnumerable<T> enumerable )

@@ -45,7 +45,7 @@ public static class GlobalStatics
 
 	///<summary>Compares two <c>double</c> values for approximate equality.</summary>
 	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
-	public static bool DoubleEquals( double a, double b, double? tolerance = null )
+	public static bool AboutEquals( double a, double b, double? tolerance = null )
 	{
 		if( double.IsNaN( a ) && double.IsNaN( b ) )
 			return true;
@@ -56,14 +56,14 @@ public static class GlobalStatics
 	///<summary>Compares two <c>double</c> values for exact equality.</summary>
 	///<remarks>Avoids the "equality comparison of floating point numbers" inspection of ReSharper, which is (badly)
 	///missing from dotnet analyzers.</remarks>
-	public static bool DoubleExactlyEquals( double a, double b )
+	public static bool ExactlyEquals( double a, double b )
 	{
 		return a.Equals( b );
 	}
 
 	///<summary>Compares two <c>float</c> values for approximate equality.</summary>
 	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
-	public static bool FloatEquals( float a, float b, float? tolerance = null )
+	public static bool AboutEquals( float a, float b, float? tolerance = null )
 	{
 		if( float.IsNaN( a ) && float.IsNaN( b ) )
 			return true;
@@ -74,7 +74,7 @@ public static class GlobalStatics
 	///<summary>Compares two <c>float</c> values for exact equality.</summary>
 	///<remarks>Avoids the "equality comparison of floating point numbers" inspection of ReSharper, which is (badly)
 	///missing from dotnet analyzers.</remarks>
-	public static bool FloatExactlyEquals( float a, float b )
+	public static bool ExactlyEquals( float a, float b )
 	{
 		return a.Equals( b );
 	}
