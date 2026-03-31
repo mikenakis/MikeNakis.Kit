@@ -392,7 +392,7 @@ public static class KitHelpers
 
 	// Round a double value at a given number of significant digits.
 	// The significantDigits parameter must be between 0 and 15, exclusive.
-	public static (double value, int roundingPosition) RoundSignificantDigits( double value, int significantDigits )
+	public static (double value, int roundingPosition) RoundSignificantDigits( double value, int significantDigits, Sys.MidpointRounding midpointRounding = Sys.MidpointRounding.AwayFromZero )
 	{
 		Assert( significantDigits is >= 1 and <= 15 );
 
@@ -415,14 +415,14 @@ public static class KitHelpers
 		// this is because the scale multiplication after the rounding can introduce error, although
 		// this only happens when you're dealing with really tiny numbers, i.e 9.9e-14.
 		if( roundingPosition is > 0 and < 16 )
-			value = Math.Round( value, roundingPosition, Sys.MidpointRounding.AwayFromZero );
+			value = Math.Round( value, roundingPosition, midpointRounding );
 		else
 		{
 			// Shouldn't get here unless we need to scale it.
 			// Set the scaling value, for rounding whole numbers or decimals past 15 places
 			double scale = Math.Pow( 10, Math.Ceiling( Math.Log10( Math.Abs( value ) ) ) );
 			value /= scale;
-			value = Math.Round( value, significantDigits, Sys.MidpointRounding.AwayFromZero );
+			value = Math.Round( value, significantDigits, midpointRounding );
 			value *= scale;
 		}
 
