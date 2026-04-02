@@ -29,10 +29,11 @@ public static class DotNetHelpers
 #pragma warning restore RS0030 // Do not use banned APIs
 	}
 
+	public static SysDiag.Process CurrentProcess { get; } = SysDiag.Process.GetCurrentProcess();
+
 	public static long GetProcessPrivateMemory()
 	{
-		SysDiag.Process currentProcess = SysDiag.Process.GetCurrentProcess();
-		return currentProcess.PrivateMemorySize64;
+		return CurrentProcess.PrivateMemorySize64;
 	}
 
 	static object garbageCollectedObject = new();
@@ -62,7 +63,7 @@ public static class DotNetHelpers
 			}
 			else
 				numberOfVainCollectionsInARow = 0;
-			SysThread.Thread.Sleep( 100 );
+			//SysThread.Thread.Sleep( 100 );
 		}
 		Sys.TimeSpan timeSpan = currentTime() - startTime;
 		Log.Debug( $"Garbage collection: {message( currentMemory - startMemory )} in {timeSpan.TotalMilliseconds} ms." );
@@ -123,7 +124,7 @@ public static class DotNetHelpers
 
 	public static FilePath GetMainModuleFilePath()
 	{
-		SysDiag.ProcessModule mainModule = SysDiag.Process.GetCurrentProcess().MainModule.OrThrow();
+		SysDiag.ProcessModule mainModule = CurrentProcess.MainModule.OrThrow();
 		// PEARL: System.Diagnostics.Process.GetCurrentProcess().MainModule.Filename is not a filename, it is a pathname!
 		string fullPathName = mainModule.FileName;
 		return FilePath.FromAbsolutePath( fullPathName );
@@ -140,7 +141,7 @@ public static class DotNetHelpers
 
 	static string getMainModuleName()
 	{
-		string mainModuleName = SysDiag.Process.GetCurrentProcess().MainModule.OrThrow().ModuleName;
+		string mainModuleName = CurrentProcess.MainModule.OrThrow().ModuleName;
 		const string exeExtension = ".exe";
 		Assert( mainModuleName.EndsWithIgnoreCase( exeExtension ) );
 		return mainModuleName[..^exeExtension.Length];
