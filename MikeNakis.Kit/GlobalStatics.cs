@@ -35,9 +35,13 @@ public static class GlobalStatics
 
 	public static bool Debugging => DebugMode && SysDiag.Debugger.IsAttached;
 
-	///<summary>Identity function.</summary>
-	///<remarks>useful as a no-op lambda and sometimes as a debugging aid.</remarks>
+	///<summary>Identity function. Useful as a no-op lambda and sometimes as a debugging aid.</summary>
 	public static T Identity<T>( T value ) => value;
+
+	///<summary>Instance Identity function. Useful for avoiding CA1822 'member does not access instance data'.</summary>
+	///<remarks>Use as follows: <c>this.Identity( value )</c>.</remarks>
+	///<seealso cref="Identity{T}(T)"/>
+	public static T Identity<T>( this object _, T value ) => value;
 
 	///<summary>Returns <c>true</c> if a given nullable is <c>null</c>.</summary>
 	///<remarks>Useful for use as a lambda.</remarks>
