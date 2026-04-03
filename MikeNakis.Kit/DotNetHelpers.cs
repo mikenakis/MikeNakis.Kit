@@ -66,7 +66,7 @@ public static class DotNetHelpers
 			//SysThread.Thread.Sleep( 100 );
 		}
 		Sys.TimeSpan timeSpan = currentTime() - startTime;
-		Log.Debug( $"Garbage collection: {message( currentMemory - startMemory )} in {timeSpan.TotalMilliseconds} ms." );
+		Log.Debug( $"Garbage collection: {message( currentMemory - startMemory )} in {timeSpan.TotalMilliseconds:F0} ms." );
 		return;
 
 		static string message( long memoryDifference ) //
