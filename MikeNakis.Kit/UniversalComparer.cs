@@ -12,26 +12,27 @@ using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 using SysReflect = System.Reflection;
 
-// PEARL: Arrays in C# implement `IEnumerable` but provide no implementation for `Equals()`, defaulting to
-//		`DotNetHelpers.ReferenceEquals()`!
-//		The same holds true for `List<>`, `Dictionary<>`, etc.
-//      This means that `object.Equals( array1, array2 )`, `object.Equals( list1, list2 )` and
-//      `object.Equals( dictionary1, dictionary2 )` will always return false, even if the collections have
-//      identical contents!
-//      The standing advice is to use `a.SequenceEqual( b )` to compare instances of `IEnumerable`, but this
-//      advise is retarded, due to the following reasons:
-//			1. We can only use `SequenceEqual()` if we know in advance the types of the objects being compared; this
-//             might be fine for application programmers who are perfectly accustomed to writing copious amounts of
-//             mindless application-specific code to accomplish standard tasks, but it does not work when you are
-//             writing infrastructure-level code, which operates on data without needing to know, nor wanting to
-//             know, the exact type of the data.
-//          2. When the elements of an `IEnumerable` are in turn `IEnumerable`, guess what `SequenceEqual()` uses to
-//             compare pairs of elements? It uses `object.Equals()`!
-//             So, it will miserably fail when the elements are arrays, lists, dictionaries, etc.
-//             Again, this might not be a problem for application programmers who will happily write thousands of
-//             lines of application-specific code to compare application data having intimate knowledge of the
-//             structure of the data, but it does not work when writing infrastructure-level code.
-//      This class fixes this insanity. It is meant to be used as a replacement for `object.Equals()`.
+/// <summary>
+/// PEARL: In dotnet, arrays and collections implement <c>IEnumerable&lt;T&gt;</c> but do not override
+/// <c>object.Equals( object )</c>, defaulting to <c>ReferenceEquals( object, object )</c>!<br/>
+/// This means that <c>array1.Equals( array2 )</c>, <c>list1.Equals( list2 )</c> and
+/// <c>dictionary1.Equals( dictionary2 )</c> will always return <c>false</c>, even if the arrays or collections have
+/// identical contents!<br/>
+/// The standing advice is to use <c>a.SequenceEqual( b )</c> to compare instances of <c>IEnumerable</c>.<br/>
+/// This advise is retarded, due to the following reasons:<br/>
+/// 1. We can only use <c>SequenceEqual()</c> if we know in advance the types of the objects being compared.<br/>
+/// This might be fine for application programmers who are perfectly accustomed to writing hundreds of lines
+/// of mindless application-level code to compare application data having intimate knowledge of the exact
+/// structure of that data, but it does not work when writing infrastructure-level code, which operates on
+/// data without needing to know, nor wanting to know, nor being able to afford to know, the structure of the data.<br/>
+/// 2. <c>SequenceEqual()</c> will miserably fail when the arrays or collections have elements that are in turn
+/// arrays or collections!<br/>
+/// (Because guess what <c>SequenceEqual()</c> uses to compare pairs of elements? It uses <c>object.Equals()</c>!)
+/// Again, this might not be a problem for application programmers who are perfectly accustomed to writing
+/// thousands of lines of mindless application-level code to compare application data having intimate knowledge of
+/// the exact structure of that data, but it does not work when writing infrastructure-level code.<br/>
+/// This class fixes this insanity. It is meant to be used as a universal replacement for `object.Equals()`.
+/// </summary>
 sealed class UniversalComparer
 {
 	public static readonly UniversalComparer Instance = new();
