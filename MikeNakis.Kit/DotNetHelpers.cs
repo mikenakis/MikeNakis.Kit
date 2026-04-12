@@ -29,7 +29,9 @@ public static class DotNetHelpers
 #pragma warning restore RS0030 // Do not use banned APIs
 	}
 
+#pragma warning disable RS0030 // Do not use banned APIs
 	public static SysDiag.Process CurrentProcess { get; } = SysDiag.Process.GetCurrentProcess();
+#pragma warning restore RS0030 // Do not use banned APIs
 
 	public static long GetProcessPrivateMemory()
 	{
