@@ -49,12 +49,17 @@ public static class GlobalStatics
 
 	///<summary>Compares two <c>double</c> values for approximate equality.</summary>
 	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
-	public static bool AboutEquals( double a, double b, double? tolerance = null )
+	public static bool NearlyEquals( double a, double b, double? tolerance = null )
 	{
 		if( double.IsNaN( a ) && double.IsNaN( b ) )
 			return true;
 		double difference = Math.Abs( a - b );
 		return difference < (tolerance ?? KitHelpers.Epsilon);
+	}
+
+	public static bool IsNearlyInteger( double value, double? tolerance = null )
+	{
+		return Math.Abs( value - Math.Round( value ) ) < (tolerance ?? KitHelpers.Epsilon);
 	}
 
 	///<summary>Compares two <c>double</c> values for exact equality.</summary>
@@ -67,7 +72,7 @@ public static class GlobalStatics
 
 	///<summary>Compares two <c>float</c> values for approximate equality.</summary>
 	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
-	public static bool AboutEquals( float a, float b, float? tolerance = null )
+	public static bool NearlyEquals( float a, float b, float? tolerance = null )
 	{
 		if( float.IsNaN( a ) && float.IsNaN( b ) )
 			return true;

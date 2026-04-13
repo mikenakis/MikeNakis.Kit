@@ -396,7 +396,7 @@ public static class KitHelpers
 	{
 		Assert( significantDigits is >= 1 and <= 15 );
 
-		if( AboutEquals( value, 0d ) )
+		if( NearlyEquals( value, 0d ) )
 			return (0d, significantDigits - 1);
 
 		if( double.IsNaN( value ) )
