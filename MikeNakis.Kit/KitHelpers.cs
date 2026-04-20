@@ -17,6 +17,7 @@ using SysText = System.Text;
 using SysThread = System.Threading;
 using SysGlob = System.Globalization;
 using MemoryExtensions = System.MemoryExtensions;
+using SysInterop = System.Runtime.InteropServices;
 
 public static class KitHelpers
 {
@@ -531,7 +532,15 @@ public static class KitHelpers
 
 	public static string BuildShortExceptionMessage( string prefix, Sys.Exception exception )
 	{
-		return $"{prefix}: {exception.GetType().FullName}: {fixMessage( exception.Message )}";
+		return $"{prefix}: {exception.GetType().FullName}: {fixMessage( exception.Message )}{hResultMessage( exception )}";
+
+		static string hResultMessage( Sys.Exception exception )
+		{
+			Sys.Exception? hResultException = SysInterop.Marshal.GetExceptionForHR( exception.HResult );
+			if( hResultException == null )
+				return "";
+			return $" HResult 0x{exception.HResult:X8}: {hResultException.Message}";
+		}
 	}
 
 	public static IEnumerable<string> BuildMediumExceptionMessage( string prefix, Sys.Exception exception )
