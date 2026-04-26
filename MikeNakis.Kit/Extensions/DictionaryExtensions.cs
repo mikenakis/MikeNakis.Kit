@@ -30,7 +30,42 @@ public static class DictionaryExtensions
 		return value;
 	}
 
+	public static V? TryGetValue<V, K>( this Dictionary<K, V> self, K key ) where K : notnull where V : struct
+	{
+		if( self.TryGetValue( key, out V value ) )
+			return value;
+		return default;
+	}
+
+	public static V? TryGetValue<V, K>( this IDictionary<K, V> self, K key ) where K : notnull where V : struct
+	{
+		if( self.TryGetValue( key, out V value ) )
+			return value;
+		return default;
+	}
+
+	public static V? TryGetValue<V, K>( this IReadOnlyDictionary<K, V> self, K key ) where K : notnull where V : struct
+	{
+		if( self.TryGetValue( key, out V value ) )
+			return value;
+		return default;
+	}
+
+	public static V? TryGet<V, K>( this Dictionary<K, V> self, K key ) where K : notnull where V : notnull
+	{
+		if( self.TryGetValue( key, out V? value ) )
+			return value;
+		return default;
+	}
+
 	public static V? TryGet<V, K>( this IDictionary<K, V> self, K key ) where K : notnull where V : notnull
+	{
+		if( self.TryGetValue( key, out V? value ) )
+			return value;
+		return default;
+	}
+
+	public static V? TryGet<V, K>( this IReadOnlyDictionary<K, V> self, K key ) where K : notnull where V : notnull
 	{
 		if( self.TryGetValue( key, out V? value ) )
 			return value;
