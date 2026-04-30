@@ -18,8 +18,17 @@ public abstract class FileSystemPath
 		return result;
 	}
 
+	public static bool IsRelative( string path )
+	{
+		bool result = !SysIoPathIsPathRooted( path );
+		Assert( result == !SysIoPathIsPathFullyQualified( path ) );
+		Assert( result == (SysIoPathGetFullPath( path ) != path) );
+		return result;
+	}
+
 	public static bool IsNormalized( string path )
 	{
+		Assert( IsAbsolute( path ) );
 		//Assert( path == SysIo.Path.Combine( SysIo.Path.GetDirectoryName( path ).OrThrow(), SysIo.Path.GetFileName( path ) ) ); Does not work with UNC paths. The following line, however, does.
 		return SysIoPathGetFullPath( path ) == path;
 	}
@@ -39,11 +48,6 @@ public abstract class FileSystemPath
 		if( fileName == "." )
 			return false; //invalid because it refers to a directory.
 		return IsValidPart( fileName );
-	}
-
-	public static bool IsRelativePathName( string pathName )
-	{
-		return !SysIoPathIsPathRooted( pathName );
 	}
 
 	public static string? RemoveInvalidFileNameCharacters( string filename )

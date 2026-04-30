@@ -5,7 +5,6 @@ using System.Linq;
 using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.CSharpTypeNames.Extensions;
 using MikeNakis.Kit.Extensions;
-using Math = System.Math;
 using Sys = System;
 using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
 using SysDiag = System.Diagnostics;
@@ -46,47 +45,6 @@ public static class GlobalStatics
 	///<summary>Returns <c>true</c> if a given nullable is <c>null</c>.</summary>
 	///<remarks>Useful for use as a lambda.</remarks>
 	public static bool IsNull<T>( T? nullable ) => nullable is null;
-
-	///<summary>Compares two <c>double</c> values for approximate equality.</summary>
-	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
-	public static bool NearlyEquals( double a, double b, double? tolerance = null )
-	{
-		if( double.IsNaN( a ) && double.IsNaN( b ) )
-			return true;
-		double difference = Math.Abs( a - b );
-		return difference < (tolerance ?? KitHelpers.Epsilon);
-	}
-
-	public static bool IsNearlyInteger( double value, double? tolerance = null )
-	{
-		return Math.Abs( value - Math.Round( value ) ) < (tolerance ?? KitHelpers.Epsilon);
-	}
-
-	///<summary>Compares two <c>double</c> values for exact equality.</summary>
-	///<remarks>Avoids the "equality comparison of floating point numbers" inspection of ReSharper, which is (badly)
-	///missing from dotnet analyzers.</remarks>
-	public static bool ExactlyEquals( double a, double b )
-	{
-		return a.Equals( b );
-	}
-
-	///<summary>Compares two <c>float</c> values for approximate equality.</summary>
-	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
-	public static bool NearlyEquals( float a, float b, float? tolerance = null )
-	{
-		if( float.IsNaN( a ) && float.IsNaN( b ) )
-			return true;
-		float difference = Math.Abs( a - b );
-		return difference < (tolerance ?? KitHelpers.FEpsilon);
-	}
-
-	///<summary>Compares two <c>float</c> values for exact equality.</summary>
-	///<remarks>Avoids the "equality comparison of floating point numbers" inspection of ReSharper, which is (badly)
-	///missing from dotnet analyzers.</remarks>
-	public static bool ExactlyEquals( float a, float b )
-	{
-		return a.Equals( b );
-	}
 
 	public static bool StringEquals( string? a, string? b ) => string.Equals( a, b, Sys.StringComparison.Ordinal );
 	public static int StringCompare( string? a, string? b ) => string.Compare( a, b, Sys.StringComparison.Ordinal );

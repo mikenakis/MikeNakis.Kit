@@ -9,6 +9,7 @@ using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
 using SysDiag = System.Diagnostics;
 using SysGlob = System.Globalization;
 using SysText = System.Text;
+using Math = System.Math;
 
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
 public static class MiscellaneousExtensions
@@ -82,5 +83,46 @@ public static class MiscellaneousExtensions
 		if( self > max )
 			return max;
 		return self;
+	}
+
+	///<summary>Compares two <c>double</c> values for approximate equality.</summary>
+	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
+	public static bool NearlyEquals( this double a, double b, double? tolerance = null )
+	{
+		if( double.IsNaN( a ) && double.IsNaN( b ) )
+			return true;
+		double difference = Math.Abs( a - b );
+		return difference < (tolerance ?? KitHelpers.Epsilon);
+	}
+
+	public static bool IsNearlyInteger( this double value, double? tolerance = null )
+	{
+		return Math.Abs( value - Math.Round( value ) ) < (tolerance ?? KitHelpers.Epsilon);
+	}
+
+	///<summary>Compares two <c>double</c> values for exact equality.</summary>
+	///<remarks>Avoids the "equality comparison of floating point numbers" inspection of ReSharper, which is (badly)
+	///missing from dotnet analyzers.</remarks>
+	public static bool ExactlyEquals( this double a, double b )
+	{
+		return a.Equals( b );
+	}
+
+	///<summary>Compares two <c>float</c> values for approximate equality.</summary>
+	//TODO: perhaps replace with something more sophisticated, like this: https://stackoverflow.com/a/3875619/773113
+	public static bool NearlyEquals( this float a, float b, float? tolerance = null )
+	{
+		if( float.IsNaN( a ) && float.IsNaN( b ) )
+			return true;
+		float difference = Math.Abs( a - b );
+		return difference < (tolerance ?? KitHelpers.FEpsilon);
+	}
+
+	///<summary>Compares two <c>float</c> values for exact equality.</summary>
+	///<remarks>Avoids the "equality comparison of floating point numbers" inspection of ReSharper, which is (badly)
+	///missing from dotnet analyzers.</remarks>
+	public static bool ExactlyEquals( this float a, float b )
+	{
+		return a.Equals( b );
 	}
 }

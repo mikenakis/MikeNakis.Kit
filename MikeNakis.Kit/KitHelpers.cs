@@ -336,7 +336,7 @@ public static class KitHelpers
 		return v;
 	}
 
-	// See https://stackoverflow.com/a/1987721/773113
+	// PROVENANCE: See https://stackoverflow.com/a/1987721/773113
 	// this method will round and then append zeros if needed.
 	// i.e. if you round .002 to two significant figures, the resulting number should be .0020.
 	public static int ToString( Sys.Span<char> buffer, double value, int significantDigits )
@@ -397,7 +397,7 @@ public static class KitHelpers
 	{
 		Assert( significantDigits is >= 1 and <= 15 );
 
-		if( NearlyEquals( value, 0d ) )
+		if( value.NearlyEquals( 0d ) )
 			return (0d, significantDigits - 1);
 
 		if( double.IsNaN( value ) )
@@ -650,7 +650,7 @@ public static class KitHelpers
 		}
 	}
 
-	// From https://stackoverflow.com/a/44203452/773113, with a few improvements
+	// PROVENANCE: From https://stackoverflow.com/a/44203452/773113, with a few improvements
 	public static bool IsPrime( long number )
 	{
 		if( number <= 1 )
@@ -664,5 +664,24 @@ public static class KitHelpers
 			if( number % (i + 1) == 0 || number % (i + 5) == 0 )
 				return false;
 		return true;
+	}
+
+	// PROVENANCE: from Google Gemini
+	public static int GetNearestPrime( int number )
+	{
+		if( number <= 2 )
+			return 2;
+
+		// Check the number itself and then expand outward
+		for( int i = 0; ; i++ )
+		{
+			// Check smaller numbers first (arbitrary choice)
+			if( IsPrime( number - i ) )
+				return number - i;
+
+			// Check larger numbers
+			if( IsPrime( number + i ) )
+				return number + i;
+		}
 	}
 }

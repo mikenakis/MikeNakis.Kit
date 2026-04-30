@@ -68,7 +68,7 @@ public sealed class DirectoryPath : FileSystemPath
 	/// An exception will be thrown if <paramref name="directoryName"/> contains invalid characters.</remarks>
 	public DirectoryPath Directory( string directoryName )
 	{
-		IsRelativePathName( directoryName ).OrThrow();
+		IsRelative( directoryName ).OrThrow();
 		IsValidFileName( directoryName ).OrThrow();
 		string fullPathName = SysIoPathCombine( Path, directoryName );
 		return new DirectoryPath( fullPathName );
@@ -82,7 +82,7 @@ public sealed class DirectoryPath : FileSystemPath
 	{
 		if( relativePathName == "" )
 			relativePathName = ".";
-		Assert( IsRelativePathName( relativePathName ) );
+		Assert( IsRelative( relativePathName ) );
 		Assert( IsValidPathName( relativePathName ) );
 		string fullPathName = SysIoPathGetFullPath( SysIoPathCombine( Path, relativePathName ) );
 		return new DirectoryPath( fullPathName );
@@ -96,7 +96,7 @@ public sealed class DirectoryPath : FileSystemPath
 	{
 		if( relativePathName == "" )
 			relativePathName = ".";
-		IsRelativePathName( relativePathName ).OrThrow();
+		IsRelative( relativePathName ).OrThrow();
 		IsValidPathName( relativePathName ).OrThrow();
 		string fullPathName = SysIoPathGetFullPath( SysIoPathCombine( Path, relativePathName ) );
 		return FilePath.FromAbsolutePath( fullPathName );

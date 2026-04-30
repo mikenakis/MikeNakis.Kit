@@ -101,8 +101,7 @@ public sealed class T101_KitTests
 	[VSTesting.TestMethod]
 	public void T07_IsPrime_Works()
 	{
-		bool[] primeFlags = new bool[10000];
-		sieveOfEratosthenes( primeFlags );
+		bool[] primeFlags = sieveOfEratosthenes( 10000 );
 		for( int i = 0; i < primeFlags.Length; i++ )
 		{
 			bool isPrime = KitHelpers.IsPrime( i );
@@ -110,8 +109,9 @@ public sealed class T101_KitTests
 		}
 
 		//from https://stackoverflow.com/a/1043247/773113
-		static void sieveOfEratosthenes( bool[] primeFlags )
+		static bool[] sieveOfEratosthenes( int count )
 		{
+			bool[] primeFlags = new bool[count];
 			primeFlags[0] = false;
 			primeFlags[1] = false;
 			for( int i = 2; i < primeFlags.Length; i++ )
@@ -120,6 +120,7 @@ public sealed class T101_KitTests
 				if( primeFlags[i] )
 					for( int j = i * i; j < primeFlags.Length; j += i )
 						primeFlags[j] = false;
+			return primeFlags;
 		}
 	}
 
