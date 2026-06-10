@@ -61,7 +61,8 @@ public static class GlobalStatics
 	/// (Though the factory may just as well throw the exception instead of returning it.)
 	/// This function is only executed (and the supplied <paramref name="value"/> is only evaluated) when running a debug build.</remarks>
 	[SysDiag.DebuggerNonUserCode]
-	[/*SysDiag.DebuggerHidden,*/ SysDiag.Conditional( "DEBUG" )]
+	[SysDiag.DebuggerHidden]
+	[SysDiag.Conditional( "DEBUG" )]
 	public static void Assert<T>( T value, Sys.Func<T, bool> check, Sys.Func<T, Sys.Exception> exceptionFactory )
 	{
 		if( check.Invoke( value ) )
@@ -74,7 +75,8 @@ public static class GlobalStatics
 	/// (Though the factory may just as well throw the exception instead of returning it.)
 	/// This function is only executed (and the supplied <paramref name="condition"/> is only evaluated) when running a debug build.</remarks>
 	[SysDiag.DebuggerNonUserCode]
-	[/*SysDiag.DebuggerHidden,*/ SysDiag.Conditional( "DEBUG" )]
+	[SysDiag.DebuggerHidden]
+	[SysDiag.Conditional( "DEBUG" )]
 	public static void Assert( [SysCodeAnalysis.DoesNotReturnIf( false )] bool condition, Sys.Func<Sys.Exception> exceptionFactory ) //
 	{
 		if( condition )
@@ -86,7 +88,8 @@ public static class GlobalStatics
 	/// <remarks>If the given <paramref name="condition"/> is <c>false</c>, an <see cref="AssertionFailureException"/> is thrown.
 	/// This function is only executed (and the supplied <paramref name="condition"/> is only evaluated) when running a debug build.</remarks>
 	[SysDiag.DebuggerNonUserCode]
-	[SysDiag.DebuggerHidden, SysDiag.Conditional( "DEBUG" )]
+	[SysDiag.DebuggerHidden]
+	[SysDiag.Conditional( "DEBUG" )]
 	public static void Assert( [SysCodeAnalysis.DoesNotReturnIf( false )] bool condition ) //
 	{
 		if( condition )
