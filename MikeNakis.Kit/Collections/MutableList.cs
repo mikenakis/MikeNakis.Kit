@@ -2,6 +2,7 @@ namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
 using MikeNakis.Kit;
+using MikeNakis.Kit.Extensions;
 using static MikeNakis.Kit.GlobalStatics;
 using LegacyCollections = System.Collections;
 using Sys = System;
@@ -649,7 +650,7 @@ public sealed class MutableList<T> : IEnumerable<T>
 		Sort( comparer );
 	}
 
-	public void Sort( Sys.Func<T, T, int> comparator, bool descending = false ) => Sort( LinqEx.DefaultExtractor, comparator, descending );
+	public void Sort( Sys.Func<T, T, int> comparator, bool descending = false ) => Sort( EnumerableExtensions.DefaultExtractor, comparator, descending );
 
 	public void Sort<E>( Sys.Func<T, E> extractor, Sys.Func<E, E, int> comparator, bool descending = false )
 	{

@@ -2,6 +2,7 @@ namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
 using MikeNakis.Kit;
+using MikeNakis.Kit.Extensions;
 using SysDiag = System.Diagnostics;
 
 /// An implementation of <see cref="IOrderedSet{T}"/>.

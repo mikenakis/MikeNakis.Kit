@@ -7,22 +7,22 @@ using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "Count = {" + nameof( Count ) + "}" )]
 [SysDiag.DebuggerTypeProxy( typeof( EnumerableDebugView ) )]
-public sealed class MutableBiDictionary<F, S> where F : notnull where S : notnull
+public sealed class MutableBidictionary<F, S> where F : notnull where S : notnull
 {
 	readonly ForwardDictionary forwardDictionary;
 	readonly ReverseDictionary reverseDictionary;
 
-	public MutableBiDictionary( IEqualityComparer<F>? forwardEqualityComparer = null, IEqualityComparer<S>? reverseEqualityComparer = null )
+	public MutableBidictionary( IEqualityComparer<F>? forwardEqualityComparer = null, IEqualityComparer<S>? reverseEqualityComparer = null )
 	{
 		forwardDictionary = new ForwardDictionary( this, forwardEqualityComparer );
 		reverseDictionary = new ReverseDictionary( this, reverseEqualityComparer );
 	}
 
-	public BiDictionary<F, S> AsReadOnly => new ReadOnlyBiDictionaryOnMutableBiDictionary( this );
+	public Bidictionary<F, S> AsReadOnly => new ReadOnlyBiDictionaryOnMutableBiDictionary( this );
 	public IDictionary<F, S> Forward => forwardDictionary;
 	public IDictionary<S, F> Reverse => reverseDictionary;
 
-	sealed class ReadOnlyBiDictionaryOnMutableBiDictionary( MutableBiDictionary<F, S> mutableBiDictionary ) : BiDictionary<F, S>
+	sealed class ReadOnlyBiDictionaryOnMutableBiDictionary( MutableBidictionary<F, S> mutableBiDictionary ) : Bidictionary<F, S>
 	{
 		public IReadOnlyDictionary<F, S> Forward => mutableBiDictionary.forwardDictionary;
 		public IReadOnlyDictionary<S, F> Reverse => mutableBiDictionary.reverseDictionary;
@@ -31,10 +31,10 @@ public sealed class MutableBiDictionary<F, S> where F : notnull where S : notnul
 
 	sealed class ForwardDictionary : AbstractDictionary<F, S>
 	{
-		readonly MutableBiDictionary<F, S> mutableBiDictionary;
+		readonly MutableBidictionary<F, S> mutableBiDictionary;
 		internal readonly Dictionary<F, S> Dictionary;
 
-		public ForwardDictionary( MutableBiDictionary<F, S> mutableBiDictionary, IEqualityComparer<F>? forwardEqualityComparer = null )
+		public ForwardDictionary( MutableBidictionary<F, S> mutableBiDictionary, IEqualityComparer<F>? forwardEqualityComparer = null )
 		{
 			this.mutableBiDictionary = mutableBiDictionary;
 			Dictionary = new Dictionary<F, S>( forwardEqualityComparer );
@@ -72,10 +72,10 @@ public sealed class MutableBiDictionary<F, S> where F : notnull where S : notnul
 
 	sealed class ReverseDictionary : AbstractDictionary<S, F>
 	{
-		readonly MutableBiDictionary<F, S> mutableBiDictionary;
+		readonly MutableBidictionary<F, S> mutableBiDictionary;
 		internal readonly Dictionary<S, F> Dictionary;
 
-		public ReverseDictionary( MutableBiDictionary<F, S> mutableBiDictionary, IEqualityComparer<S>? reverseEqualityComparer = null )
+		public ReverseDictionary( MutableBidictionary<F, S> mutableBiDictionary, IEqualityComparer<S>? reverseEqualityComparer = null )
 		{
 			this.mutableBiDictionary = mutableBiDictionary;
 			Dictionary = new Dictionary<S, F>( reverseEqualityComparer );

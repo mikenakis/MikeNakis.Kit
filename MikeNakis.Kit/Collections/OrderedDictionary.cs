@@ -2,10 +2,13 @@ namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
 using System.Linq;
+using MikeNakis.Kit.Extensions;
 using static MikeNakis.Kit.GlobalStatics;
 using SysDiag = System.Diagnostics;
 
+#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 public static class OrderedDictionary
+#pragma warning restore CA1711 // Identifiers should not have incorrect suffix
 {
 	public static OrderedDictionary<V, K> InverseOf<K, V>( IReadOnlyDictionary<K, V> self ) where V : notnull
 	{

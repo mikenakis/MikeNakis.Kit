@@ -207,11 +207,11 @@ public static class Generator
 					SysDiag.Debug.Assert( indexOfBackQuote == typeName.IndexOf( '`', Sys.StringComparison.Ordinal ) );
 					if( indexOfBackQuote != -1 )
 					{
-						stringBuilder.Append( typeName.Substring( 0, indexOfBackQuote ) );
+						stringBuilder.Append( typeName[..indexOfBackQuote] );
 						stringBuilder.Append( '<' );
 						Sys.Type[] arguments = type.GetGenericArguments();
 						int start = type.IsNested ? type.DeclaringType!.GetGenericArguments().Length : 0;
-						SysDiag.Debug.Assert( arguments.Length - start == int.Parse( typeName.Substring( indexOfBackQuote + 1 ), SysGlob.CultureInfo.InvariantCulture ) );
+						SysDiag.Debug.Assert( arguments.Length - start == int.Parse( typeName[(indexOfBackQuote + 1)..], SysGlob.CultureInfo.InvariantCulture ) );
 						for( int i = start; i < arguments.Length; i++ )
 						{
 							if( !(type.ContainsGenericParameters && !type.IsGenericTypeDefinition) ) // very special case for the type of the field in `TypeA<T1,T2> { TypeB<T2> Field; }`

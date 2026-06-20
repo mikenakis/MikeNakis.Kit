@@ -2,7 +2,6 @@ namespace MikeNakis.Kit.FileSystem;
 
 using System.Collections.Generic;
 using System.Linq;
-using MikeNakis.Kit.Collections;
 using MikeNakis.Kit.Extensions;
 using static MikeNakis.Kit.GlobalStatics;
 using Sys = System;

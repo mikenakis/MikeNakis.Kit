@@ -1,6 +1,7 @@
 namespace MikeNakis.Kit.Collections;
 
 using System.Collections.Generic;
+using MikeNakis.Kit.Extensions;
 
 /// Abstract base class for implementations of <see cref="ICollection{T}"/>.
 public abstract class AbstractCollection<T> : AbstractReadOnlyCollection<T>, ICollection<T>
