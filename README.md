@@ -16,7 +16,7 @@ For more information, see [LICENSE.md](LICENSE.md)
 
 This project is written using _**my very own™**_ coding style.
 
-More information: [michael.gr - On Coding Style](https://blog.michael.gr/2018/04/on-coding-style.html)
+More information: [michael.gr - On Coding Style](https://blog.michael.gr/post/2018-04-on-coding-style/)
 
 ----------------------
 Cover image: The MikeNakis.Kit logo, <i>a Swiss army knife</i> by Mike Nakis, based on original work by <a href="https://thenounproject.com/term/multi-tool/1641155/">Mariah Gardziola</a> from the Noun Project, license: "<a href="https://creativecommons.org/licenses/by/3.0/us/">CC BY</a>".
