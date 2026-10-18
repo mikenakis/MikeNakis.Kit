@@ -3,6 +3,7 @@ namespace MikeNakis.Kit;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
 using static MikeNakis.Kit.GlobalStatics;
+using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 
 /*
@@ -59,9 +60,28 @@ public static class StartupProjectDirectory
 	{
 		if( startupProjectDirectory == null )
 			return sourceFilePathName;
-		if( !FileSystemPath.IsAbsolute( sourceFilePathName ) )
-			return sourceFilePathName;
-		FilePath sourceFilePath = FilePath.FromAbsolutePath( sourceFilePathName );
-		return startupProjectDirectory.GetRelativePath( sourceFilePath );
+
+		// Source file pathnames are strings emitted by a compiler, possibly on another machine running another OS (for
+		// example, packages built by GitHub Actions on Linux), so they are not necessarily valid file system paths on
+		// this machine. Therefore, we treat them as plain text: we look for the nearest ancestor of the startup project
+		// directory which is a prefix of the source file pathname, and we replace it with the right number of `..`.
+		// If no ancestor matches, the source file pathname is returned unchanged.
+		string ancestor = startupProjectDirectory.Path;
+		char separator = ancestor.Contains( '\\', Sys.StringComparison.Ordinal ) ? '\\' : '/';
+		string upwardSteps = "";
+		while( true )
+		{
+			string prefix = isSeparator( ancestor[^1] ) ? ancestor : ancestor + separator;
+			if( sourceFilePathName.StartsWithIgnoreCase( prefix ) )
+				return upwardSteps + sourceFilePathName[prefix.Length..];
+			int index = ancestor.LastIndexOfAny( separators );
+			if( index <= 0 )
+				return sourceFilePathName;
+			ancestor = ancestor[..index];
+			upwardSteps += ".." + separator;
+		}
 	}
+
+	static readonly char[] separators = { '\\', '/' };
+	static bool isSeparator( char c ) => c is '\\' or '/';
 }
