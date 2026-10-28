@@ -110,7 +110,9 @@ public sealed class DirectoryPath : FileSystemPath
 		string fullPathName = SysIoPathCombine( Path, fileName );
 		return FilePath.FromAbsolutePath( fullPathName );
 	}
-	/// <summary>Returns a random, unique <see cref="FilePath"/> under this <see cref="DirectoryPath"/>. (A corresponding actual file is also created, but then closed.)</summary>
+	/// <summary>Creates a new file with a random, unique filename under this <see cref="DirectoryPath"/>.</summary>
+	/// <remarks>An actual file is created, and closed.</remarks>
+	/// <returns>The new <see cref="FilePath"/>.</returns>
 	/// <param name="extension">The file extension to append to the random filename.</param>
 	public FilePath GenerateUniqueFilePath( string extension = ".tmp" )
 	{
@@ -119,54 +121,23 @@ public sealed class DirectoryPath : FileSystemPath
 		return filePath;
 	}
 
-	/// <summary>Creates a new file with a random, unique <see cref="FilePath"/> under this <see cref="DirectoryPath"/>. (Both the stream and the filepath are returned.)</summary>
+	/// <summary>Creates a new file with a random, unique filename under this <see cref="DirectoryPath"/>.</summary>
+	/// <returns>The new <see cref="FilePath"/> and the stream to the open file.</returns>
 	/// <param name="extension">The file extension to append to the random filename.</param>
 	public (FilePath, SysIo.Stream) CreateUniqueFile( string extension = ".tmp" )
 	{
-		FilePath filePath;
-		SysIo.Stream stream;
 		while( true )
 		{
 			string fileName = SysIoPathGetFileNameWithoutExtension( SysIoPathGetRandomFileName() ) + extension;
-			filePath = File( fileName );
-			Result<SysIo.Stream> result = tryCreateFile( filePath );
-			if( !result.IsFailure )
+			try
 			{
-				stream = result.Payload;
-				break;
+				FilePath filePath = File( fileName );
+				SysIo.Stream stream = filePath.CreateNewBinary();
+				return (filePath, stream);
 			}
-			Log.Info( $"failed to generate unique temporary filename because {result.Expectation.Message}" );
-		}
-		return (filePath, stream);
-
-		static Result<SysIo.Stream> tryCreateFile( FilePath filePath )
-		{
-			// Old approach: try to create the file without allowing sharing, so as to fail if the file is locked.
-			// Disadvantage: an existing file may be overwritten, unless it is kept locked.
-			if( False )
+			catch( PathAlreadyExistsException exception )
 			{
-				try
-				{
-					return filePath.CreateBinary();
-				}
-				catch( SharingViolationException )
-				{
-					return new CustomExpectation( $"creation of file '{filePath}' failed due to sharing violation" );
-				}
-			}
-			// New approach: try to create a **_new_** file, (meaning that it must not already exist,) so as to fail if
-			// the file already exists.
-			// Advantage: existing files will never be overwritten, even if they are not kept locked anymore.
-			else
-			{
-				try
-				{
-					return filePath.CreateNewBinary();
-				}
-				catch( PathAlreadyExistsException )
-				{
-					return new CustomExpectation( $"creation of file '{filePath}' failed because it already exists" );
-				}
+				Log.Info( $"failed to generate unique temporary filename '{fileName}' because {exception.GetType().Name}: {exception.Message}" );
 			}
 		}
 	}
