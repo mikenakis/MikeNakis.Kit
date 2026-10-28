@@ -117,7 +117,7 @@ public static class KitHelpers
 	{
 		Result<string> result = ParseStringLiteral( '\"', content );
 		if( !result.IsSuccess )
-			throw new Sys.FormatException( result.Expectation.Message );
+			throw new Sys.FormatException( result.Error.Message );
 		return result.Payload;
 	}
 
@@ -194,18 +194,18 @@ public static class KitHelpers
 	{
 		int i = 0;
 		if( i >= charSpan.Length || charSpan[i] != quoteCharacter )
-			return new CustomExpectation( $"expected an opening '{quoteCharacter}', found '{charSpan[i]}'" );
+			return new CustomError( $"expected an opening '{quoteCharacter}', found '{charSpan[i]}'" );
 		i++;
 		SysText.StringBuilder builder = new();
 		while( true )
 		{
 			if( i >= charSpan.Length )
-				return new CustomExpectation( $"expected a closing '{quoteCharacter}'" );
+				return new CustomError( $"expected a closing '{quoteCharacter}'" );
 			char c = charSpan[i++];
 			if( c == '"' )
 				break;
 			if( c < 32 )
-				return new CustomExpectation( $"escape character in string literal ({c:x2})" );
+				return new CustomError( $"escape character in string literal ({c:x2})" );
 			if( c == '\\' )
 			{
 				c = charSpan[i++];
@@ -231,10 +231,10 @@ public static class KitHelpers
 					{
 						Result<int> result1 = readNibble( charSpan[i++] );
 						if( !result1.IsSuccess )
-							return result1.Expectation;
+							return result1.Error;
 						Result<int> result2 = readNibble( charSpan[i++] );
 						if( !result2.IsSuccess )
-							return result2.Expectation;
+							return result2.Error;
 						c = (char)(result1.Payload << 4 | result2.Payload);
 						break;
 					}
@@ -242,21 +242,21 @@ public static class KitHelpers
 					{
 						Result<int> result1 = readNibble( charSpan[i++] );
 						if( !result1.IsSuccess )
-							return result1.Expectation;
+							return result1.Error;
 						Result<int> result2 = readNibble( charSpan[i++] );
 						if( !result2.IsSuccess )
-							return result2.Expectation;
+							return result2.Error;
 						Result<int> result3 = readNibble( charSpan[i++] );
 						if( !result3.IsSuccess )
-							return result3.Expectation;
+							return result3.Error;
 						Result<int> result4 = readNibble( charSpan[i++] );
 						if( !result4.IsSuccess )
-							return result4.Expectation;
+							return result4.Error;
 						c = (char)(result1.Payload << 12 | result2.Payload << 8 | result3.Payload << 4 | result4.Payload);
 						break;
 					}
 					default:
-						return new CustomExpectation( $"expected a valid escape sequence, found '{c}'" );
+						return new CustomError( $"expected a valid escape sequence, found '{c}'" );
 				}
 
 				static Result<int> readNibble( char c )
@@ -266,14 +266,14 @@ public static class KitHelpers
 						>= '0' and <= '9' => c - '0',
 						>= 'a' and <= 'f' => c - 'a' + 10,
 						>= 'A' and <= 'F' => c - 'A' + 10,
-						_ => new CustomExpectation( $"expected a hex digit, found '{c}'" )
+						_ => new CustomError( $"expected a hex digit, found '{c}'" )
 					};
 				}
 			}
 			builder.Append( c );
 		}
 		if( i != charSpan.Length )
-			return new CustomExpectation( $"expected nothing, found '{charSpan[i..]}'" );
+			return new CustomError( $"expected nothing, found '{charSpan[i..]}'" );
 		return builder.ToString();
 	}
 
