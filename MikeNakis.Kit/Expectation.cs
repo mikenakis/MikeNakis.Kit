@@ -4,7 +4,7 @@ using static MikeNakis.Kit.GlobalStatics;
 using SysCodeAnalysis = System.Diagnostics.CodeAnalysis;
 using SysDiag = System.Diagnostics;
 
-/// A lightweight result to be used with <see cref="Either{S,F}"/> or, better yet, with <see cref="Result{S}"/>
+/// A lightweight result to be used instead of an exception.
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 public abstract class Expectation
 {

@@ -29,8 +29,10 @@ public readonly struct Result : Sys.IEquatable<Result>
 
 	public Expectation Expectation => expectation.OrThrow();
 
+	/// <summary>Throws an exception, if this is a failure.</summary>
 	public void OrThrow() => OrThrow( expectation => new ExpectationFailureException( expectation ) );
 
+	/// <summary>Throws an exception, if this is a failure.</summary>
 	public void OrThrow( Sys.Func<Expectation, Sys.Exception> converter )
 	{
 		if( expectation == null )
