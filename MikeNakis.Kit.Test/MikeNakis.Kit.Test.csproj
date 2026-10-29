@@ -14,8 +14,4 @@
 		<ProjectReference Include="..\MikeNakis.Kit\MikeNakis.Kit.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="System.CodeDom" Version="9.0.5" />
-	</ItemGroup>
-	
 </Project>
