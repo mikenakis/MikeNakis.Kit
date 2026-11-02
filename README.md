@@ -1,7 +1,7 @@
 # MikeNakis.Kit<br/><sub><sup>My library of indispensable utilities</sup></sub>
 
 <p align="center">
-  <img title="MikeNakis.Kit Logo" src="MikeNakis.Kit-Logo.svg" width="256" />
+  <img title="MikeNakis.Kit Logo" src="MikeNakis.Kit/MikeNakis.Kit-icon.svg" width="256" />
 </p>
 
 [![Build](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Kit/actions/workflows/continuous-integration.yml)

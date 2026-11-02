@@ -17,7 +17,6 @@
 		<Authors>MikeNakis</Authors>
 		<Description>My library of indispensable utility classes and functions</Description>
 		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
-		<PackageIcon>MikeNakis.Kit-Logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Kit.git</RepositoryUrl>
 		<PublishRepositoryUrl>True</PublishRepositoryUrl>
@@ -42,7 +41,6 @@
 		<!-- PEARL: Visual Studio will show these items in "Solution Explorer", as if they are in the project directory,
 		    even though they are NOT. The "Visible=false" magical incantation is necessary to prevent this. -->
 		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" Visible="False" />
-		<None Include="..\MikeNakis.Kit-Logo.png" Pack="True" PackagePath="/" Visible="False" />
 		<None Include="..\README-for-nuget.md" Pack="True" PackagePath="/README.md" Visible="False" />
 	</ItemGroup>
 
